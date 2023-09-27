@@ -100,4 +100,13 @@ void LightOptimizationEvaluation()
 }
 
 //LightOptimizationEvaluation();
-Evaluate();
+//Evaluate();
+
+Cube randomCube = new(500);
+Console.WriteLine("Cube aléatoire : \n" + randomCube.PrintCube());
+var resolution = Cube.FastMethodeDebutantOptim(randomCube);
+string mouvements = Cube.GetStringPath(resolution);
+Console.WriteLine("Résolution : " + mouvements + "\n\n");
+Console.WriteLine("Résolution inverse : " + Cube.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>()))+"\n");
+
+Console.WriteLine("Longueur de la résolution : " + resolution.Count);
