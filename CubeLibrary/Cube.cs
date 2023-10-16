@@ -2976,7 +2976,7 @@ namespace Rubik_s_cube_solver
             return path;
         }
 
-        private static void PlaceEdges(ref Cube c, ref List<byte> path)
+        private static Cube PlaceEdges(Cube c, List<byte> path)
         {
             var arbre = new List<Dictionary<string, byte[]>>();
             var dico = new Dictionary<string, byte[]>
@@ -3072,9 +3072,10 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
+            return c;
         }
 
-        private static void PlaceCorners(ref Cube c, ref List<byte> path)
+        private static Cube PlaceCorners(Cube c, List<byte> path)
         {
             bool crossAndEdges(Cube c) => c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
             && c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
@@ -3201,8 +3202,9 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
+            return c;
         }
-        private static void OrientCorners(ref Cube c, ref List<byte> path)
+        private static Cube OrientCorners(Cube c, List<byte> path)
         {
             bool firstCornerOriented(Cube c) => c.BlueFace.Pieces[0, 1] == 'B'
                 && c.RedFace.Pieces[0, 2] == 'R'
@@ -3252,8 +3254,9 @@ namespace Rubik_s_cube_solver
                 }
 
             }
+            return c;
         }
-        private static void SecondLayer(ref Cube c, ref List<byte> path, IEnumerable<byte> dAlgo)
+        private static Cube SecondLayer(Cube c, List<byte> path, IEnumerable<byte> dAlgo)
         {
             bool crossAndEdges(Cube c) => c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
             && c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
@@ -3401,8 +3404,9 @@ namespace Rubik_s_cube_solver
                 }
                 i++;
             }
+            return c;
         }
-        private static void YellowCross(ref Cube c, ref List<byte> path, IEnumerable<byte> dAlgo)
+        private static Cube YellowCross(Cube c, List<byte> path, IEnumerable<byte> dAlgo)
         {
             var algoCrossPattern = new List<string>() { "R", "D", "F", "D'", "F'", "R'" };
             var algoCrossPattern2 = new List<string>() { "R", "F", "D", "F'", "D'", "R'" };
@@ -3449,8 +3453,9 @@ namespace Rubik_s_cube_solver
                 }
 
             }
+            return c;
         }
-        private static void OrientEdges(ref Cube c, ref List<byte> path, IEnumerable<byte> dAlgo)
+        private static Cube OrientEdges(Cube c, List<byte> path, IEnumerable<byte> dAlgo)
         {
             var redF = new List<string>() { "D2", "F", "D", "F'", "D", "F", "D2", "F'", "D'" };
             var blueF = new List<string>() { "D", "F", "D", "F'", "D", "F", "D2", "F'" };
@@ -3504,8 +3509,9 @@ namespace Rubik_s_cube_solver
                     path.AddRange(dAlgo);
                 }
             }
+            return c;
         }
-        private static void PlaceSecondCorners(ref Cube c, ref List<byte> path)
+        private static Cube PlaceSecondCorners(Cube c, List<byte> path)
         {
             bool cornersIsPlaced(Cube c) => ((c.RedFace.Pieces[2, 2] == 'R' && c.BlueFace.Pieces[2, 0] == 'B')
                 || (c.RedFace.Pieces[2, 2] == 'B' && c.BlueFace.Pieces[2, 0] == 'Y' && c.YellowFace.Pieces[0, 2] == 'R')
@@ -3603,8 +3609,9 @@ namespace Rubik_s_cube_solver
                     }
                 }
             }
+            return c;
         }
-        private static void OrientLastCornersOptim(ref Cube c, ref List<byte> path)
+        private static void OrientLastCornersOptim(Cube c, List<byte> path)
         {
             var sexyMove = new List<string>() { "R", "U", "R'", "U'" };
             var doubleSM = sexyMove.Concat(sexyMove);
@@ -3641,15 +3648,15 @@ namespace Rubik_s_cube_solver
         public static List<byte> FastMethodeDebutantOptim(Cube c)
         {
             List<byte> path = new();
-            PlaceEdges(ref c, ref path);
-            PlaceCorners(ref c, ref path);
-            OrientCorners(ref c, ref path);
+            c = PlaceEdges(c, path);
+            c = PlaceCorners(c, path);
+            c = OrientCorners(c, path);
             var dAlgo = GetAlgoFromStringEnum(new List<string>() { "D" });
-            SecondLayer(ref c, ref path, dAlgo);
-            YellowCross(ref c, ref path, dAlgo);
-            OrientEdges(ref c, ref path, dAlgo);
-            PlaceSecondCorners(ref c, ref path);
-            OrientLastCornersOptim(ref c, ref path);
+            c = SecondLayer(c, path, dAlgo);
+            c = YellowCross(c, path, dAlgo);
+            c = OrientEdges(c, path, dAlgo);
+            c = PlaceSecondCorners(c, path);
+            OrientLastCornersOptim(c, path);
             return path;
         }
         public static byte[] FastMethodeDebutant2(Cube c1)

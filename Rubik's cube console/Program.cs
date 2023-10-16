@@ -60,6 +60,7 @@ void Evaluate()
 }
 //Evaluate();
 
+#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void LightOptimizationEvaluation()
 {
     int i = 1;
@@ -99,6 +100,7 @@ void LightOptimizationEvaluation()
         i++;
     }
 }
+#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 
 //LightOptimizationEvaluation();
 Evaluate();

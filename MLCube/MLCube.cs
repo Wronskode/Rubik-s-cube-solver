@@ -19,6 +19,7 @@ List<int> cubeStringToInt(string cubeName)
     return entiers;
 }
 
+#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void GenererCSV(StreamWriter w)
 {
     Cube c = new(500);
@@ -34,7 +35,9 @@ void GenererCSV(StreamWriter w)
         w.WriteLine(string.Join(',', csvDico[i]));
     }
 }
+#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 
+#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void GenererSecondCSV(StreamWriter w)
 {
     Cube c = new(500);
@@ -43,6 +46,7 @@ void GenererSecondCSV(StreamWriter w)
     ligne.Add(cheminFinal[0]);
     w.WriteLine(string.Join(',', ligne));
 }
+#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 
 StringBuilder GenererThirdCSV()
 {
@@ -88,6 +92,7 @@ StringBuilder GenererThirdCSV()
 //    w2.Flush();
 //}
 
+#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void AddDataOnFile(string appendFileName)
 {
     var timer = new Stopwatch();
@@ -111,6 +116,7 @@ void AddDataOnFile(string appendFileName)
     cubeopti.Close();
     Console.WriteLine(timer.Elapsed.TotalSeconds);
 }
+#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 //GenererEntete("cubesopti3.csv", "move", "num", "move-1", "move-2", "move-3");
 //AddDataOnFile("cubesopti3.csv");
 
@@ -126,6 +132,7 @@ string GenererRandomCubesCSV(int shuffling)
     return string.Join(',', ligne);
 }
 
+#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void AddRandomDataOnFile(string appendFileName, int shuffling)
 {
     StreamWriter cubeopti = new(appendFileName, true);
@@ -140,6 +147,7 @@ void AddRandomDataOnFile(string appendFileName, int shuffling)
     }
     cubeopti.Close();
 }
+#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 
 int shuffling = 5;
 string[] movesArray = new string[shuffling];
@@ -151,6 +159,7 @@ for (int i = 0; i < shuffling; i++)
 //AddRandomDataOnFile("randomCubes2.csv", shuffling);
 
 
+#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void GenererEntete(string appendFileName, params string[] values)
 {
     StreamWriter file = new(appendFileName, false);
@@ -166,6 +175,7 @@ void GenererEntete(string appendFileName, params string[] values)
     file.Write(string.Join(',', t) + "\n");
     file.Close();
 }
+#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 
 //GenererEntete("cubesopti2.csv", "move", "num", "move-1", "move-2", "move-3");
 
@@ -307,6 +317,7 @@ StringBuilder GenererKociembaCSV(List<byte> cheminFinal)
     }
     return txt;
 }
+#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void KociembaAddDataOnFile(string input, string appendFileName)
 {
     var allRes = GetKociembaResolution(input);
@@ -318,7 +329,9 @@ void KociembaAddDataOnFile(string input, string appendFileName)
     }
     cubeopti.Close();
 }
+#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 
+#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void KociembaParser(string input, string output)
 {
     var moves = new List<List<byte>>();
@@ -344,6 +357,7 @@ void KociembaParser(string input, string output)
         }
     }
 }
+#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 PrintPercentage();
 //KociembaParser("cubes.txt", "result.txt");
 //GenererEntete("cubesoptiKociemba.csv", "move", "num", "move-1", "move-2", "move-3");
