@@ -51,7 +51,7 @@ namespace MySite.Controllers
             else if (cptB != 9) throw new Exception("Il y a " + cptB + " bleus à la place de 9 bleus");
             else if (cptO != 9) throw new Exception("Il y a " + cptO + " oranges à la place de 9 oranges");
             Cube cube = new(strCube);
-            return Cube.GetStringPath(Cube.LightOptimization(Cube.FastMethodeDebutantOptim(cube)));
+            return Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(cube)));
         }
 
 

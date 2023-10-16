@@ -23,7 +23,7 @@ List<int> cubeStringToInt(string cubeName)
 void GenererCSV(StreamWriter w)
 {
     Cube c = new(500);
-    var cheminFinal = Cube.MethodeDebutant(c);
+    var cheminFinal = Cube.BeginnerMethod(c);
     List<List<int>> csvDico = new();
     for (int i = 0; i < cheminFinal.Length; i++)
     {
@@ -41,7 +41,7 @@ void GenererCSV(StreamWriter w)
 void GenererSecondCSV(StreamWriter w)
 {
     Cube c = new(500);
-    var cheminFinal = Cube.FastMethodeDebutant(c);
+    var cheminFinal = Cube.FastBeginnerMethod(c);
     var ligne = cubeStringToInt(c.ToString());
     ligne.Add(cheminFinal[0]);
     w.WriteLine(string.Join(',', ligne));
@@ -53,7 +53,7 @@ StringBuilder GenererThirdCSV()
     Cube c = new(500);
     StringBuilder txt = new();
     //var cheminFinal = Cube.OptimizePath(Cube.FastMethodeDebutant(c), 3, 4, false);
-    var cheminFinal = Cube.FastMethodeDebutant(c);
+    var cheminFinal = Cube.FastBeginnerMethod(c);
     List<List<int>> csvDico = new();
     for (int i = 0; i < cheminFinal.Count; i++)
     {

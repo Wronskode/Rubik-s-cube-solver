@@ -1,13 +1,6 @@
 ﻿using Rubik_s_cube_solver;
-using System;
 using System.Diagnostics;
-using System.Numerics;
-using System.Reflection.Emit;
-using System.Security;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Drawing;
+
 
 //int mins;
 //if (args.Length == 0) mins = 30;
@@ -30,7 +23,7 @@ void Evaluate()
         Console.WriteLine(c1.PrintCube());
         var benchCube = new Stopwatch();
         benchCube.Start();
-        IEnumerable<byte> cheminFinal = Cube.LightOptimization(Cube.FastMethodeDebutantOptim(c1));
+        IEnumerable<byte> cheminFinal = Cube.LightOptimization(Cube.FastBeginnerMethod(c1));
         //IEnumerable<byte> cheminFinal = Cube.FastMethodeDebutantOptim(c1);
         var finalTime = benchCube.Elapsed.TotalSeconds;
         var finalStringPath = Cube.GetStringPath(cheminFinal);
@@ -60,7 +53,6 @@ void Evaluate()
 }
 //Evaluate();
 
-#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void LightOptimizationEvaluation()
 {
     int i = 1;
@@ -100,16 +92,17 @@ void LightOptimizationEvaluation()
         i++;
     }
 }
-#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 
 //LightOptimizationEvaluation();
-Evaluate();
+//Evaluate();
 
-//Cube randomCube = new(500);
-//Console.WriteLine("Cube aléatoire : \n" + randomCube.PrintCube());
-//var resolution = Cube.FastMethodeDebutantOptim(randomCube);
-//string mouvements = Cube.GetStringPath(resolution);
-//Console.WriteLine("Résolution : " + mouvements + "\n\n");
-//Console.WriteLine("Résolution inverse : " + Cube.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>()))+"\n");
 
-//Console.WriteLine("Longueur de la résolution : " + resolution.Count);
+Cube randomCube = new(500);
+Cube copie = randomCube.Clone();
+Console.WriteLine("Cube aléatoire : \n" + randomCube.PrintCube());
+var resolution = Cube.FastBeginnerMethod(randomCube);
+string mouvements = Cube.GetStringPath(resolution);
+Console.WriteLine("Résolution : " + mouvements + "\n\n");
+Console.WriteLine("Résolution inverse : " + Cube.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>())) + "\n");
+Console.WriteLine("Longueur de la résolution : " + resolution.Count);
+

@@ -9,12 +9,9 @@ namespace CubesTests
         public void FastMethodSolves()
         {
             Cube c = new(500);
-            Cube c2 = c.Clone();
-            var res = Cube.FastMethodeDebutantOptim(c);
-            var res2 = Cube.FastMethodeDebutant(c2);
+            var res = Cube.FastBeginnerMethod(c);
             c.ExecuterAlgorithme(res);
-            c2.ExecuterAlgorithme(res2);
-            Assert.IsTrue(c.IsSolved && c2.IsSolved);
+            Assert.IsTrue(c.IsSolved);
         }
 
         [TestMethod]
@@ -32,7 +29,7 @@ namespace CubesTests
         {
             Cube c = new(500);
             Cube c1 = c.Clone();
-            var res = Cube.FastMethodeDebutantOptim(c);
+            var res = Cube.FastBeginnerMethod(c);
             var res2 = Cube.LightOptimization(res);
             c.ExecuterAlgorithme(res);
             c1.ExecuterAlgorithme(res2);
