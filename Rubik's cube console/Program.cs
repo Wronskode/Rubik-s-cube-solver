@@ -30,7 +30,8 @@ void Evaluate()
         Console.WriteLine(c1.PrintCube());
         var benchCube = new Stopwatch();
         benchCube.Start();
-        var cheminFinal = Cube.LightOptimization(Cube.FastMethodeDebutantOptim(c1));
+        IEnumerable<byte> cheminFinal = Cube.LightOptimization(Cube.FastMethodeDebutantOptim(c1));
+        //IEnumerable<byte> cheminFinal = Cube.FastMethodeDebutantOptim(c1);
         var finalTime = benchCube.Elapsed.TotalSeconds;
         var finalStringPath = Cube.GetStringPath(cheminFinal);
         var length = cheminFinal.Count();
@@ -100,13 +101,13 @@ void LightOptimizationEvaluation()
 }
 
 //LightOptimizationEvaluation();
-//Evaluate();
+Evaluate();
 
-Cube randomCube = new(500);
-Console.WriteLine("Cube aléatoire : \n" + randomCube.PrintCube());
-var resolution = Cube.FastMethodeDebutantOptim(randomCube);
-string mouvements = Cube.GetStringPath(resolution);
-Console.WriteLine("Résolution : " + mouvements + "\n\n");
-Console.WriteLine("Résolution inverse : " + Cube.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>()))+"\n");
+//Cube randomCube = new(500);
+//Console.WriteLine("Cube aléatoire : \n" + randomCube.PrintCube());
+//var resolution = Cube.FastMethodeDebutantOptim(randomCube);
+//string mouvements = Cube.GetStringPath(resolution);
+//Console.WriteLine("Résolution : " + mouvements + "\n\n");
+//Console.WriteLine("Résolution inverse : " + Cube.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>()))+"\n");
 
-Console.WriteLine("Longueur de la résolution : " + resolution.Count);
+//Console.WriteLine("Longueur de la résolution : " + resolution.Count);
