@@ -984,7 +984,7 @@ namespace Rubik_s_cube_solver
             return listeCubes;
         }
 
-        public static void NextGen(List<List<((int, int, int, int, int, int), byte[])>> gen, HashSet<(int, int, int, int, int, int)> h)
+        public static void OriginalNextTreeBranch(List<List<((int, int, int, int, int, int), byte[])>> gen, HashSet<(int, int, int, int, int, int)> h)
         {
             int methodsCount = 18;
             List<((int, int, int, int, int, int), byte[])> newCubes = new();
@@ -1004,7 +1004,7 @@ namespace Rubik_s_cube_solver
         }
 
 
-        public static void NextGen2(Dictionary<(ulong, ulong), byte[]> dico)
+        public static void NextTreeBranchForMITMv2(Dictionary<(ulong, ulong), byte[]> dico)
         {
             int methodsCount = 18;
             List<((ulong, ulong), byte[])> newCubes = new();
@@ -1026,7 +1026,7 @@ namespace Rubik_s_cube_solver
             }
         }
 
-        public static void NextGen3(List<Dictionary<(ulong, ulong), byte[]>> listDico)
+        public static void NextTreeBranchForMITMv3(List<Dictionary<(ulong, ulong), byte[]>> listDico)
         {
             int methodsCount = 18;
             Dictionary<(ulong, ulong), byte[]> newCubes = new();
@@ -1056,7 +1056,7 @@ namespace Rubik_s_cube_solver
             listDico.Add(newCubes);
         }
 
-        public static (Cube, byte[])? NextGen31(List<Dictionary<(ulong, ulong), byte[]>> listDico, Func<Cube, bool> f)
+        public static (Cube, byte[])? GetNextBranchWithStrongCompressionOfCubes(List<Dictionary<(ulong, ulong), byte[]>> listDico, Func<Cube, bool> f)
         {
             int methodsCount = 18;
             Dictionary<(ulong, ulong), byte[]> newCubes = new();
@@ -1088,7 +1088,7 @@ namespace Rubik_s_cube_solver
             return null;
         }
 
-        public static (Cube, byte[])? NextGen32(List<Dictionary<(int, int, int, int, int, int), byte[]>> listDico, Func<Cube, bool> f)
+        public static (Cube, byte[])? OldGetNextBranch(List<Dictionary<(int, int, int, int, int, int), byte[]>> listDico, Func<Cube, bool> f)
         {
             Dictionary<(int, int, int, int, int, int), byte[]> newCubes = new();
             foreach (var cube in listDico[^1])
@@ -1119,7 +1119,7 @@ namespace Rubik_s_cube_solver
             return null;
         }
 
-        public static (Cube, byte[])? NextGen33(List<Dictionary<string, byte[]>> listDico, Func<Cube, bool> f)
+        public static (Cube, byte[])? NextTreeBranch(List<Dictionary<string, byte[]>> listDico, Func<Cube, bool> f)
         {
             Dictionary<string, byte[]> newCubes = new();
             foreach (var cube in listDico[^1])
@@ -1150,7 +1150,36 @@ namespace Rubik_s_cube_solver
             return null;
         }
 
-        public static void NextGen5(List<Dictionary<(ulong, ulong), byte>> listDico)
+        public static void NextTreeBranch2(List<Dictionary<Cube, byte[]>> listDico)
+        {
+            Dictionary<Cube, byte[]> newCubes = new();
+            foreach (var cube in listDico[^1])
+            {
+                Cube c1 = cube.Key;
+                for (byte j = 0; j < 18; j++)
+                {
+                    c1.DoMove(j);
+                    //string str = c1.ToString();
+                    bool isContained = false;
+                    foreach (var item in listDico)
+                    {
+                        if (item.ContainsKey(c1))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(c1, cube.Value.Append(j).ToArray());
+                    if (j != 17)
+                        c1.DoMove(GetReversalMove(j));
+                }
+            }
+            listDico.Add(newCubes);
+        }
+
+
+        public static void NextTreeBranchForMITM(List<Dictionary<(ulong, ulong), byte>> listDico)
         {
             int methodsCount = 18;
             Dictionary<(ulong, ulong), byte> newCubes = new();
@@ -1342,164 +1371,6 @@ namespace Rubik_s_cube_solver
             }
         }
 
-        public static byte[] MeetInTheMiddle(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
-        {
-            finalCube ??= new();
-            bool isSolved = false;
-            int i = 2;
-            HashSet<(int, int, int, int, int, int)> h1 = new();
-            HashSet<(int, int, int, int, int, int)> h2 = new();
-            h1.Add(StringCubeToInt(finalCube.ToString()));
-            h2.Add(StringCubeToInt(initialCube.ToString()));
-            List<List<((int, int, int, int, int, int), byte[])>> arbreFinal = finalCube.GenererArbre(1);
-            List<List<((int, int, int, int, int, int), byte[])>> arbreInitial = initialCube.GenererArbre(1);
-            List<byte> solutionFromRandom = new();
-            while (!isSolved)
-            {
-                if (i == deepMax) return Array.Empty<byte>();
-                Parallel.Invoke(
-                    () => NextGen(arbreFinal, h1),
-                    () => NextGen(arbreInitial, h2)
-                    );
-                var arbreFinalManySelected = arbreFinal.AsParallel().SelectMany(x => x);
-                var arbreInitialManySelected = arbreInitial.AsParallel().SelectMany(x => x);
-                var intersect = arbreFinalManySelected.Select(x => x.Item1).Intersect(arbreInitialManySelected.Select(x => x.Item1));
-                if (intersect.Any())
-                {
-                    isSolved = true;
-                    Dictionary<(int, int, int, int, int, int), byte[]> dicoPos = new();
-                    foreach (var item in arbreInitialManySelected)
-                    {
-                        if (h1.Contains(item.Item1) && h2.Contains(item.Item1))
-                            dicoPos.Add(item.Item1, item.Item2.Skip(1).ToArray());
-                    }
-                    h1.Clear();
-                    h2.Clear();
-                    foreach (var item in arbreFinalManySelected)
-                    {
-                        if (dicoPos.ContainsKey(item.Item1))
-                        {
-                            dicoPos[item.Item1] = dicoPos[item.Item1].Concat(GetReversalPath(item.Item2.Skip(1).Reverse())).ToArray();
-                        } // Le reverse c'est pour avoir la seconde partie du chemin
-                    }
-                    int minLength = dicoPos.Select(x => x.Value.Length).Min();
-                    var firstItem = dicoPos.Where(x => x.Value.Length == minLength).First();
-                    solutionFromRandom = firstItem.Value.ToList();
-                }
-                else
-                {
-                    if (i >= 5)
-                    {
-                        arbreFinal.RemoveRange(0, arbreFinal.Count - 1);
-                        arbreInitial.RemoveRange(0, arbreInitial.Count - 1);
-                    }
-                }
-                i += 1;
-            }
-            initialCube.ExecuterAlgorithme(solutionFromRandom);
-            return solutionFromRandom.ToArray();
-        }
-
-        public static byte[] MeetInTheMiddle2(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
-        {
-            finalCube ??= new();
-            bool isSolved = false;
-            int i = 2;
-            var dico1 = new Dictionary<(ulong, ulong), byte[]>
-            {
-                { Cube.CompressState(initialCube.ToString()), new byte[1] { 0 } }
-            };
-            var dico2 = new Dictionary<(ulong, ulong), byte[]>
-            {
-                { Cube.CompressState(finalCube.ToString()), new byte[1] { 0 } }
-            };
-            List<byte> solutionFromRandom = new();
-            while (!isSolved)
-            {
-                if (i == deepMax) return Array.Empty<byte>();
-                Parallel.Invoke(
-                    () => NextGen2(dico1),
-                    () => NextGen2(dico2)
-                    );
-                var hasCommonElements = dico1.Keys.Intersect(dico2.Keys).Any();
-                if (hasCommonElements)
-                {
-                    isSolved = true;
-                    Dictionary<(ulong, ulong), byte[]> dicoPos = new();
-                    foreach (var item in dico1)
-                    {
-                        if (dico2.ContainsKey(item.Key))
-                        {
-                            dicoPos.Add(item.Key, item.Value.Skip(1).Concat(GetReversalPath(dico2[item.Key].Skip(1).Reverse())).ToArray());
-                        }
-                    }
-                    int minLength = dicoPos.Select(x => x.Value.Length).Min();
-                    var firstItem = dicoPos.Where(x => x.Value.Length == minLength).First();
-                    solutionFromRandom = firstItem.Value.ToList();
-                }
-                i += 1;
-            }
-            initialCube.ExecuterAlgorithme(solutionFromRandom);
-            return solutionFromRandom.ToArray();
-        }
-
-        public static byte[] MeetInTheMiddle3(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
-        {
-            finalCube ??= new();
-            bool isSolved = false;
-            int i = 2;
-            var dico1 = new Dictionary<(ulong, ulong), byte[]>
-            {
-                { CompressState(initialCube.ToString()), new byte[1] { 0 } }
-            };
-            var dico2 = new Dictionary<(ulong, ulong), byte[]>
-            {
-                { CompressState(finalCube.ToString()), new byte[1] { 0 } }
-            };
-            List<Dictionary<(ulong, ulong), byte[]>> arbreInitial = new();
-            List<Dictionary<(ulong, ulong), byte[]>> arbreFinal = new();
-            arbreInitial.Add(dico1);
-            arbreFinal.Add(dico2);
-            List<byte> solutionFromRandom = new();
-            while (!isSolved)
-            {
-                //Console.WriteLine(i);
-                if (i == deepMax) return Array.Empty<byte>();
-                Parallel.Invoke(
-                    () => NextGen3(arbreInitial),
-                    () => NextGen3(arbreFinal)
-                    );
-                var arbreFinalManySelected = arbreFinal.SelectMany(x => x);
-                var arbreInitialManySelected = arbreInitial.SelectMany(x => x);
-                var hasCommonElements = arbreInitialManySelected.Select(x => x.Key)
-                    .Intersect(arbreFinalManySelected.Select(x => x.Key)).ToHashSet();
-                if (hasCommonElements.Any())
-                {
-                    isSolved = true;
-                    Dictionary<(ulong, ulong), byte[]> dicoPos = new();
-                    foreach (var item in arbreInitialManySelected)
-                    {
-                        if (hasCommonElements.Contains(item.Key))
-                            dicoPos.Add(item.Key, item.Value.Skip(1).ToArray());
-                    }
-                    foreach (var item in arbreFinalManySelected)
-                    {
-                        if (dicoPos.ContainsKey(item.Key))
-                        {
-                            dicoPos[item.Key] = dicoPos[item.Key].Concat(GetReversalPath(item.Value.Skip(1).Reverse().ToArray())).ToArray();
-                        } // Le reverse c'est pour avoir la seconde partie du chemin
-                    }
-
-                    int minLength = dicoPos.Select(x => x.Value.Length).Min();
-                    var firstItem = dicoPos.Where(x => x.Value.Length == minLength).First();
-                    solutionFromRandom = firstItem.Value.ToList();
-                }
-                i += 1;
-            }
-            initialCube.ExecuterAlgorithme(solutionFromRandom);
-            return solutionFromRandom.ToArray();
-        }
-
         private static readonly char[] IntegerToColor = new char[]
         {
             'W',
@@ -1576,6 +1447,163 @@ namespace Rubik_s_cube_solver
             sb.Insert(49, 'O');
             return sb.ToString();
         }
+        public static byte[] MeetInTheMiddle(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
+        {
+            finalCube ??= new();
+            bool isSolved = false;
+            int i = 2;
+            HashSet<(int, int, int, int, int, int)> h1 = new();
+            HashSet<(int, int, int, int, int, int)> h2 = new();
+            h1.Add(StringCubeToInt(finalCube.ToString()));
+            h2.Add(StringCubeToInt(initialCube.ToString()));
+            List<List<((int, int, int, int, int, int), byte[])>> arbreFinal = finalCube.GenererArbre(1);
+            List<List<((int, int, int, int, int, int), byte[])>> arbreInitial = initialCube.GenererArbre(1);
+            List<byte> solutionFromRandom = new();
+            while (!isSolved)
+            {
+                if (i == deepMax) return Array.Empty<byte>();
+                Parallel.Invoke(
+                    () => OriginalNextTreeBranch(arbreFinal, h1),
+                    () => OriginalNextTreeBranch(arbreInitial, h2)
+                    );
+                var arbreFinalManySelected = arbreFinal.AsParallel().SelectMany(x => x);
+                var arbreInitialManySelected = arbreInitial.AsParallel().SelectMany(x => x);
+                var intersect = arbreFinalManySelected.Select(x => x.Item1).Intersect(arbreInitialManySelected.Select(x => x.Item1));
+                if (intersect.Any())
+                {
+                    isSolved = true;
+                    Dictionary<(int, int, int, int, int, int), byte[]> dicoPos = new();
+                    foreach (var item in arbreInitialManySelected)
+                    {
+                        if (h1.Contains(item.Item1) && h2.Contains(item.Item1))
+                            dicoPos.Add(item.Item1, item.Item2.Skip(1).ToArray());
+                    }
+                    h1.Clear();
+                    h2.Clear();
+                    foreach (var item in arbreFinalManySelected)
+                    {
+                        if (dicoPos.ContainsKey(item.Item1))
+                        {
+                            dicoPos[item.Item1] = dicoPos[item.Item1].Concat(GetReversalPath(item.Item2.Skip(1).Reverse())).ToArray();
+                        } // Le reverse c'est pour avoir la seconde partie du chemin
+                    }
+                    int minLength = dicoPos.Select(x => x.Value.Length).Min();
+                    var firstItem = dicoPos.Where(x => x.Value.Length == minLength).First();
+                    solutionFromRandom = firstItem.Value.ToList();
+                }
+                else
+                {
+                    if (i >= 5)
+                    {
+                        arbreFinal.RemoveRange(0, arbreFinal.Count - 1);
+                        arbreInitial.RemoveRange(0, arbreInitial.Count - 1);
+                    }
+                }
+                i += 1;
+            }
+            initialCube.ExecuterAlgorithme(solutionFromRandom);
+            return solutionFromRandom.ToArray();
+        }
+
+        public static byte[] MeetInTheMiddle2(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
+        {
+            finalCube ??= new();
+            bool isSolved = false;
+            int i = 2;
+            var dico1 = new Dictionary<(ulong, ulong), byte[]>
+            {
+                { Cube.CompressState(initialCube.ToString()), new byte[1] { 0 } }
+            };
+            var dico2 = new Dictionary<(ulong, ulong), byte[]>
+            {
+                { Cube.CompressState(finalCube.ToString()), new byte[1] { 0 } }
+            };
+            List<byte> solutionFromRandom = new();
+            while (!isSolved)
+            {
+                if (i == deepMax) return Array.Empty<byte>();
+                Parallel.Invoke(
+                    () => NextTreeBranchForMITMv2(dico1),
+                    () => NextTreeBranchForMITMv2(dico2)
+                    );
+                var hasCommonElements = dico1.Keys.Intersect(dico2.Keys).Any();
+                if (hasCommonElements)
+                {
+                    isSolved = true;
+                    Dictionary<(ulong, ulong), byte[]> dicoPos = new();
+                    foreach (var item in dico1)
+                    {
+                        if (dico2.ContainsKey(item.Key))
+                        {
+                            dicoPos.Add(item.Key, item.Value.Skip(1).Concat(GetReversalPath(dico2[item.Key].Skip(1).Reverse())).ToArray());
+                        }
+                    }
+                    int minLength = dicoPos.Select(x => x.Value.Length).Min();
+                    var firstItem = dicoPos.Where(x => x.Value.Length == minLength).First();
+                    solutionFromRandom = firstItem.Value.ToList();
+                }
+                i += 1;
+            }
+            initialCube.ExecuterAlgorithme(solutionFromRandom);
+            return solutionFromRandom.ToArray();
+        }
+
+        public static byte[] MeetInTheMiddle3(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
+        {
+            finalCube ??= new();
+            bool isSolved = false;
+            int i = 2;
+            var dico1 = new Dictionary<(ulong, ulong), byte[]>
+            {
+                { CompressState(initialCube.ToString()), new byte[1] { 0 } }
+            };
+            var dico2 = new Dictionary<(ulong, ulong), byte[]>
+            {
+                { CompressState(finalCube.ToString()), new byte[1] { 0 } }
+            };
+            List<Dictionary<(ulong, ulong), byte[]>> arbreInitial = new();
+            List<Dictionary<(ulong, ulong), byte[]>> arbreFinal = new();
+            arbreInitial.Add(dico1);
+            arbreFinal.Add(dico2);
+            List<byte> solutionFromRandom = new();
+            while (!isSolved)
+            {
+                //Console.WriteLine(i);
+                if (i == deepMax) return Array.Empty<byte>();
+                Parallel.Invoke(
+                    () => NextTreeBranchForMITMv3(arbreInitial),
+                    () => NextTreeBranchForMITMv3(arbreFinal)
+                    );
+                var arbreFinalManySelected = arbreFinal.SelectMany(x => x);
+                var arbreInitialManySelected = arbreInitial.SelectMany(x => x);
+                var hasCommonElements = arbreInitialManySelected.Select(x => x.Key)
+                    .Intersect(arbreFinalManySelected.Select(x => x.Key)).ToHashSet();
+                if (hasCommonElements.Any())
+                {
+                    isSolved = true;
+                    Dictionary<(ulong, ulong), byte[]> dicoPos = new();
+                    foreach (var item in arbreInitialManySelected)
+                    {
+                        if (hasCommonElements.Contains(item.Key))
+                            dicoPos.Add(item.Key, item.Value.Skip(1).ToArray());
+                    }
+                    foreach (var item in arbreFinalManySelected)
+                    {
+                        if (dicoPos.ContainsKey(item.Key))
+                        {
+                            dicoPos[item.Key] = dicoPos[item.Key].Concat(GetReversalPath(item.Value.Skip(1).Reverse().ToArray())).ToArray();
+                        } // Le reverse c'est pour avoir la seconde partie du chemin
+                    }
+
+                    int minLength = dicoPos.Select(x => x.Value.Length).Min();
+                    var firstItem = dicoPos.Where(x => x.Value.Length == minLength).First();
+                    solutionFromRandom = firstItem.Value.ToList();
+                }
+                i += 1;
+            }
+            initialCube.ExecuterAlgorithme(solutionFromRandom);
+            return solutionFromRandom.ToArray();
+        }
 
         public static byte[] MeetInTheMiddle5(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
         {
@@ -1594,14 +1622,13 @@ namespace Rubik_s_cube_solver
             List<Dictionary<(ulong, ulong), byte>> arbreFinal = new();
             arbreInitial.Add(dico1);
             arbreFinal.Add(dico2);
-            List<byte> solution = new();
+            IEnumerable<byte> solution = new List<byte>();
             while (!isSolved)
             {
-                //Console.WriteLine(i);
                 if (i == deepMax) return Array.Empty<byte>();
                 Parallel.Invoke(
-                    () => NextGen5(arbreInitial),
-                    () => NextGen5(arbreFinal)
+                    () => NextTreeBranchForMITM(arbreInitial),
+                    () => NextTreeBranchForMITM(arbreFinal)
                     );
                 var arbreFinalManySelected = arbreFinal.AsParallel().SelectMany(x => x);
                 var arbreInitialManySelected = arbreInitial.AsParallel().SelectMany(x => x);
@@ -1638,20 +1665,20 @@ namespace Rubik_s_cube_solver
                                 newCube2.ExecuterAlgorithme(GetReversalPath(path2.TakeLast(1)));
                             }
                         }
-                        //path.Reverse<byte>();
-                        var solutionFromRandom = GetReversalPath(path.Reverse<byte>()).Concat(path2).Reverse().ToList();
-                        if (solutionFromRandom.Count < min)
+                        var solutionFromRandom = GetReversalPath(path.Reverse<byte>()).Concat(path2).Reverse();
+                        int count = solutionFromRandom.Count();
+                        if (count < min)
                         {
                             solution = solutionFromRandom;
-                            min = solutionFromRandom.Count;
+                            min = count;
                         }
                     }
                 }
                 i += 1;
             }
-            //initialCube.ExecuterAlgorithme(solution);
             return solution.ToArray();
         }
+
 
         private static byte GetDoubleMove(byte move)
         {
@@ -1789,7 +1816,7 @@ namespace Rubik_s_cube_solver
                 foreach (var item in chunks)
                 {
                     c2.ExecuterAlgorithme(item);
-                    var minPath = MeetInTheMiddle(c1.Clone(), c2.Clone(), maxDeep);
+                    var minPath = MeetInTheMiddle5(c1.Clone(), c2.Clone(), maxDeep);
                     finalPath.Add(minPath);
                     c1.ExecuterAlgorithme(item);
                 }
@@ -1846,7 +1873,7 @@ namespace Rubik_s_cube_solver
             bool isPlaced = thereAreAWhiteCross(c1);
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, thereAreAWhiteCross);
+                var newC = OldGetNextBranch(arbre1, thereAreAWhiteCross);
                 if (newC != null)
                 {
                     c1 = newC.Value.Item1.Clone();
@@ -1867,7 +1894,7 @@ namespace Rubik_s_cube_solver
             isPlaced = crossAndEdges(c1);
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, crossAndEdges);
+                var newC = OldGetNextBranch(arbre1, crossAndEdges);
                 if (newC != null)
                 {
                     c1 = newC.Value.Item1.Clone();
@@ -1899,7 +1926,7 @@ namespace Rubik_s_cube_solver
             isPlaced = crossAndEdges(c1) && oneCornerIsPlaced(c1);
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => crossAndEdges(c1) && oneCornerIsPlaced(c1));
+                var newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1) && oneCornerIsPlaced(c1));
                 if (newC != null)
                 {
                     c1 = newC.Value.Item1.Clone();
@@ -1922,7 +1949,7 @@ namespace Rubik_s_cube_solver
                         || (secondCornerIsPlaced(c1) && fourthCornerIsPlaced(c1)));
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => crossAndEdges(c1)
+                var newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
                         && ((firstCornerPlaced(c1) && secondCornerIsPlaced(c1))
                         || (firstCornerPlaced(c1) && thirdCornerIsPlaced(c1))
                         || (firstCornerPlaced(c1) && fourthCornerIsPlaced(c1))
@@ -1949,7 +1976,7 @@ namespace Rubik_s_cube_solver
                         || (secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1)));
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => crossAndEdges(c1)
+                var newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
                         && ((firstCornerPlaced(c1) && secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1))
                         || (firstCornerPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1))
                         || (firstCornerPlaced(c1) && fourthCornerIsPlaced(c1) && secondCornerIsPlaced(c1))
@@ -1971,7 +1998,7 @@ namespace Rubik_s_cube_solver
                         && firstCornerPlaced(c1) && secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1);
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => crossAndEdges(c1)
+                var newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
                         && firstCornerPlaced(c1) && secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1));
                 if (newC != null)
                 {
@@ -2352,7 +2379,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                var newC = NextGen33(arbre, oneEdgeIsPlaced);
+                var newC = NextTreeBranch(arbre, oneEdgeIsPlaced);
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -2375,7 +2402,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                var newC = NextGen33(arbre, (c) => (firstEdge(c) && secondEdge(c))
+                var newC = NextTreeBranch(arbre, (c) => (firstEdge(c) && secondEdge(c))
                         || (firstEdge(c) && thirdEdge(c))
                         || (firstEdge(c) && fourthEdge(c))
                         || (secondEdge(c) && thirdEdge(c))
@@ -2401,7 +2428,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                var newC = NextGen33(arbre, (c) => ((firstEdge(c) && secondEdge(c) && thirdEdge(c))
+                var newC = NextTreeBranch(arbre, (c) => ((firstEdge(c) && secondEdge(c) && thirdEdge(c))
                         || (firstEdge(c) && thirdEdge(c) && fourthEdge(c))
                         || (firstEdge(c) && fourthEdge(c) && secondEdge(c))
                         || (secondEdge(c) && thirdEdge(c) && fourthEdge(c))));
@@ -2423,7 +2450,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                var newC = NextGen33(arbre, (c) => firstEdge(c) && secondEdge(c) && thirdEdge(c) && fourthEdge(c));
+                var newC = NextTreeBranch(arbre, (c) => firstEdge(c) && secondEdge(c) && thirdEdge(c) && fourthEdge(c));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -2476,7 +2503,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                var newC = NextGen33(arbre, (c) => crossAndEdges(c) && oneCornerIsPlaced(c));
+                var newC = NextTreeBranch(arbre, (c) => crossAndEdges(c) && oneCornerIsPlaced(c));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -2500,7 +2527,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                var newC = NextGen33(arbre, (c) => crossAndEdges(c)
+                var newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
                         && ((firstCornerIsPlaced(c) && secondCornerIsPlaced(c))
                         || (firstCornerIsPlaced(c) && thirdCornerIsPlaced(c))
                         || (firstCornerIsPlaced(c) && fourthCornerIsPlaced(c))
@@ -2528,7 +2555,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                var newC = NextGen33(arbre, (c) => crossAndEdges(c)
+                var newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
                         && ((firstCornerIsPlaced(c) && secondCornerIsPlaced(c) && thirdCornerIsPlaced(c))
                         || (firstCornerIsPlaced(c) && thirdCornerIsPlaced(c) && fourthCornerIsPlaced(c))
                         || (firstCornerIsPlaced(c) && fourthCornerIsPlaced(c) && secondCornerIsPlaced(c))
@@ -2552,7 +2579,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                var newC = NextGen33(arbre, (c) => crossAndEdges(c)
+                var newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
                         && allCornersIsPlaced(c));
                 if (newC is not null)
                 {
@@ -3039,7 +3066,7 @@ namespace Rubik_s_cube_solver
             List<byte> path = new();
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, oneEdgeIsPlaced);
+                var newC = OldGetNextBranch(arbre1, oneEdgeIsPlaced);
                 if (newC != null)
                 {
                     c1 = newC.Value.Item1.Clone();
@@ -3061,7 +3088,7 @@ namespace Rubik_s_cube_solver
                         || (secondEdge(c1) && fourthEdge(c1));
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => (firstEdge(c1) && secondEdge(c1))
+                var newC = OldGetNextBranch(arbre1, (c1) => (firstEdge(c1) && secondEdge(c1))
                         || (firstEdge(c1) && thirdEdge(c1))
                         || (firstEdge(c1) && fourthEdge(c1))
                         || (secondEdge(c1) && thirdEdge(c1))
@@ -3086,7 +3113,7 @@ namespace Rubik_s_cube_solver
                         || (secondEdge(c1) && thirdEdge(c1) && fourthEdge(c1)));
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => ((firstEdge(c1) && secondEdge(c1) && thirdEdge(c1))
+                var newC = OldGetNextBranch(arbre1, (c1) => ((firstEdge(c1) && secondEdge(c1) && thirdEdge(c1))
                         || (firstEdge(c1) && thirdEdge(c1) && fourthEdge(c1))
                         || (firstEdge(c1) && fourthEdge(c1) && secondEdge(c1))
                         || (secondEdge(c1) && thirdEdge(c1) && fourthEdge(c1))));
@@ -3107,7 +3134,7 @@ namespace Rubik_s_cube_solver
             isPlaced = firstEdge(c1) && secondEdge(c1) && thirdEdge(c1) && fourthEdge(c1);
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => firstEdge(c1) && secondEdge(c1) && thirdEdge(c1) && fourthEdge(c1));
+                var newC = OldGetNextBranch(arbre1, (c1) => firstEdge(c1) && secondEdge(c1) && thirdEdge(c1) && fourthEdge(c1));
                 if (newC != null)
                 {
                     c1 = newC.Value.Item1.Clone();
@@ -3215,7 +3242,7 @@ namespace Rubik_s_cube_solver
             isPlaced = crossAndEdges(c1) && oneCornerIsPlaced(c1);
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => crossAndEdges(c1) && oneCornerIsPlaced(c1));
+                var newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1) && oneCornerIsPlaced(c1));
                 if (newC != null)
                 {
                     c1 = newC.Value.Item1.Clone();
@@ -3238,7 +3265,7 @@ namespace Rubik_s_cube_solver
                         || (secondCornerIsPlaced(c1) && fourthCornerIsPlaced(c1)));
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => crossAndEdges(c1)
+                var newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
                         && ((firstCornerIsPlaced(c1) && secondCornerIsPlaced(c1))
                         || (firstCornerIsPlaced(c1) && thirdCornerIsPlaced(c1))
                         || (firstCornerIsPlaced(c1) && fourthCornerIsPlaced(c1))
@@ -3265,7 +3292,7 @@ namespace Rubik_s_cube_solver
                         || (secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1)));
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => crossAndEdges(c1)
+                var newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
                         && ((firstCornerIsPlaced(c1) && secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1))
                         || (firstCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1))
                         || (firstCornerIsPlaced(c1) && fourthCornerIsPlaced(c1) && secondCornerIsPlaced(c1))
@@ -3287,7 +3314,7 @@ namespace Rubik_s_cube_solver
                         && allCornersIsPlaced(c1);
             while (!isPlaced)
             {
-                var newC = NextGen32(arbre1, (c1) => crossAndEdges(c1)
+                var newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
                         && allCornersIsPlaced(c1));
                 if (newC != null)
                 {
