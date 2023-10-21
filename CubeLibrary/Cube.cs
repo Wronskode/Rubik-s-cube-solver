@@ -763,7 +763,7 @@ namespace Rubik_s_cube_solver
                 rnd = new(seed.GetValueOrDefault());
             for (int i = 0; i < n; i++)
             {
-                byte randInt = (byte) rnd.Next(0, 18);
+                byte randInt = (byte)rnd.Next(0, 18);
                 randPath.Add(randInt);
                 if (randInt == 0) F();
                 else if (randInt == 1) U();
@@ -1124,7 +1124,7 @@ namespace Rubik_s_cube_solver
             Dictionary<string, byte[]> newCubes = new();
             foreach (var cube in listDico[^1])
             {
-                Cube c1 = new (cube.Key);
+                Cube c1 = new(cube.Key);
                 for (byte j = 0; j < 18; j++)
                 {
                     c1.DoMove(j);
@@ -1280,6 +1280,20 @@ namespace Rubik_s_cube_solver
             sb.AppendLine(BlueFace.PrintFace());
             sb.AppendLine(OrangeFace.PrintFace());
             return sb.ToString();
+        }
+
+        public List<string> PrintCubeColors()
+        {
+            List<string> listSB = new()
+            {
+                WhiteFace.PrintFace(),
+                YellowFace.PrintFace(),
+                RedFace.PrintFace(),
+                GreenFace.PrintFace(),
+                BlueFace.PrintFace(),
+                OrangeFace.PrintFace()
+            };
+            return listSB;
         }
 
         public static IEnumerable<byte> GetAlgoFromStringEnum(IEnumerable<string> algorithme)
@@ -1700,14 +1714,14 @@ namespace Rubik_s_cube_solver
         public static IEnumerable<byte> LightOptimization(List<byte> path)
         {
             List<byte> newPath = new();
-            for (int i = 0; i < path.Count-1; i++)
+            for (int i = 0; i < path.Count - 1; i++)
             {
                 if (i >= path.Count - 2)
                 {
                     newPath.Add(path[^2]);
                     break;
                 }
-                if (path[i] == path[i+1] && path[i] == path[i+2])
+                if (path[i] == path[i + 1] && path[i] == path[i + 2])
                 {
                     if (i == path.Count - 3)
                     {
@@ -1717,7 +1731,7 @@ namespace Rubik_s_cube_solver
                     newPath.Add(GetReversalMove(path[i]));
                     i += 2;
                 }
-                else if (path[i] == GetReversalMove(path[i+1]))
+                else if (path[i] == GetReversalMove(path[i + 1]))
                 {
                     i++;
                 }
@@ -1743,7 +1757,7 @@ namespace Rubik_s_cube_solver
                     }
                     else if (path[i + 1] < 12 && GetDoubleMove(path[i + 1]) == path[i])
                     {
-                        newPath.Add(GetReversalMove(path[i+1]));
+                        newPath.Add(GetReversalMove(path[i + 1]));
                         i++;
                     }
                     else
@@ -2796,7 +2810,8 @@ namespace Rubik_s_cube_solver
         {
             var algoCrossPattern = new List<string>() { "R", "D", "F", "D'", "F'", "R'" };
             var algoCrossPattern2 = new List<string>() { "R", "F", "D", "F'", "D'", "R'" };
-            bool yellowCrossIsDone(Cube c) => c.YellowFace.Pieces[0, 1] == 'Y' && c.YellowFace.Pieces[1, 0] == 'Y'
+
+            static bool yellowCrossIsDone(Cube c) => c.YellowFace.Pieces[0, 1] == 'Y' && c.YellowFace.Pieces[1, 0] == 'Y'
                                      && c.YellowFace.Pieces[1, 2] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y';
             while (!yellowCrossIsDone(c))
             {
@@ -2850,7 +2865,7 @@ namespace Rubik_s_cube_solver
             var redF2 = new List<string>() { "F", "D", "F'", "D", "F", "D2", "F'" };
             var blueF2 = new List<string>() { "D", "F", "D", "F'", "D", "F", "D2", "F'", "D'" };
 
-            bool edgeIsPlaced(Cube c) => c.RedFace.Pieces[2, 1] == 'R' && c.GreenFace.Pieces[2, 1] == 'G'
+            static bool edgeIsPlaced(Cube c) => c.RedFace.Pieces[2, 1] == 'R' && c.GreenFace.Pieces[2, 1] == 'G'
                     && c.OrangeFace.Pieces[2, 1] == 'O' && c.BlueFace.Pieces[2, 1] == 'B';
             while (!edgeIsPlaced(c))
             {
@@ -2899,7 +2914,7 @@ namespace Rubik_s_cube_solver
         }
         private static Cube PlaceSecondCorners(Cube c, List<byte> path)
         {
-            bool cornersIsPlaced(Cube c) => ((c.RedFace.Pieces[2, 2] == 'R' && c.BlueFace.Pieces[2, 0] == 'B')
+            static bool cornersIsPlaced(Cube c) => ((c.RedFace.Pieces[2, 2] == 'R' && c.BlueFace.Pieces[2, 0] == 'B')
                 || (c.RedFace.Pieces[2, 2] == 'B' && c.BlueFace.Pieces[2, 0] == 'Y' && c.YellowFace.Pieces[0, 2] == 'R')
                 || (c.RedFace.Pieces[2, 2] == 'Y' && c.BlueFace.Pieces[2, 0] == 'R' && c.YellowFace.Pieces[0, 2] == 'B'))
                 && ((c.RedFace.Pieces[2, 0] == 'R' && c.GreenFace.Pieces[2, 2] == 'G')
@@ -3006,7 +3021,8 @@ namespace Rubik_s_cube_solver
             var doubleByteAlgo = byteAlgo.Concat(byteAlgo);
             var quadByteAlgo = doubleByteAlgo.Concat(doubleByteAlgo);
             var dPrimeAlgo = GetAlgoFromStringEnum(new List<string>() { "D'" });
-            bool isSolvedOptim(Cube c) => c.RedFace.IsUniform && c.WhiteFace.IsUniform && c.YellowFace.IsUniform;
+
+            static bool isSolvedOptim(Cube c) => c.RedFace.IsUniform && c.WhiteFace.IsUniform && c.YellowFace.IsUniform;
             while (!isSolvedOptim(c))
             {
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");

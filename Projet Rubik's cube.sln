@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySite", "Site perso\MySite
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLCube", "MLCube\MLCube.csproj", "{34B62DCB-6455-4D11-92C8-A4DB91820146}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubesTests", "CubesTests\CubesTests.csproj", "{4F0FE632-3143-4D50-98E0-7EA61391FB35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubesTests", "CubesTests\CubesTests.csproj", "{4F0FE632-3143-4D50-98E0-7EA61391FB35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

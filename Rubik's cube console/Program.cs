@@ -1,5 +1,6 @@
 ﻿using Rubik_s_cube_solver;
 using System.Diagnostics;
+using System.Text;
 
 
 //int mins;
@@ -10,7 +11,6 @@ int cpt = 0;
 int maxLength = 0;
 double tempsMax = 0;
 int sommeLength = 0;
-
 void Evaluate()
 {
     while (true)
@@ -20,7 +20,8 @@ void Evaluate()
         c1.Shuffle(500);
         Cube cubeDeSecurite = c1.Clone();
         Console.WriteLine("Le cube mélangé : ");
-        Console.WriteLine(c1.PrintCube());
+        //Console.WriteLine(c1.PrintCube());
+        PrintWithColors(c1.PrintCubeColors());
         var benchCube = new Stopwatch();
         benchCube.Start();
         IEnumerable<byte> cheminFinal = Cube.LightOptimization(Cube.FastBeginnerMethod(c1));
@@ -51,9 +52,7 @@ void Evaluate()
         benchCube.Stop();
     }
 }
-//Evaluate();
-
-void LightOptimizationEvaluation()
+static void LightOptimizationEvaluation()
 {
     int i = 1;
     double somme = 0;
@@ -96,10 +95,57 @@ void LightOptimizationEvaluation()
 //LightOptimizationEvaluation();
 //Evaluate();
 
+static void PrintWithColors(List<string> ls)
+{
+    foreach (var line in ls)
+    {
+        foreach (var item in line)
+        {
+            if (item == 'Y')
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write('Y');
+            }
+            else if (item == 'R')
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write('R');
+            }
+            else if (item == 'B')
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write('B');
+            }
+            else if (item == 'W')
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write('W');
+            }
+            else if (item == 'G')
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write('G');
+            }
+            else if (item == 'O')
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write('O');
+            }
+            else
+            {
+                Console.Write(item);
+            }
+        }
+        Console.WriteLine(' ');
+    }
+    Console.ResetColor();
+}
+
 Cube randomCube = new(500);
 Cube cubeDeSecurite = randomCube.Clone();
 Cube cubeDeSecurite2 = randomCube.Clone();
-Console.WriteLine("Cube aléatoire : \n" + randomCube.PrintCube());
+Console.WriteLine("Cube aléatoire : \n");
+PrintWithColors(randomCube.PrintCubeColors());
 var resolution = Cube.FastBeginnerMethod(randomCube);
 string mouvements = Cube.GetStringPath(resolution);
 var resLightOptim = Cube.LightOptimization(resolution);

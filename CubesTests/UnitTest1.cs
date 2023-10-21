@@ -20,7 +20,6 @@ namespace CubesTests
             Cube c = new();
             IEnumerable<byte> scramble = c.Scramble(500);
             c.ExecuterAlgorithme(Cube.GetReversalPath(scramble.Reverse()));
-            Console.WriteLine(c.PrintCube());
             Assert.IsTrue(c.IsSolved);
         }
 
@@ -45,7 +44,7 @@ namespace CubesTests
             var res2 = Cube.OptimizePath(res);
             c.ExecuterAlgorithme(res);
             c1.ExecuterAlgorithme(res2);
-            Assert.IsTrue(c.IsSolved && c1.IsSolved && res2.Count() <= res.Count);
+            Assert.IsTrue(c.IsSolved && c1.IsSolved && res2.Length <= res.Count);
         }
     }
 }

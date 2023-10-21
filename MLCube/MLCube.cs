@@ -212,7 +212,7 @@ void PrintPercentage()
                 var resultTensor = output.Value as Microsoft.ML.OnnxRuntime.Tensors.DenseTensor<float>;
                 Debug.Assert(resultTensor is not null);
                 var tabProba = resultTensor.ToArray();
-                
+
                 //var moves2 = new int[18];
                 //for (int j = 0; j < 18; j++)
                 //    moves2[j] = j;
@@ -267,7 +267,7 @@ void PrintPercentage()
 List<List<byte>> GetKociembaResolution(string fileName)
 {
     List<List<byte>> allRes = new();
-    using (StreamReader reader = new StreamReader(fileName))
+    using (StreamReader reader = new(fileName))
     {
         string? line;
         while ((line = reader.ReadLine()) != null)
@@ -335,7 +335,7 @@ void KociembaAddDataOnFile(string input, string appendFileName)
 void KociembaParser(string input, string output)
 {
     var moves = new List<List<byte>>();
-    using (StreamReader reader = new StreamReader(input))
+    using (StreamReader reader = new(input))
     {
         string? line;
         while ((line = reader.ReadLine()) != null)
@@ -349,7 +349,7 @@ void KociembaParser(string input, string output)
             moves.Add(Cube.GetAlgoFromStringEnum(newLine.ToString().Trim().Split(' ')).ToList());
         }
     }
-    using (StreamWriter writer = new StreamWriter(output))
+    using (StreamWriter writer = new(output))
     {
         foreach (var item in moves)
         {
