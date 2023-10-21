@@ -753,17 +753,17 @@ namespace Rubik_s_cube_solver
             }
         }
 
-        public IEnumerable<int> Scramble(int n = 20, int? seed = null)
+        public IEnumerable<byte> Scramble(int n = 20, int? seed = null)
         {
             Random rnd;
-            List<int> randPath = new(n);
+            List<byte> randPath = new(n);
             if (seed == null)
                 rnd = new();
             else
                 rnd = new(seed.GetValueOrDefault());
             for (int i = 0; i < n; i++)
             {
-                int randInt = rnd.Next(0, 18);
+                byte randInt = (byte) rnd.Next(0, 18);
                 randPath.Add(randInt);
                 if (randInt == 0) F();
                 else if (randInt == 1) U();

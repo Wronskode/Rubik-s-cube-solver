@@ -18,7 +18,7 @@ namespace CubesTests
         public void ScrambleWorks()
         {
             Cube c = new();
-            var scramble = c.Scramble(500).Select(x => (byte) x);
+            IEnumerable<byte> scramble = c.Scramble(500);
             c.ExecuterAlgorithme(Cube.GetReversalPath(scramble.Reverse()));
             Console.WriteLine(c.PrintCube());
             Assert.IsTrue(c.IsSolved);
@@ -31,6 +31,18 @@ namespace CubesTests
             Cube c1 = c.Clone();
             var res = Cube.FastBeginnerMethod(c);
             var res2 = Cube.LightOptimization(res);
+            c.ExecuterAlgorithme(res);
+            c1.ExecuterAlgorithme(res2);
+            Assert.IsTrue(c.IsSolved && c1.IsSolved && res2.Count() <= res.Count);
+        }
+
+        [TestMethod]
+        public void OptimizePathWorks()
+        {
+            Cube c = new(500);
+            Cube c1 = c.Clone();
+            var res = Cube.FastBeginnerMethod(c);
+            var res2 = Cube.OptimizePath(res);
             c.ExecuterAlgorithme(res);
             c1.ExecuterAlgorithme(res2);
             Assert.IsTrue(c.IsSolved && c1.IsSolved && res2.Count() <= res.Count);

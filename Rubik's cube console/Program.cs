@@ -98,17 +98,23 @@ void LightOptimizationEvaluation()
 
 Cube randomCube = new(500);
 Cube cubeDeSecurite = randomCube.Clone();
+Cube cubeDeSecurite2 = randomCube.Clone();
 Console.WriteLine("Cube aléatoire : \n" + randomCube.PrintCube());
 var resolution = Cube.FastBeginnerMethod(randomCube);
 string mouvements = Cube.GetStringPath(resolution);
+var resLightOptim = Cube.LightOptimization(resolution);
+var lightOptimPath = Cube.GetStringPath(resLightOptim);
 var optimRes = Cube.OptimizePath(resolution);
 var optimizedPath = Cube.GetStringPath(optimRes);
 Console.WriteLine("Résolution : " + mouvements + "\n\n");
 Console.WriteLine("Optimized Résolution : " + optimizedPath + "\n\n");
+Console.WriteLine("Light Optimized Résolution : " + lightOptimPath + "\n\n");
 Console.WriteLine("Résolution inverse : " + Cube.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>())) + "\n");
 Console.WriteLine("Longueur de la résolution : " + resolution.Count);
+Console.WriteLine("Longueur de la résolution optimisée (light) : " + resLightOptim.Count());
 Console.WriteLine("Longueur de la résolution optimisée : " + optimRes.Length);
 cubeDeSecurite.ExecuterAlgorithme(optimRes);
 randomCube.ExecuterAlgorithme(resolution);
-bool isOkay = cubeDeSecurite.IsSolved && randomCube.IsSolved;
+cubeDeSecurite2.ExecuterAlgorithme(resLightOptim);
+bool isOkay = cubeDeSecurite.IsSolved && randomCube.IsSolved && cubeDeSecurite2.IsSolved;
 Console.WriteLine("Tout s'est bien passé : " + isOkay);

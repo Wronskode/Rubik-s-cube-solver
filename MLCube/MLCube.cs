@@ -123,7 +123,7 @@ void AddDataOnFile(string appendFileName)
 string GenererRandomCubesCSV(int shuffling)
 {
     Cube c = new();
-    IEnumerable<int> randPath = c.Scramble(shuffling);
+    IEnumerable<byte> randPath = c.Scramble(shuffling);
     var ligne = cubeStringToInt(c.ToString());
     foreach (var item in Cube.GetReversalPath(randPath.Reverse()))
     {
