@@ -9,7 +9,9 @@ namespace CubesTests
         public void FastMethodSolves()
         {
             Cube c = new(500);
+            Cube c2 = c.Clone();
             var res = Cube.FastBeginnerMethod(c);
+            Assert.IsTrue(c2.ToString().Equals(c.ToString()));
             c.ExecuterAlgorithme(res);
             Assert.IsTrue(c.IsSolved);
         }
