@@ -690,36 +690,9 @@ namespace Rubik_s_cube_solver
 
         public Cube Clone()
         {
-            return new Cube(new List<Face>(6) { WhiteFace.Clone(), YellowFace.Clone(), RedFace.Clone(), GreenFace.Clone(), BlueFace.Clone(), OrangeFace.Clone() });
+            return new Cube(ToString());
+            //return new Cube(new List<Face>(6) { WhiteFace.Clone(), YellowFace.Clone(), RedFace.Clone(), GreenFace.Clone(), BlueFace.Clone(), OrangeFace.Clone() });
         }
-
-        //public static int GetNbMovements() //F U B L D R
-        //{
-        //    List<Action> methods = new()
-        //    {
-        //        new Cube().F,
-        //        new Cube().U,
-        //        new Cube().B,
-        //        new Cube().L,
-        //        new Cube().D,
-        //        new Cube().R,
-
-        //        new Cube().F2,
-        //        new Cube().U2,
-        //        new Cube().B2,
-        //        new Cube().L2,
-        //        new Cube().D2,
-        //        new Cube().R2,
-
-        //        new Cube().Fprime,
-        //        new Cube().Uprime,
-        //        new Cube().Bprime,
-        //        new Cube().Lprime,
-        //        new Cube().Dprime,
-        //        new Cube().Rprime
-        //    };
-        //    return methods.Count;
-        //}
 
         public void Shuffle(int n = 20, int? seed = null)
         {
@@ -1088,9 +1061,10 @@ namespace Rubik_s_cube_solver
             return null;
         }
 
-        public static (Cube, byte[])? OldGetNextBranch(List<Dictionary<(int, int, int, int, int, int), byte[]>> listDico, Func<Cube, bool> f)
+        public static (Cube, IEnumerable<byte>)? OldGetNextBranch(List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>> listDico, Func<Cube, bool> f)
         {
-            Dictionary<(int, int, int, int, int, int), byte[]> newCubes = new();
+            Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> newCubes = new();
+            bool isContained;
             foreach (var cube in listDico[^1])
             {
                 Cube c1 = new(IntToCubeString(cube.Key));
@@ -1098,7 +1072,7 @@ namespace Rubik_s_cube_solver
                 {
                     c1.DoMove(j);
                     (int, int, int, int, int, int) intCube = StringCubeToInt(c1.ToString());
-                    bool isContained = false;
+                    isContained = false;
                     foreach (var item in listDico)
                     {
                         if (item.ContainsKey(intCube))
@@ -1108,7 +1082,7 @@ namespace Rubik_s_cube_solver
                         }
                     }
                     if (!isContained)
-                        newCubes.TryAdd(intCube, cube.Value.Append(j).ToArray());
+                        newCubes.TryAdd(intCube, cube.Value.Append(j));
                     if (f(c1))
                         return (c1, newCubes[intCube]);
                     if (j != 17)
@@ -1865,8 +1839,8 @@ namespace Rubik_s_cube_solver
 
         public static byte[] BeginnerMethod(Cube c1)
         {
-            var arbre1 = new List<Dictionary<(int, int, int, int, int, int), byte[]>>();
-            var dico = new Dictionary<(int, int, int, int, int, int), byte[]>
+            var arbre1 = new List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>>();
+            var dico = new Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
             };
@@ -3067,8 +3041,8 @@ namespace Rubik_s_cube_solver
         // but only c.ToString() in FastBeginnerMethod, I don't know if it's faster, probably approximatively same time.
         public static List<byte> FastBeginnerMethod2(Cube c1)
         {
-            var arbre1 = new List<Dictionary<(int, int, int, int, int, int), byte[]>>();
-            var dico = new Dictionary<(int, int, int, int, int, int), byte[]>
+            var arbre1 = new List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>>();
+            var dico = new Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
             };
