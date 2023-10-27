@@ -787,30 +787,6 @@ namespace Rubik_s_cube_solver
             return newPath;
         }
 
-        public static int[] GetReversalPath(IEnumerable<int> path)
-        {
-            int[] newPath = new int[path.Count()];
-            int i = 0;
-            foreach (var item in path)
-            {
-                if (item == 0) newPath[i] = 6;
-                else if (item == 1) newPath[i] = 7;
-                else if (item == 2) newPath[i] = 8;
-                else if (item == 3) newPath[i] = 9;
-                else if (item == 4) newPath[i] = 10;
-                else if (item == 5) newPath[i] = 11;
-                else if (item == 6) newPath[i] = 0;
-                else if (item == 7) newPath[i] = 1;
-                else if (item == 8) newPath[i] = 2;
-                else if (item == 9) newPath[i] = 3;
-                else if (item == 10) newPath[i] = 4;
-                else if (item == 11) newPath[i] = 5;
-                else newPath[i] = item;
-                i++;
-            }
-            return newPath;
-        }
-
         public static byte GetReversalMove(byte move)
         {
             //if (move == 0) return 6;
