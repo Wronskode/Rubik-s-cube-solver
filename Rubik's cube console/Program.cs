@@ -1,6 +1,5 @@
 ﻿using Rubik_s_cube_solver;
 using System.Diagnostics;
-using System.Text;
 
 
 //int mins;

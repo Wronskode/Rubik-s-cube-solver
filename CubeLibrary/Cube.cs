@@ -1234,7 +1234,7 @@ namespace Rubik_s_cube_solver
 
         public List<string> PrintCubeColors()
         {
-            List<string> listSB = new()
+            return new()
             {
                 WhiteFace.PrintFace(),
                 YellowFace.PrintFace(),
@@ -1243,7 +1243,6 @@ namespace Rubik_s_cube_solver
                 BlueFace.PrintFace(),
                 OrangeFace.PrintFace()
             };
-            return listSB;
         }
 
         public static IEnumerable<byte> GetAlgoFromStringEnum(IEnumerable<string> algorithme)
