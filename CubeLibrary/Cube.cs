@@ -5,12 +5,12 @@ namespace Rubik_s_cube_solver
 {
     public class Cube
     {
-        public Face WhiteFace;
-        public Face YellowFace;
-        public Face RedFace;
-        public Face GreenFace;
-        public Face BlueFace;
-        public Face OrangeFace;
+        private readonly Face WhiteFace;
+        private readonly Face YellowFace;
+        private readonly Face RedFace;
+        private readonly Face GreenFace;
+        private readonly Face BlueFace;
+        private readonly Face OrangeFace;
         public bool IsSolved
         {
             get

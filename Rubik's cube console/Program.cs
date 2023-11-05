@@ -19,7 +19,6 @@ void Evaluate()
         c1.Shuffle(500);
         Cube cubeDeSecurite = c1.Clone();
         Console.WriteLine("Le cube mélangé : ");
-        //Console.WriteLine(c1.PrintCube());
         PrintWithColors(c1.PrintCubeColors());
         var benchCube = new Stopwatch();
         benchCube.Start();
@@ -81,7 +80,6 @@ static void LightOptimizationEvaluation()
         {
             Console.WriteLine(Cube.GetStringPath(res));
             Console.WriteLine(Cube.GetStringPath(optRes) + "\n");
-            //return;
             somme += res.Count();
             somme2 += optRes.Count();
             secondSomme += time;
