@@ -61,7 +61,7 @@ static void LightOptimizationEvaluation()
         Cube c1 = new();
         Cube c2 = new();
         Cube c3 = new();
-        var path = Cube.GetStringPath(c3.Scramble(100).Select(x => (byte)x));
+        var path = Cube.GetStringPath(c3.Scramble(100).Select(x => x));
         var res = Cube.GetAlgoFromStringEnum(Cube.StringPathToEnum(path));
         var timer = new Stopwatch();
         timer.Start();
