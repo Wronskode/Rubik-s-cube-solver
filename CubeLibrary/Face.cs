@@ -2,7 +2,7 @@
 
 namespace Rubik_s_cube_solver
 {
-    public class Face
+    public class Face : IEquatable<Face?>
     {
         public char[,] Pieces { get; set; }
         public char ColorFace
@@ -136,6 +136,24 @@ namespace Rubik_s_cube_solver
                 }
             }
             return sb.ToString();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as Face);
+        }
+
+        public bool Equals(Face? other)
+        {
+            if (other is null) return false;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (Pieces[i, j] != other.Pieces[i, j]) return false;
+                }
+            }
+            return true;
         }
     }
 }

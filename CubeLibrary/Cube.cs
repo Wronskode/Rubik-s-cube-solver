@@ -3682,7 +3682,12 @@ namespace Rubik_s_cube_solver
         public bool Equals(Cube? other)
         {
             return other is not null &&
-                   ToString() == other.ToString(); // Temporary solution
+                    WhiteFace.Equals(other.WhiteFace) &&
+                    RedFace.Equals(other.RedFace) &&
+                    GreenFace.Equals(other.GreenFace) &&
+                    BlueFace.Equals(other.BlueFace) &&
+                    YellowFace.Equals(other.YellowFace) &&
+                    OrangeFace.Equals(other.OrangeFace);
         }
     }
 }

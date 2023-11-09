@@ -56,7 +56,7 @@ namespace CubesTests
             Cube c1 = c.Clone();
             var res = Cube.FastBeginnerMethod(c);
             var periodicity = Cube.Periodicity(res);
-            Cube solvedCube = new Cube();
+            Cube solvedCube = new();
             for (int i = 0; i < periodicity; i++)
             {
                 solvedCube.ExecuterAlgorithme(res);
