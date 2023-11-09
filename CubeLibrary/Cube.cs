@@ -3689,6 +3689,16 @@ namespace Rubik_s_cube_solver
                     YellowFace.Equals(other.YellowFace) &&
                     OrangeFace.Equals(other.OrangeFace);
         }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as Cube);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(WhiteFace, YellowFace, RedFace, GreenFace, BlueFace, OrangeFace);
+        }
     }
 }
 

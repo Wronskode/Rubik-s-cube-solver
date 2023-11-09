@@ -155,5 +155,10 @@ namespace Rubik_s_cube_solver
             }
             return true;
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Pieces);
+        }
     }
 }
