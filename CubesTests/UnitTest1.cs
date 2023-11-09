@@ -54,15 +54,15 @@ namespace CubesTests
         {
             Cube c = new(500);
             Cube c1 = c.Clone();
-            Assert.IsTrue(c.Equals(c1));
             var res = Cube.FastBeginnerMethod(c);
             var periodicity = Cube.Periodicity(res);
             Cube solvedCube = new Cube();
             for (int i = 0; i < periodicity; i++)
             {
                 solvedCube.ExecuterAlgorithme(res);
+                c.ExecuterAlgorithme(res);
             }  
-            Assert.IsTrue(solvedCube.IsSolved);
+            Assert.IsTrue(solvedCube.IsSolved && c.Equals(c1));
         }
     }
 }
