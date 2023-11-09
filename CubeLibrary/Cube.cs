@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Rubik_s_cube_solver
 {
-    public class Cube
+    public class Cube : IEquatable<Cube?>
     {
         private readonly Face WhiteFace;
         private readonly Face YellowFace;
@@ -3677,6 +3677,12 @@ namespace Rubik_s_cube_solver
                 }
             }
             return path;
+        }
+
+        public bool Equals(Cube? other)
+        {
+            return other is not null &&
+                   ToString() == other.ToString(); // Temporary solution
         }
     }
 }

@@ -48,5 +48,21 @@ namespace CubesTests
             c1.ExecuterAlgorithme(res2);
             Assert.IsTrue(c.IsSolved && c1.IsSolved && res2.Length <= res.Count);
         }
+
+        [TestMethod]
+        public void PeriodicityWorks()
+        {
+            Cube c = new(500);
+            Cube c1 = c.Clone();
+            Assert.IsTrue(c.Equals(c1));
+            var res = Cube.FastBeginnerMethod(c);
+            var periodicity = Cube.Periodicity(res);
+            Cube solvedCube = new Cube();
+            for (int i = 0; i < periodicity; i++)
+            {
+                solvedCube.ExecuterAlgorithme(res);
+            }  
+            Assert.IsTrue(solvedCube.IsSolved);
+        }
     }
 }
