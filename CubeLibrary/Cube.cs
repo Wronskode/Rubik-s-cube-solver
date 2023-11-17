@@ -106,22 +106,10 @@ namespace Rubik_s_cube_solver
         }
         public void U()
         {
-            char[] newRed = new char[3];
-            newRed[0] = BlueFace.Pieces[0, 0];
-            newRed[1] = BlueFace.Pieces[0, 1];
-            newRed[2] = BlueFace.Pieces[0, 2];
-            char[] newGreen = new char[3];
-            newGreen[0] = RedFace.Pieces[0, 0];
-            newGreen[1] = RedFace.Pieces[0, 1];
-            newGreen[2] = RedFace.Pieces[0, 2];
-            char[] newBlue = new char[3];
-            newBlue[0] = OrangeFace.Pieces[0, 0];
-            newBlue[1] = OrangeFace.Pieces[0, 1];
-            newBlue[2] = OrangeFace.Pieces[0, 2];
-            char[] newOrange = new char[3];
-            newOrange[0] = GreenFace.Pieces[0, 0];
-            newOrange[1] = GreenFace.Pieces[0, 1];
-            newOrange[2] = GreenFace.Pieces[0, 2];
+            char[] newRed = [BlueFace.Pieces[0, 0], BlueFace.Pieces[0, 1], BlueFace.Pieces[0, 2]];
+            char[] newGreen = [RedFace.Pieces[0, 0], RedFace.Pieces[0, 1], RedFace.Pieces[0, 2]];
+            char[] newBlue = [OrangeFace.Pieces[0, 0], OrangeFace.Pieces[0, 1], OrangeFace.Pieces[0, 2]];
+            char[] newOrange = [GreenFace.Pieces[0, 0], GreenFace.Pieces[0, 1], GreenFace.Pieces[0, 2]];
             for (int i = 0; i < 3; i++)
             {
                 RedFace.Pieces[0, i] = newRed[i];
@@ -134,22 +122,10 @@ namespace Rubik_s_cube_solver
 
         public void Uprime()
         {
-            char[] newRed = new char[3];
-            newRed[0] = GreenFace.Pieces[0, 0];
-            newRed[1] = GreenFace.Pieces[0, 1];
-            newRed[2] = GreenFace.Pieces[0, 2];
-            char[] newGreen = new char[3];
-            newGreen[0] = OrangeFace.Pieces[0, 0];
-            newGreen[1] = OrangeFace.Pieces[0, 1];
-            newGreen[2] = OrangeFace.Pieces[0, 2];
-            char[] newBlue = new char[3];
-            newBlue[0] = RedFace.Pieces[0, 0];
-            newBlue[1] = RedFace.Pieces[0, 1];
-            newBlue[2] = RedFace.Pieces[0, 2];
-            char[] newOrange = new char[3];
-            newOrange[0] = BlueFace.Pieces[0, 0];
-            newOrange[1] = BlueFace.Pieces[0, 1];
-            newOrange[2] = BlueFace.Pieces[0, 2];
+            char[] newRed = [GreenFace.Pieces[0, 0], GreenFace.Pieces[0, 1], GreenFace.Pieces[0, 2]];
+            char[] newGreen = [OrangeFace.Pieces[0, 0], OrangeFace.Pieces[0, 1], OrangeFace.Pieces[0, 2]];
+            char[] newBlue = [RedFace.Pieces[0, 0], RedFace.Pieces[0, 1], RedFace.Pieces[0, 2]];
+            char[] newOrange = [BlueFace.Pieces[0, 0], BlueFace.Pieces[0, 1], BlueFace.Pieces[0, 2]];
             for (int i = 0; i < 3; i++)
             {
                 RedFace.Pieces[0, i] = newRed[i];
@@ -231,22 +207,10 @@ namespace Rubik_s_cube_solver
 
         public void D()
         {
-            char[] newRed = new char[3];
-            newRed[0] = GreenFace.Pieces[2, 0];
-            newRed[1] = GreenFace.Pieces[2, 1];
-            newRed[2] = GreenFace.Pieces[2, 2];
-            char[] newGreen = new char[3];
-            newGreen[0] = OrangeFace.Pieces[2, 0];
-            newGreen[1] = OrangeFace.Pieces[2, 1];
-            newGreen[2] = OrangeFace.Pieces[2, 2];
-            char[] newBlue = new char[3];
-            newBlue[0] = RedFace.Pieces[2, 0];
-            newBlue[1] = RedFace.Pieces[2, 1];
-            newBlue[2] = RedFace.Pieces[2, 2];
-            char[] newOrange = new char[3];
-            newOrange[0] = BlueFace.Pieces[2, 0];
-            newOrange[1] = BlueFace.Pieces[2, 1];
-            newOrange[2] = BlueFace.Pieces[2, 2];
+            char[] newRed = [GreenFace.Pieces[2, 0], GreenFace.Pieces[2, 1], GreenFace.Pieces[2, 2]];
+            char[] newGreen = [OrangeFace.Pieces[2, 0], OrangeFace.Pieces[2, 1], OrangeFace.Pieces[2, 2]];
+            char[] newBlue = [RedFace.Pieces[2, 0], RedFace.Pieces[2, 1], RedFace.Pieces[2, 2]];
+            char[] newOrange = [BlueFace.Pieces[2, 0], BlueFace.Pieces[2, 1], BlueFace.Pieces[2, 2]];
             for (int i = 0; i < 3; i++)
             {
                 RedFace.Pieces[2, i] = newRed[i];
@@ -259,22 +223,10 @@ namespace Rubik_s_cube_solver
 
         public void Dprime()
         {
-            char[] newRed = new char[3];
-            newRed[0] = BlueFace.Pieces[2, 0];
-            newRed[1] = BlueFace.Pieces[2, 1];
-            newRed[2] = BlueFace.Pieces[2, 2];
-            char[] newGreen = new char[3];
-            newGreen[0] = RedFace.Pieces[2, 0];
-            newGreen[1] = RedFace.Pieces[2, 1];
-            newGreen[2] = RedFace.Pieces[2, 2];
-            char[] newBlue = new char[3];
-            newBlue[0] = OrangeFace.Pieces[2, 0];
-            newBlue[1] = OrangeFace.Pieces[2, 1];
-            newBlue[2] = OrangeFace.Pieces[2, 2];
-            char[] newOrange = new char[3];
-            newOrange[0] = GreenFace.Pieces[2, 0];
-            newOrange[1] = GreenFace.Pieces[2, 1];
-            newOrange[2] = GreenFace.Pieces[2, 2];
+            char[] newRed = [BlueFace.Pieces[2, 0], BlueFace.Pieces[2, 1], BlueFace.Pieces[2, 2]];
+            char[] newGreen = [RedFace.Pieces[2, 0], RedFace.Pieces[2, 1], RedFace.Pieces[2, 2]];
+            char[] newBlue = [OrangeFace.Pieces[2, 0], OrangeFace.Pieces[2, 1], OrangeFace.Pieces[2, 2]];
+            char[] newOrange = [GreenFace.Pieces[2, 0], GreenFace.Pieces[2, 1], GreenFace.Pieces[2, 2]];
             for (int i = 0; i < 3; i++)
             {
                 RedFace.Pieces[2, i] = newRed[i];
@@ -524,22 +476,10 @@ namespace Rubik_s_cube_solver
 
         public void U2()
         {
-            char[] newRed = new char[3];
-            newRed[0] = OrangeFace.Pieces[0, 0];
-            newRed[1] = OrangeFace.Pieces[0, 1];
-            newRed[2] = OrangeFace.Pieces[0, 2];
-            char[] newGreen = new char[3];
-            newGreen[0] = BlueFace.Pieces[0, 0];
-            newGreen[1] = BlueFace.Pieces[0, 1];
-            newGreen[2] = BlueFace.Pieces[0, 2];
-            char[] newBlue = new char[3];
-            newBlue[0] = GreenFace.Pieces[0, 0];
-            newBlue[1] = GreenFace.Pieces[0, 1];
-            newBlue[2] = GreenFace.Pieces[0, 2];
-            char[] newOrange = new char[3];
-            newOrange[0] = RedFace.Pieces[0, 0];
-            newOrange[1] = RedFace.Pieces[0, 1];
-            newOrange[2] = RedFace.Pieces[0, 2];
+            char[] newRed = [OrangeFace.Pieces[0, 0], OrangeFace.Pieces[0, 1], OrangeFace.Pieces[0, 2]];
+            char[] newGreen = [BlueFace.Pieces[0, 0], BlueFace.Pieces[0, 1], BlueFace.Pieces[0, 2]];
+            char[] newBlue = [GreenFace.Pieces[0, 0], GreenFace.Pieces[0, 1], GreenFace.Pieces[0, 2]];
+            char[] newOrange = [RedFace.Pieces[0, 0], RedFace.Pieces[0, 1], RedFace.Pieces[0, 2]];
             for (int i = 0; i < 3; i++)
             {
                 RedFace.Pieces[0, i] = newRed[i];
@@ -617,22 +557,10 @@ namespace Rubik_s_cube_solver
         }
         public void D2()
         {
-            char[] newRed = new char[3];
-            newRed[0] = OrangeFace.Pieces[2, 0];
-            newRed[1] = OrangeFace.Pieces[2, 1];
-            newRed[2] = OrangeFace.Pieces[2, 2];
-            char[] newGreen = new char[3];
-            newGreen[0] = BlueFace.Pieces[2, 0];
-            newGreen[1] = BlueFace.Pieces[2, 1];
-            newGreen[2] = BlueFace.Pieces[2, 2];
-            char[] newBlue = new char[3];
-            newBlue[0] = GreenFace.Pieces[2, 0];
-            newBlue[1] = GreenFace.Pieces[2, 1];
-            newBlue[2] = GreenFace.Pieces[2, 2];
-            char[] newOrange = new char[3];
-            newOrange[0] = RedFace.Pieces[2, 0];
-            newOrange[1] = RedFace.Pieces[2, 1];
-            newOrange[2] = RedFace.Pieces[2, 2];
+            char[] newRed = [OrangeFace.Pieces[2, 0], OrangeFace.Pieces[2, 1], OrangeFace.Pieces[2, 2]];
+            char[] newGreen = [BlueFace.Pieces[2, 0], BlueFace.Pieces[2, 1], BlueFace.Pieces[2, 2]];
+            char[] newBlue = [GreenFace.Pieces[2, 0], GreenFace.Pieces[2, 1], GreenFace.Pieces[2, 2]];
+            char[] newOrange = [RedFace.Pieces[2, 0], RedFace.Pieces[2, 1], RedFace.Pieces[2, 2]];
             for (int i = 0; i < 3; i++)
             {
                 RedFace.Pieces[2, i] = newRed[i];
@@ -886,7 +814,7 @@ namespace Rubik_s_cube_solver
 
         public static IEnumerable<string> StringPathToEnum(string path)
         {
-            List<string> newPath = new();
+            List<string> newPath = [];
             for (int i = 0; i < path.Length - 1; i++)
             {
                 if (path[i + 1] == '\'' || path[i + 1] == '2')
@@ -907,15 +835,15 @@ namespace Rubik_s_cube_solver
 
         public List<List<((int, int, int, int, int, int), byte[])>> GenererArbre(int nombreGen)
         {
-            List<List<((int, int, int, int, int, int), byte[])>> listeCubes = new();
-            HashSet<(int, int, int, int, int, int)> hashCubes = new();
+            List<List<((int, int, int, int, int, int), byte[])>> listeCubes = [];
+            HashSet<(int, int, int, int, int, int)> hashCubes = [];
             int methodsCount = 18;
             var intThisCube = StringCubeToInt(ToString());
-            listeCubes.Add(new List<((int, int, int, int, int, int), byte[])> { (intThisCube, new byte[1]) });
+            listeCubes.Add([(intThisCube, new byte[1])]);
             hashCubes.Add(intThisCube);
             for (int i = 1; i < nombreGen; i++)
             {
-                List<((int, int, int, int, int, int), byte[])> newCubes = new();
+                List<((int, int, int, int, int, int), byte[])> newCubes = [];
                 foreach (var cube in listeCubes[i - 1])
                 {
                     Cube c1 = new(IntToCubeString(cube.Item1));
@@ -936,7 +864,7 @@ namespace Rubik_s_cube_solver
         public static void OriginalNextTreeBranch(List<List<((int, int, int, int, int, int), byte[])>> gen, HashSet<(int, int, int, int, int, int)> h)
         {
             int methodsCount = 18;
-            List<((int, int, int, int, int, int), byte[])> newCubes = new();
+            List<((int, int, int, int, int, int), byte[])> newCubes = [];
             foreach (var cube in gen[^1])
             {
                 Cube c1 = new(IntToCubeString(cube.Item1));
@@ -956,7 +884,7 @@ namespace Rubik_s_cube_solver
         public static void NextTreeBranchForMITMv2(Dictionary<(ulong, ulong), byte[]> dico)
         {
             int methodsCount = 18;
-            List<((ulong, ulong), byte[])> newCubes = new();
+            List<((ulong, ulong), byte[])> newCubes = [];
             foreach (var cube in dico)
             {
                 Cube c1 = new(DecompressState(cube.Key));
@@ -978,7 +906,7 @@ namespace Rubik_s_cube_solver
         public static void NextTreeBranchForMITMv3(List<Dictionary<(ulong, ulong), byte[]>> listDico)
         {
             int methodsCount = 18;
-            Dictionary<(ulong, ulong), byte[]> newCubes = new();
+            Dictionary<(ulong, ulong), byte[]> newCubes = [];
             foreach (var cube in listDico[^1])
             {
                 Cube c1 = new(DecompressState(cube.Key));
@@ -997,7 +925,7 @@ namespace Rubik_s_cube_solver
                         }
                     }
                     if (!isContained)
-                        newCubes.TryAdd(intCube, cube.Value.Append(j).ToArray());
+                        newCubes.TryAdd(intCube, [.. cube.Value, j]);
                     if (j != 17)
                         c1.DoMove(GetReversalMove(j));
                 }
@@ -1008,7 +936,7 @@ namespace Rubik_s_cube_solver
         public static (Cube, byte[])? GetNextBranchWithStrongCompressionOfCubes(List<Dictionary<(ulong, ulong), byte[]>> listDico, Func<Cube, bool> f)
         {
             int methodsCount = 18;
-            Dictionary<(ulong, ulong), byte[]> newCubes = new();
+            Dictionary<(ulong, ulong), byte[]> newCubes = [];
             foreach (var cube in listDico[^1])
             {
                 Cube c1 = new(DecompressState(cube.Key));
@@ -1026,7 +954,7 @@ namespace Rubik_s_cube_solver
                         }
                     }
                     if (!isContained)
-                        newCubes.TryAdd(intCube, cube.Value.Append(j).ToArray());
+                        newCubes.TryAdd(intCube, [.. cube.Value, j]);
                     if (f(c1))
                         return (c1, newCubes[intCube]);
                     if (j != 17)
@@ -1039,7 +967,7 @@ namespace Rubik_s_cube_solver
 
         public static (Cube, IEnumerable<byte>)? OldGetNextBranch(List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>> listDico, Func<Cube, bool> f)
         {
-            Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> newCubes = new();
+            Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> newCubes = [];
             bool isContained;
             foreach (var cube in listDico[^1])
             {
@@ -1071,7 +999,7 @@ namespace Rubik_s_cube_solver
 
         public static (Cube, byte[])? NextTreeBranch(List<Dictionary<string, byte[]>> listDico, Func<Cube, bool> f)
         {
-            Dictionary<string, byte[]> newCubes = new();
+            Dictionary<string, byte[]> newCubes = [];
             foreach (var cube in listDico[^1])
             {
                 Cube c1 = new(cube.Key);
@@ -1089,7 +1017,7 @@ namespace Rubik_s_cube_solver
                         }
                     }
                     if (!isContained)
-                        newCubes.TryAdd(str, cube.Value.Append(j).ToArray());
+                        newCubes.TryAdd(str, [.. cube.Value, j]);
                     if (f(c1))
                         return (c1, newCubes[str]);
                     if (j != 17)
@@ -1102,7 +1030,7 @@ namespace Rubik_s_cube_solver
 
         public static void NextTreeBranch2(List<Dictionary<Cube, byte[]>> listDico)
         {
-            Dictionary<Cube, byte[]> newCubes = new();
+            Dictionary<Cube, byte[]> newCubes = [];
             foreach (var cube in listDico[^1])
             {
                 Cube c1 = cube.Key;
@@ -1132,7 +1060,7 @@ namespace Rubik_s_cube_solver
         public static void NextTreeBranchForMITM(List<Dictionary<(ulong, ulong), byte>> listDico)
         {
             int methodsCount = 18;
-            Dictionary<(ulong, ulong), byte> newCubes = new();
+            Dictionary<(ulong, ulong), byte> newCubes = [];
             foreach (var cube in listDico[^1])
             {
                 Cube c1 = new(DecompressState(cube.Key));
@@ -1234,20 +1162,20 @@ namespace Rubik_s_cube_solver
 
         public List<string> PrintCubeColors()
         {
-            return new()
-            {
+            return
+            [
                 WhiteFace.PrintFace(),
                 YellowFace.PrintFace(),
                 RedFace.PrintFace(),
                 GreenFace.PrintFace(),
                 BlueFace.PrintFace(),
                 OrangeFace.PrintFace()
-            };
+            ];
         }
 
-        public static IEnumerable<byte> GetAlgoFromStringEnum(IEnumerable<string> algorithme)
+        public static List<byte> GetAlgoFromStringEnum(IEnumerable<string> algorithme)
         {
-            List<byte> data = new();
+            List<byte> data = [];
             foreach (var item in algorithme)
             {
                 if (item == "F") data.Add(0);
@@ -1275,7 +1203,7 @@ namespace Rubik_s_cube_solver
 
         public static string[] GetListStringAlgoFromByte(IEnumerable<byte> algorithme)
         {
-            List<string> data = new();
+            List<string> data = [];
             foreach (var item in algorithme)
             {
                 if (item == 0) data.Add("F");
@@ -1298,7 +1226,7 @@ namespace Rubik_s_cube_solver
                 else if (item == 17) data.Add("R2");
                 else throw new Exception("Le mouvement n'existe pas");
             }
-            return data.ToArray();
+            return [.. data];
         }
         public void ExecuterAlgorithme(IEnumerable<string> algorithme)
         {
@@ -1415,16 +1343,16 @@ namespace Rubik_s_cube_solver
             finalCube ??= new();
             bool isSolved = false;
             int i = 2;
-            HashSet<(int, int, int, int, int, int)> h1 = new();
-            HashSet<(int, int, int, int, int, int)> h2 = new();
+            HashSet<(int, int, int, int, int, int)> h1 = [];
+            HashSet<(int, int, int, int, int, int)> h2 = [];
             h1.Add(StringCubeToInt(finalCube.ToString()));
             h2.Add(StringCubeToInt(initialCube.ToString()));
             List<List<((int, int, int, int, int, int), byte[])>> arbreFinal = finalCube.GenererArbre(1);
             List<List<((int, int, int, int, int, int), byte[])>> arbreInitial = initialCube.GenererArbre(1);
-            List<byte> solutionFromRandom = new();
+            List<byte> solutionFromRandom = [];
             while (!isSolved)
             {
-                if (i == deepMax) return Array.Empty<byte>();
+                if (i == deepMax) return [];
                 Parallel.Invoke(
                     () => OriginalNextTreeBranch(arbreFinal, h1),
                     () => OriginalNextTreeBranch(arbreInitial, h2)
@@ -1435,7 +1363,7 @@ namespace Rubik_s_cube_solver
                 if (intersect.Any())
                 {
                     isSolved = true;
-                    Dictionary<(int, int, int, int, int, int), byte[]> dicoPos = new();
+                    Dictionary<(int, int, int, int, int, int), byte[]> dicoPos = [];
                     foreach (var item in arbreInitialManySelected)
                     {
                         if (h1.Contains(item.Item1) && h2.Contains(item.Item1))
@@ -1452,7 +1380,7 @@ namespace Rubik_s_cube_solver
                     }
                     int minLength = dicoPos.Select(x => x.Value.Length).Min();
                     var firstItem = dicoPos.Where(x => x.Value.Length == minLength).First();
-                    solutionFromRandom = firstItem.Value.ToList();
+                    solutionFromRandom = [.. firstItem.Value];
                 }
                 else
                 {
@@ -1465,7 +1393,7 @@ namespace Rubik_s_cube_solver
                 i += 1;
             }
             initialCube.ExecuterAlgorithme(solutionFromRandom);
-            return solutionFromRandom.ToArray();
+            return [.. solutionFromRandom];
         }
 
         public static byte[] MeetInTheMiddle2(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
@@ -1481,10 +1409,10 @@ namespace Rubik_s_cube_solver
             {
                 { Cube.CompressState(finalCube.ToString()), new byte[1] { 0 } }
             };
-            List<byte> solutionFromRandom = new();
+            List<byte> solutionFromRandom = [];
             while (!isSolved)
             {
-                if (i == deepMax) return Array.Empty<byte>();
+                if (i == deepMax) return [];
                 Parallel.Invoke(
                     () => NextTreeBranchForMITMv2(dico1),
                     () => NextTreeBranchForMITMv2(dico2)
@@ -1493,7 +1421,7 @@ namespace Rubik_s_cube_solver
                 if (hasCommonElements)
                 {
                     isSolved = true;
-                    Dictionary<(ulong, ulong), byte[]> dicoPos = new();
+                    Dictionary<(ulong, ulong), byte[]> dicoPos = [];
                     foreach (var item in dico1)
                     {
                         if (dico2.ContainsKey(item.Key))
@@ -1503,7 +1431,7 @@ namespace Rubik_s_cube_solver
                     }
                     int minLength = dicoPos.Select(x => x.Value.Length).Min();
                     var firstItem = dicoPos.Where(x => x.Value.Length == minLength).First();
-                    solutionFromRandom = firstItem.Value.ToList();
+                    solutionFromRandom = [.. firstItem.Value];
                 }
                 i += 1;
             }
@@ -1524,15 +1452,15 @@ namespace Rubik_s_cube_solver
             {
                 { CompressState(finalCube.ToString()), new byte[1] { 0 } }
             };
-            List<Dictionary<(ulong, ulong), byte[]>> arbreInitial = new();
-            List<Dictionary<(ulong, ulong), byte[]>> arbreFinal = new();
+            List<Dictionary<(ulong, ulong), byte[]>> arbreInitial = [];
+            List<Dictionary<(ulong, ulong), byte[]>> arbreFinal = [];
             arbreInitial.Add(dico1);
             arbreFinal.Add(dico2);
-            List<byte> solutionFromRandom = new();
+            List<byte> solutionFromRandom = [];
             while (!isSolved)
             {
                 //Console.WriteLine(i);
-                if (i == deepMax) return Array.Empty<byte>();
+                if (i == deepMax) return [];
                 Parallel.Invoke(
                     () => NextTreeBranchForMITMv3(arbreInitial),
                     () => NextTreeBranchForMITMv3(arbreFinal)
@@ -1541,10 +1469,10 @@ namespace Rubik_s_cube_solver
                 var arbreInitialManySelected = arbreInitial.SelectMany(x => x);
                 var hasCommonElements = arbreInitialManySelected.Select(x => x.Key)
                     .Intersect(arbreFinalManySelected.Select(x => x.Key)).ToHashSet();
-                if (hasCommonElements.Any())
+                if (hasCommonElements.Count != 0)
                 {
                     isSolved = true;
-                    Dictionary<(ulong, ulong), byte[]> dicoPos = new();
+                    Dictionary<(ulong, ulong), byte[]> dicoPos = [];
                     foreach (var item in arbreInitialManySelected)
                     {
                         if (hasCommonElements.Contains(item.Key))
@@ -1560,12 +1488,12 @@ namespace Rubik_s_cube_solver
 
                     int minLength = dicoPos.Select(x => x.Value.Length).Min();
                     var firstItem = dicoPos.Where(x => x.Value.Length == minLength).First();
-                    solutionFromRandom = firstItem.Value.ToList();
+                    solutionFromRandom = [.. firstItem.Value];
                 }
                 i += 1;
             }
             initialCube.ExecuterAlgorithme(solutionFromRandom);
-            return solutionFromRandom.ToArray();
+            return [.. solutionFromRandom];
         }
 
         public static byte[] MeetInTheMiddle5(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
@@ -1603,7 +1531,7 @@ namespace Rubik_s_cube_solver
                     int min = int.MaxValue;
                     foreach (var element in hasCommonElements)
                     {
-                        List<byte> path = new();
+                        List<byte> path = [];
                         Cube newCube = new(DecompressState(element));
                         for (int j = 1; j <= arbreFinal.Count; j++)
                         {
@@ -1616,7 +1544,7 @@ namespace Rubik_s_cube_solver
                                 // On exécute le dernier mouvement mais à l'envers
                             }
                         }
-                        List<byte> path2 = new();
+                        List<byte> path2 = [];
                         Cube newCube2 = new(DecompressState(element));
                         for (int j = 1; j <= arbreInitial.Count; j++)
                         {
@@ -1662,7 +1590,7 @@ namespace Rubik_s_cube_solver
 
         public static IEnumerable<byte> LightOptimization(List<byte> path)
         {
-            List<byte> newPath = new();
+            List<byte> newPath = [];
             for (int i = 0; i < path.Count - 1; i++)
             {
                 if (i >= path.Count - 2)
@@ -1713,7 +1641,7 @@ namespace Rubik_s_cube_solver
                         newPath.Add(path[i]);
                 }
             }
-            if (newPath.Any())
+            if (newPath.Count != 0)
             {
                 if (newPath[^1] == path[^1] && newPath[^1] < 12)
                 {
@@ -1785,7 +1713,7 @@ namespace Rubik_s_cube_solver
                 }
                 finalFlatPath = finalPath.SelectMany(x => x).ToList();
             }
-            return finalFlatPath.ToArray();
+            return [.. finalFlatPath];
         }
 
         public static int Periodicity(IEnumerable<string> algorithm)
@@ -1814,13 +1742,13 @@ namespace Rubik_s_cube_solver
 
         public static byte[] BeginnerMethod(Cube c1)
         {
-            var arbre1 = new List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>>();
-            var dico = new Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>
+            List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>> arbre1 = [];
+            Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
             };
             arbre1.Add(dico);
-            List<byte> path = new();
+            List<byte> path = [];
             bool thereAreAWhiteCross(Cube c) => (c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
                 && c.RedFace.Pieces[0, 1] == 'R' && c.BlueFace.Pieces[0, 1] == 'B') ||
                 (c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
@@ -1844,7 +1772,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -1880,7 +1808,7 @@ namespace Rubik_s_cube_solver
 
             bool oneCornerIsPlaced(Cube c) => firstCornerPlaced(c) || secondCornerIsPlaced(c) || thirdCornerIsPlaced(c)
                 || fourthCornerIsPlaced(c);
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -1897,7 +1825,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -1926,7 +1854,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -1951,7 +1879,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -2322,7 +2250,7 @@ namespace Rubik_s_cube_solver
                     path.AddRange(GetAlgoFromStringEnum(new List<string>() { "D'" }));
                 }
             }
-            return path.ToArray();
+            return [.. path];
         }
 
         private static Cube PlaceEdges(Cube c, List<byte> path)
@@ -2350,7 +2278,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre = new();
+            arbre = [];
             dico = new()
             {
                 { c.ToString(), new byte[1] { 0 } }
@@ -2378,7 +2306,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre = new();
+            arbre = [];
             dico = new()
             {
                 { c.ToString(), new byte[1] { 0 } }
@@ -2403,7 +2331,7 @@ namespace Rubik_s_cube_solver
                 }
             }
 
-            arbre = new();
+            arbre = [];
             dico = new()
             {
                 { c.ToString(), new byte[1] { 0 } }
@@ -2474,7 +2402,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre = new();
+            arbre = [];
             dico = new()
             {
                 { c.ToString(), new byte[1] { 0 } }
@@ -2504,7 +2432,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre = new();
+            arbre = [];
             dico = new()
             {
                 { c.ToString(), new byte[1] { 0 } }
@@ -2530,7 +2458,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre = new();
+            arbre = [];
             dico = new()
             {
                 { c.ToString(), new byte[1] { 0 } }
@@ -2611,17 +2539,17 @@ namespace Rubik_s_cube_solver
             && c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
             && c.RedFace.Pieces[0, 1] == 'R' && c.BlueFace.Pieces[0, 1] == 'B'
             && c.GreenFace.Pieces[0, 1] == 'G' && c.OrangeFace.Pieces[0, 1] == 'O';
-            var secondLayerLeftRedFace = new List<string>() { "D'", "B'", "D", "B", "D", "R", "D'", "R'" };
-            var secondLayerRightRedFace = new List<string>() { "D", "F", "D'", "F'", "D'", "R'", "D", "R" };
+            List<string> secondLayerLeftRedFace = ["D'", "B'", "D", "B", "D", "R", "D'", "R'"];
+            List<string> secondLayerRightRedFace = ["D", "F", "D'", "F'", "D'", "R'", "D", "R"];
 
-            var secondLayerLeftBlueFace = new List<string>() { "D'", "L'", "D", "L", "D", "B", "D'", "B'" };
-            var secondLayerRightBlueFace = new List<string>() { "D", "R", "D", "R'", "D'", "B'", "D'", "B" };
+            List<string> secondLayerLeftBlueFace = ["D'", "L'", "D", "L", "D", "B", "D'", "B'"];
+            List<string> secondLayerRightBlueFace = ["D", "R", "D", "R'", "D'", "B'", "D'", "B"];
 
-            var secondLayerLeftOrangeFace = new List<string>() { "D'", "F'", "D", "F", "D", "L", "D'", "L'" };
-            var secondLayerRightOrangeFace = new List<string>() { "D", "B", "D'", "B'", "D'", "L'", "D", "L" };
+            List<string> secondLayerLeftOrangeFace = ["D'", "F'", "D", "F", "D", "L", "D'", "L'"];
+            List<string> secondLayerRightOrangeFace = ["D", "B", "D'", "B'", "D'", "L'", "D", "L"];
 
-            var secondLayerLeftGreenFace = new List<string>() { "D'", "R'", "D", "R", "D", "F", "D'", "F'" };
-            var secondLayerRightGreenFace = new List<string>() { "D", "L", "D'", "L'", "D'", "F'", "D", "F" };
+            List<string> secondLayerLeftGreenFace = ["D'", "R'", "D", "R", "D", "F", "D'", "F'"];
+            List<string> secondLayerRightGreenFace = ["D", "L", "D'", "L'", "D'", "F'", "D", "F"];
 
             bool isSecondLayerDone(Cube c) => crossAndEdges(c)
                     && c.WhiteFace.IsUniform && c.RedFace.Pieces[0, 1] == 'R'
@@ -2757,8 +2685,8 @@ namespace Rubik_s_cube_solver
         }
         private static Cube YellowCross(Cube c, List<byte> path, IEnumerable<byte> dAlgo)
         {
-            var algoCrossPattern = new List<string>() { "R", "D", "F", "D'", "F'", "R'" };
-            var algoCrossPattern2 = new List<string>() { "R", "F", "D", "F'", "D'", "R'" };
+            List<string> algoCrossPattern = ["R", "D", "F", "D'", "F'", "R'"];
+            List<string> algoCrossPattern2 = ["R", "F", "D", "F'", "D'", "R'"];
 
             static bool yellowCrossIsDone(Cube c) => c.YellowFace.Pieces[0, 1] == 'Y' && c.YellowFace.Pieces[1, 0] == 'Y'
                                      && c.YellowFace.Pieces[1, 2] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y';
@@ -2963,13 +2891,13 @@ namespace Rubik_s_cube_solver
         }
         private static void OrientLastCornersOptim(Cube c, List<byte> path)
         {
-            var sexyMove = new List<string>() { "R", "U", "R'", "U'" };
-            var doubleSM = sexyMove.Concat(sexyMove);
-            var quadSM = doubleSM.Concat(doubleSM);
-            var byteAlgo = GetAlgoFromStringEnum(sexyMove);
-            var doubleByteAlgo = byteAlgo.Concat(byteAlgo);
-            var quadByteAlgo = doubleByteAlgo.Concat(doubleByteAlgo);
-            var dPrimeAlgo = GetAlgoFromStringEnum(new List<string>() { "D'" });
+            List<string> sexyMove = ["R", "U", "R'", "U'"];
+            IEnumerable<string> doubleSM = sexyMove.Concat(sexyMove);
+            IEnumerable<string> quadSM = doubleSM.Concat(doubleSM);
+            List<byte> byteAlgo = GetAlgoFromStringEnum(sexyMove);
+            IEnumerable<byte> doubleByteAlgo = byteAlgo.Concat(byteAlgo);
+            IEnumerable<byte> quadByteAlgo = doubleByteAlgo.Concat(doubleByteAlgo);
+            List<byte> dPrimeAlgo = GetAlgoFromStringEnum(new List<string>() { "D'" });
 
             static bool isSolvedOptim(Cube c) => c.RedFace.IsUniform && c.WhiteFace.IsUniform && c.YellowFace.IsUniform;
             while (!isSolvedOptim(c))
@@ -2998,11 +2926,11 @@ namespace Rubik_s_cube_solver
         }
         public static List<byte> FastBeginnerMethod(Cube c)
         {
-            List<byte> path = new();
+            List<byte> path = [];
             c = PlaceEdges(c, path);
             c = PlaceCorners(c, path);
             c = OrientCorners(c, path);
-            var dAlgo = GetAlgoFromStringEnum(new List<string>() { "D" });
+            List<byte> dAlgo = GetAlgoFromStringEnum(["D"]);
             c = SecondLayer(c, path, dAlgo);
             c = YellowCross(c, path, dAlgo);
             c = OrientEdges(c, path, dAlgo);
@@ -3028,7 +2956,7 @@ namespace Rubik_s_cube_solver
             bool fourthEdge(Cube c) => c.WhiteFace.Pieces[0, 1] == 'W';
             bool oneEdgeIsPlaced(Cube c) => firstEdge(c) || secondEdge(c) || thirdEdge(c) || fourthEdge(c);
             bool isPlaced = oneEdgeIsPlaced(c1);
-            List<byte> path = new();
+            List<byte> path = [];
             while (!isPlaced)
             {
                 var newC = OldGetNextBranch(arbre1, oneEdgeIsPlaced);
@@ -3039,7 +2967,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -3066,7 +2994,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -3090,7 +3018,7 @@ namespace Rubik_s_cube_solver
                 }
             }
 
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -3198,7 +3126,7 @@ namespace Rubik_s_cube_solver
             bool allCornersIsPlaced(Cube c) => firstCornerIsPlaced(c) && secondCornerIsPlaced(c) && thirdCornerIsPlaced(c)
             && fourthCornerIsPlaced(c);
 
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -3215,7 +3143,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -3244,7 +3172,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
@@ -3269,7 +3197,7 @@ namespace Rubik_s_cube_solver
                     isPlaced = true;
                 }
             }
-            arbre1 = new();
+            arbre1 = [];
             dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }

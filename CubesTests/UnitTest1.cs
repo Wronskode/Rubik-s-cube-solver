@@ -61,7 +61,7 @@ namespace CubesTests
             {
                 solvedCube.ExecuterAlgorithme(res);
                 c.ExecuterAlgorithme(res);
-            }  
+            }
             Assert.IsTrue(solvedCube.IsSolved && c.Equals(c1));
         }
     }

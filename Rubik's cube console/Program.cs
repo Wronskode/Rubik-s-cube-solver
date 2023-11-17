@@ -90,7 +90,7 @@ static void LightOptimizationEvaluation()
 }
 
 //LightOptimizationEvaluation();
-//Evaluate();
+Evaluate();
 
 static void PrintWithColors(List<string> ls)
 {
