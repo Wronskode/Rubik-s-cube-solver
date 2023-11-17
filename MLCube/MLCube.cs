@@ -24,7 +24,7 @@ void GenererCSV(StreamWriter w)
 {
     Cube c = new(500);
     var cheminFinal = Cube.BeginnerMethod(c);
-    List<List<int>> csvDico = new();
+    List<List<int>> csvDico = [];
     for (int i = 0; i < cheminFinal.Length; i++)
     {
         var ligne = cubeStringToInt(c.ToString());
@@ -54,7 +54,7 @@ StringBuilder GenererThirdCSV()
     StringBuilder txt = new();
     //var cheminFinal = Cube.OptimizePath(Cube.FastMethodeDebutant(c), 3, 4, false);
     var cheminFinal = Cube.FastBeginnerMethod(c);
-    List<List<int>> csvDico = new();
+    List<List<int>> csvDico = [];
     for (int i = 0; i < cheminFinal.Count; i++)
     {
         var ligne = cubeStringToInt(c.ToString());
@@ -194,7 +194,7 @@ void PrintPercentage()
     while (true)
     {
         bool solved = false;
-        List<byte> moves = new();
+        List<byte> moves = [];
         Cube cube1 = new(500);
         //var timer = new Stopwatch();
         //timer.Start();
@@ -266,13 +266,13 @@ void PrintPercentage()
 
 List<List<byte>> GetKociembaResolution(string fileName)
 {
-    List<List<byte>> allRes = new();
+    List<List<byte>> allRes = [];
     using (StreamReader reader = new(fileName))
     {
         string? line;
         while ((line = reader.ReadLine()) != null)
         {
-            List<byte> res = new();
+            List<byte> res = [];
             foreach (var item in line.Split(' '))
             {
                 res.Add(byte.Parse(item.ToString()));
@@ -288,7 +288,7 @@ StringBuilder GenererKociembaCSV(List<byte> cheminFinal)
     StringBuilder txt = new();
     Cube c = new();
     c.ExecuterAlgorithme(Cube.GetReversalPath(cheminFinal.Reverse<byte>()));
-    List<List<int>> csvDico = new();
+    List<List<int>> csvDico = [];
     for (int i = 0; i < cheminFinal.Count; i++)
     {
         var ligne = cubeStringToInt(c.ToString());
