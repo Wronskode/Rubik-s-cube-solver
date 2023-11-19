@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 # VsCode folder
 .vscode
+/FrontRubiks
+/Front

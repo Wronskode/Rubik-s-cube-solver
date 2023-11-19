@@ -1590,6 +1590,7 @@ namespace Rubik_s_cube_solver
 
         public static IEnumerable<byte> LightOptimization(List<byte> path)
         {
+            if (path.Count == 0) return [];
             List<byte> newPath = [];
             for (int i = 0; i < path.Count - 1; i++)
             {
