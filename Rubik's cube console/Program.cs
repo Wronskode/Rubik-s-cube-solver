@@ -5,13 +5,15 @@ using System.Diagnostics;
 //int mins;
 //if (args.Length == 0) mins = 30;
 //else mins = int.Parse(args.First());
-double sommeTemps = 0;
-int cpt = 0;
-int maxLength = 0;
-double tempsMax = 0;
-int sommeLength = 0;
-void Evaluate()
+static void Evaluate()
 {
+    double sommeTemps = 0;
+    int cpt = 0;
+    int maxLength = 0;
+    double tempsMax = 0;
+    int sommeLength = 0;
+    Stopwatch benchCube;
+    List<byte> cheminFinal;
     while (true)
     {
         cpt++;
@@ -20,13 +22,14 @@ void Evaluate()
         Cube cubeDeSecurite = c1.Clone();
         Console.WriteLine("Le cube mélangé : ");
         PrintWithColors(c1.PrintCubeColors());
-        var benchCube = new Stopwatch();
+        benchCube = new Stopwatch();
         benchCube.Start();
-        IEnumerable<byte> cheminFinal = Cube.LightOptimization(Cube.FastBeginnerMethod(c1));
+        cheminFinal = Cube.LightOptimization(Cube.FastBeginnerMethod(c1));
+        benchCube.Stop();
         //IEnumerable<byte> cheminFinal = Cube.FastMethodeDebutantOptim(c1);
         var finalTime = benchCube.Elapsed.TotalSeconds;
         var finalStringPath = Cube.GetStringPath(cheminFinal);
-        var length = cheminFinal.Count();
+        var length = cheminFinal.Count;
         Console.WriteLine("Longueur de la résolution en terme de mouvements : " + length);
         Console.WriteLine("Temps " + finalTime + "s");
         cubeDeSecurite.ExecuterAlgorithme(cheminFinal);
@@ -47,7 +50,6 @@ void Evaluate()
         Console.WriteLine("Temps max " + tempsMax + "s");
         Console.WriteLine("Temps moyen : " + sommeTemps / cpt + "s");
         Console.WriteLine("Nombre d'essais : " + cpt);
-        benchCube.Stop();
     }
 }
 static void LightOptimizationEvaluation()
@@ -65,7 +67,7 @@ static void LightOptimizationEvaluation()
         var res = Cube.GetAlgoFromStringEnum(Cube.StringPathToEnum(path));
         var timer = new Stopwatch();
         timer.Start();
-        var optRes = Cube.LightOptimization(Cube.LightOptimization(res.ToList()).ToList());
+        var optRes = Cube.LightOptimization([.. Cube.LightOptimization([.. res])]);
         var time = timer.Elapsed.TotalSeconds;
         c1.ExecuterAlgorithme(res);
         c2.ExecuterAlgorithme(optRes);
@@ -80,8 +82,8 @@ static void LightOptimizationEvaluation()
         {
             Console.WriteLine(Cube.GetStringPath(res));
             Console.WriteLine(Cube.GetStringPath(optRes) + "\n");
-            somme += res.Count();
-            somme2 += optRes.Count();
+            somme += res.Count;
+            somme2 += optRes.Count;
             secondSomme += time;
             Console.WriteLine(somme / i + " " + somme2 / i + " " + secondSomme / i + "\n");
         }
@@ -154,7 +156,7 @@ Console.WriteLine("Optimized Résolution : " + optimizedPath + "\n\n");
 Console.WriteLine("Light Optimized Résolution : " + lightOptimPath + "\n\n");
 Console.WriteLine("Résolution inverse : " + Cube.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>())) + "\n");
 Console.WriteLine("Longueur de la résolution : " + resolution.Count);
-Console.WriteLine("Longueur de la résolution optimisée (light) : " + resLightOptim.Count());
+Console.WriteLine("Longueur de la résolution optimisée (light) : " + resLightOptim.Count);
 Console.WriteLine("Longueur de la résolution optimisée : " + optimRes.Length);
 cubeDeSecurite.ExecuterAlgorithme(optimRes);
 randomCube.ExecuterAlgorithme(resolution);

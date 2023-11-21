@@ -606,7 +606,7 @@ namespace Rubik_s_cube_solver
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(54);
+            StringBuilder sb = new(54);
             sb.Append(WhiteFace);
             sb.Append(YellowFace);
             sb.Append(RedFace);
@@ -775,7 +775,7 @@ namespace Rubik_s_cube_solver
         }
         public static string IntToCubeString((int, int, int, int, int, int) intCube)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             FaceToString(intCube.Item1, sb);
             FaceToString(intCube.Item2, sb);
             FaceToString(intCube.Item3, sb);
@@ -1048,7 +1048,7 @@ namespace Rubik_s_cube_solver
                         }
                     }
                     if (!isContained)
-                        newCubes.TryAdd(c1, cube.Value.Append(j).ToArray());
+                        newCubes.TryAdd(c1, [.. cube.Value, j]);
                     if (j != 17)
                         c1.DoMove(GetReversalMove(j));
                 }
@@ -1150,7 +1150,7 @@ namespace Rubik_s_cube_solver
 
         public string PrintCube()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine(WhiteFace.PrintFace());
             sb.AppendLine(YellowFace.PrintFace());
             sb.AppendLine(RedFace.PrintFace());
@@ -1262,15 +1262,15 @@ namespace Rubik_s_cube_solver
             }
         }
 
-        private static readonly char[] IntegerToColor = new char[]
-        {
+        private static readonly char[] IntegerToColor =
+        [
             'W',
             'Y',
             'R',
             'G',
             'B',
             'O'
-        };
+        ];
         public static (ulong, ulong) CompressState(string state)
         {
             ulong fst = 0;
@@ -1373,9 +1373,9 @@ namespace Rubik_s_cube_solver
                     h2.Clear();
                     foreach (((int, int, int, int, int, int), byte[]) item in arbreFinalManySelected)
                     {
-                        if (dicoPos.ContainsKey(item.Item1))
+                        if (dicoPos.TryGetValue(item.Item1, out byte[]? value))
                         {
-                            dicoPos[item.Item1] = dicoPos[item.Item1].Concat(GetReversalPath(item.Item2.Skip(1).Reverse())).ToArray();
+                            dicoPos[item.Item1] = [.. value, .. GetReversalPath(item.Item2.Skip(1).Reverse())];
                         } // Le reverse c'est pour avoir la seconde partie du chemin
                     }
                     int minLength = dicoPos.Select(x => x.Value.Length).Min();
@@ -1401,11 +1401,11 @@ namespace Rubik_s_cube_solver
             finalCube ??= new();
             bool isSolved = false;
             int i = 2;
-            Dictionary<(ulong, ulong), byte[]> dico1 = new Dictionary<(ulong, ulong), byte[]>
+            Dictionary<(ulong, ulong), byte[]> dico1 = new()
             {
                 { Cube.CompressState(initialCube.ToString()), new byte[1] { 0 } }
             };
-            Dictionary<(ulong, ulong), byte[]> dico2 = new Dictionary<(ulong, ulong), byte[]>
+            Dictionary<(ulong, ulong), byte[]> dico2 = new()
             {
                 { Cube.CompressState(finalCube.ToString()), new byte[1] { 0 } }
             };
@@ -1424,9 +1424,9 @@ namespace Rubik_s_cube_solver
                     Dictionary<(ulong, ulong), byte[]> dicoPos = [];
                     foreach (KeyValuePair<(ulong, ulong), byte[]> item in dico1)
                     {
-                        if (dico2.ContainsKey(item.Key))
+                        if (dico2.TryGetValue(item.Key, out byte[]? value))
                         {
-                            dicoPos.Add(item.Key, item.Value.Skip(1).Concat(GetReversalPath(dico2[item.Key].Skip(1).Reverse())).ToArray());
+                            dicoPos.Add(item.Key, item.Value.Skip(1).Concat(GetReversalPath(value.Skip(1).Reverse())).ToArray());
                         }
                     }
                     int minLength = dicoPos.Select(x => x.Value.Length).Min();
@@ -1436,7 +1436,7 @@ namespace Rubik_s_cube_solver
                 i += 1;
             }
             initialCube.ExecuterAlgorithme(solutionFromRandom);
-            return solutionFromRandom.ToArray();
+            return [.. solutionFromRandom];
         }
 
         public static byte[] MeetInTheMiddle3(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
@@ -1444,11 +1444,11 @@ namespace Rubik_s_cube_solver
             finalCube ??= new();
             bool isSolved = false;
             int i = 2;
-            Dictionary<(ulong, ulong), byte[]> dico1 = new Dictionary<(ulong, ulong), byte[]>
+            Dictionary<(ulong, ulong), byte[]> dico1 = new()
             {
                 { CompressState(initialCube.ToString()), new byte[1] { 0 } }
             };
-            Dictionary<(ulong, ulong), byte[]> dico2 = new Dictionary<(ulong, ulong), byte[]>
+            Dictionary<(ulong, ulong), byte[]> dico2 = new()
             {
                 { CompressState(finalCube.ToString()), new byte[1] { 0 } }
             };
@@ -1480,9 +1480,9 @@ namespace Rubik_s_cube_solver
                     }
                     foreach (KeyValuePair<(ulong, ulong), byte[]> item in arbreFinalManySelected)
                     {
-                        if (dicoPos.ContainsKey(item.Key))
+                        if (dicoPos.TryGetValue(item.Key, out byte[]? value))
                         {
-                            dicoPos[item.Key] = dicoPos[item.Key].Concat(GetReversalPath(item.Value.Skip(1).Reverse().ToArray())).ToArray();
+                            dicoPos[item.Key] = [.. value, .. GetReversalPath(item.Value.Skip(1).Reverse().ToArray())];
                         } // Le reverse c'est pour avoir la seconde partie du chemin
                     }
 
@@ -1501,11 +1501,11 @@ namespace Rubik_s_cube_solver
             finalCube ??= new();
             bool isSolved = false;
             int i = 1;
-            Dictionary<(ulong, ulong), byte> dico1 = new Dictionary<(ulong, ulong), byte>
+            Dictionary<(ulong, ulong), byte> dico1 = new()
             {
                 { CompressState(initialCube.ToString()), 255}
             };
-            Dictionary<(ulong, ulong), byte> dico2 = new Dictionary<(ulong, ulong), byte>
+            Dictionary<(ulong, ulong), byte> dico2 = new()
             {
                 { CompressState(finalCube.ToString()), 255}
             };
@@ -1516,7 +1516,7 @@ namespace Rubik_s_cube_solver
             IEnumerable<byte> solution = new List<byte>();
             while (!isSolved)
             {
-                if (i == deepMax) return Array.Empty<byte>();
+                if (i == deepMax) return [];
                 Parallel.Invoke(
                     () => NextTreeBranchForMITM(arbreInitial),
                     () => NextTreeBranchForMITM(arbreFinal)
@@ -1588,7 +1588,7 @@ namespace Rubik_s_cube_solver
             else throw new Exception("Mauvais numéro de move");
         }
 
-        public static IEnumerable<byte> LightOptimization(List<byte> path)
+        public static List<byte> LightOptimization(List<byte> path)
         {
             if (path.Count == 0) return [];
             List<byte> newPath = [];
@@ -1651,18 +1651,18 @@ namespace Rubik_s_cube_solver
                 }
                 if (newPath[^1] == GetReversalMove(path[^1]) || newPath[^1] == path[^1])
                 {
-                    return newPath.SkipLast(1);
+                    return newPath.SkipLast(1).ToList();
                 }
                 if (newPath.Count > 1)
                 {
                     if (newPath[^1] == GetReversalMove(newPath[^2]))
                     {
-                        return newPath.SkipLast(2).Append(path[^1]);
+                        return newPath.SkipLast(2).Append(path[^1]).ToList();
                     }
                     if (newPath[^1] == newPath[^2] && newPath[^1] < 12)
                     {
                         newPath[^2] = GetDoubleMove(newPath[^1]);
-                        return newPath.SkipLast(1).Append(path[^1]);
+                        return newPath.SkipLast(1).Append(path[^1]).ToList();
                     }
                 }
             }
@@ -1695,7 +1695,7 @@ namespace Rubik_s_cube_solver
                     finalFlatPath = finalPath.SelectMany(x => x).ToList();
                 } while (longueurPred > finalFlatPath.Count);
             }
-            if (!shifting) return finalFlatPath.ToArray();
+            if (!shifting) return [.. finalFlatPath];
             int i = 4;
             for (int j = 2; j <= i; j++)
             {
@@ -2257,7 +2257,7 @@ namespace Rubik_s_cube_solver
         private static Cube PlaceEdges(Cube c, List<byte> path)
         {
             List<Dictionary<string, byte[]>> arbre = [];
-            Dictionary<string, byte[]> dico = new Dictionary<string, byte[]>
+            Dictionary<string, byte[]> dico = new()
             {
                 { c.ToString(), new byte[1] { 0 } }
             };
@@ -2386,7 +2386,7 @@ namespace Rubik_s_cube_solver
             && fourthCornerIsPlaced(c);
 
             List<Dictionary<string, byte[]>> arbre = [];
-            Dictionary<string, byte[]> dico = new Dictionary<string, byte[]>
+            Dictionary<string, byte[]> dico = new()
             {
                 { c.ToString(), new byte[1] { 0 } }
             };
@@ -2946,7 +2946,7 @@ namespace Rubik_s_cube_solver
         public static List<byte> FastBeginnerMethod2(Cube c1)
         {
             List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>> arbre1 = [];
-            Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> dico = new Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>
+            Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> dico = new()
             {
                 { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
             };
