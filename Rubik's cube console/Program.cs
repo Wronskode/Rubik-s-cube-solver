@@ -17,19 +17,18 @@ static void Evaluate()
     while (true)
     {
         cpt++;
-        Cube c1 = new();
-        c1.Shuffle(500);
+        Cube c1 = new(500);
         Cube cubeDeSecurite = c1.Clone();
         Console.WriteLine("Le cube mélangé : ");
-        PrintWithColors(c1.PrintCubeColors());
+        Cube.PrintWithColors(c1.PrintCubeColors());
         benchCube = new Stopwatch();
         benchCube.Start();
         cheminFinal = Cube.LightOptimization(Cube.FastBeginnerMethod(c1));
         benchCube.Stop();
         //IEnumerable<byte> cheminFinal = Cube.FastMethodeDebutantOptim(c1);
-        var finalTime = benchCube.Elapsed.TotalSeconds;
-        var finalStringPath = Cube.GetStringPath(cheminFinal);
-        var length = cheminFinal.Count;
+        double finalTime = benchCube.Elapsed.TotalSeconds;
+        string finalStringPath = Cube.GetStringPath(cheminFinal);
+        int length = cheminFinal.Count;
         Console.WriteLine("Longueur de la résolution en terme de mouvements : " + length);
         Console.WriteLine("Temps " + finalTime + "s");
         cubeDeSecurite.ExecuterAlgorithme(cheminFinal);
@@ -46,9 +45,9 @@ static void Evaluate()
         sommeTemps += temps;
         if (temps > tempsMax) tempsMax = temps;
         Console.WriteLine("Longueur max " + maxLength);
-        Console.WriteLine("Longueur moyenne " + sommeLength / cpt);
+        Console.WriteLine("Longueur moyenne " + (sommeLength / cpt));
         Console.WriteLine("Temps max " + tempsMax + "s");
-        Console.WriteLine("Temps moyen : " + sommeTemps / cpt + "s");
+        Console.WriteLine("Temps moyen : " + (sommeTemps / cpt) + "s");
         Console.WriteLine("Nombre d'essais : " + cpt);
     }
 }
@@ -63,12 +62,12 @@ static void LightOptimizationEvaluation()
         Cube c1 = new();
         Cube c2 = new();
         Cube c3 = new();
-        var path = Cube.GetStringPath(c3.Scramble(100).Select(x => x));
-        var res = Cube.GetAlgoFromStringEnum(Cube.StringPathToEnum(path));
-        var timer = new Stopwatch();
+        string path = Cube.GetStringPath(c3.Scramble(100).Select(x => x));
+        List<byte> res = Cube.GetAlgoFromStringEnum(Cube.StringPathToEnum(path));
+        Stopwatch timer = new();
         timer.Start();
-        var optRes = Cube.LightOptimization([.. Cube.LightOptimization([.. res])]);
-        var time = timer.Elapsed.TotalSeconds;
+        List<byte> optRes = Cube.LightOptimization([.. Cube.LightOptimization([.. res])]);
+        double time = timer.Elapsed.TotalSeconds;
         c1.ExecuterAlgorithme(res);
         c2.ExecuterAlgorithme(optRes);
         if (c1.ToString() != c2.ToString())
@@ -85,7 +84,7 @@ static void LightOptimizationEvaluation()
             somme += res.Count;
             somme2 += optRes.Count;
             secondSomme += time;
-            Console.WriteLine(somme / i + " " + somme2 / i + " " + secondSomme / i + "\n");
+            Console.WriteLine((somme / i) + " " + (somme2 / i) + " " + (secondSomme / i) + "\n");
         }
         i++;
     }
@@ -94,63 +93,17 @@ static void LightOptimizationEvaluation()
 //LightOptimizationEvaluation();
 Evaluate();
 
-static void PrintWithColors(List<string> ls)
-{
-    foreach (var line in ls)
-    {
-        foreach (var item in line)
-        {
-            if (item == 'Y')
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write('Y');
-            }
-            else if (item == 'R')
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write('R');
-            }
-            else if (item == 'B')
-            {
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.Write('B');
-            }
-            else if (item == 'W')
-            {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write('W');
-            }
-            else if (item == 'G')
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write('G');
-            }
-            else if (item == 'O')
-            {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.Write('O');
-            }
-            else
-            {
-                Console.Write(item);
-            }
-        }
-        Console.WriteLine(' ');
-    }
-    Console.ResetColor();
-}
-
 Cube randomCube = new(500);
 Cube cubeDeSecurite = randomCube.Clone();
 Cube cubeDeSecurite2 = randomCube.Clone();
 Console.WriteLine("Cube aléatoire : \n");
-PrintWithColors(randomCube.PrintCubeColors());
-var resolution = Cube.FastBeginnerMethod(randomCube);
+Cube.PrintWithColors(randomCube.PrintCubeColors());
+List<byte> resolution = Cube.FastBeginnerMethod(randomCube);
 string mouvements = Cube.GetStringPath(resolution);
-var resLightOptim = Cube.LightOptimization(resolution);
-var lightOptimPath = Cube.GetStringPath(resLightOptim);
-var optimRes = Cube.OptimizePath(resolution);
-var optimizedPath = Cube.GetStringPath(optimRes);
+List<byte> resLightOptim = Cube.LightOptimization(resolution);
+string lightOptimPath = Cube.GetStringPath(resLightOptim);
+byte[] optimRes = Cube.OptimizePath(resolution);
+string optimizedPath = Cube.GetStringPath(optimRes);
 Console.WriteLine("Résolution : " + mouvements + "\n\n");
 Console.WriteLine("Optimized Résolution : " + optimizedPath + "\n\n");
 Console.WriteLine("Light Optimized Résolution : " + lightOptimPath + "\n\n");

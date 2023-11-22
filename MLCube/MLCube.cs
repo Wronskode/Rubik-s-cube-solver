@@ -7,7 +7,7 @@ using System.Text;
 List<int> cubeStringToInt(string cubeName)
 {
     List<int> entiers = new(54);
-    foreach (var item in cubeName)
+    foreach (char item in cubeName)
     {
         if (item == 'W') entiers.Add(0);
         else if (item == 'Y') entiers.Add(1);
@@ -19,15 +19,14 @@ List<int> cubeStringToInt(string cubeName)
     return entiers;
 }
 
-#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void GenererCSV(StreamWriter w)
 {
     Cube c = new(500);
-    var cheminFinal = Cube.BeginnerMethod(c);
+    byte[] cheminFinal = Cube.BeginnerMethod(c);
     List<List<int>> csvDico = [];
     for (int i = 0; i < cheminFinal.Length; i++)
     {
-        var ligne = cubeStringToInt(c.ToString());
+        List<int> ligne = cubeStringToInt(c.ToString());
         ligne.Add(cheminFinal[i]);
         csvDico.Add(ligne);
         if (i != cheminFinal.Length - 1)
@@ -35,29 +34,25 @@ void GenererCSV(StreamWriter w)
         w.WriteLine(string.Join(',', csvDico[i]));
     }
 }
-#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
-
-#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void GenererSecondCSV(StreamWriter w)
 {
     Cube c = new(500);
-    var cheminFinal = Cube.FastBeginnerMethod(c);
-    var ligne = cubeStringToInt(c.ToString());
+    List<byte> cheminFinal = Cube.FastBeginnerMethod(c);
+    List<int> ligne = cubeStringToInt(c.ToString());
     ligne.Add(cheminFinal[0]);
     w.WriteLine(string.Join(',', ligne));
 }
-#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 
 StringBuilder GenererThirdCSV()
 {
     Cube c = new(500);
     StringBuilder txt = new();
     //var cheminFinal = Cube.OptimizePath(Cube.FastMethodeDebutant(c), 3, 4, false);
-    var cheminFinal = Cube.FastBeginnerMethod(c);
+    List<byte> cheminFinal = Cube.FastBeginnerMethod(c);
     List<List<int>> csvDico = [];
     for (int i = 0; i < cheminFinal.Count; i++)
     {
-        var ligne = cubeStringToInt(c.ToString());
+        List<int> ligne = cubeStringToInt(c.ToString());
         ligne.Add(cheminFinal[i]);
         ligne.Add(i);
         if (i <= 0) ligne.Add(-1);
@@ -92,10 +87,9 @@ StringBuilder GenererThirdCSV()
 //    w2.Flush();
 //}
 
-#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void AddDataOnFile(string appendFileName)
 {
-    var timer = new Stopwatch();
+    Stopwatch timer = new();
     timer.Start();
     StreamWriter cubeopti = new(appendFileName, true);
     while (cubeopti.BaseStream.Length < Math.Pow(10, 6)) // 2 * Math.Pow(10, 6)
@@ -116,7 +110,6 @@ void AddDataOnFile(string appendFileName)
     cubeopti.Close();
     Console.WriteLine(timer.Elapsed.TotalSeconds);
 }
-#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 //GenererEntete("cubesopti3.csv", "move", "num", "move-1", "move-2", "move-3");
 //AddDataOnFile("cubesopti3.csv");
 
@@ -124,15 +117,14 @@ string GenererRandomCubesCSV(int shuffling)
 {
     Cube c = new();
     IEnumerable<byte> randPath = c.Scramble(shuffling);
-    var ligne = cubeStringToInt(c.ToString());
-    foreach (var item in Cube.GetReversalPath(randPath.Reverse()))
+    List<int> ligne = cubeStringToInt(c.ToString());
+    foreach (byte item in Cube.GetReversalPath(randPath.Reverse()))
     {
         ligne.Add(item);
     }
     return string.Join(',', ligne);
 }
 
-#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void AddRandomDataOnFile(string appendFileName, int shuffling)
 {
     StreamWriter cubeopti = new(appendFileName, true);
@@ -147,7 +139,6 @@ void AddRandomDataOnFile(string appendFileName, int shuffling)
     }
     cubeopti.Close();
 }
-#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 
 int shuffling = 5;
 string[] movesArray = new string[shuffling];
@@ -157,9 +148,6 @@ for (int i = 0; i < shuffling; i++)
 }
 //GenererEntete("randomCubes2.csv", movesArray);
 //AddRandomDataOnFile("randomCubes2.csv", shuffling);
-
-
-#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void GenererEntete(string appendFileName, params string[] values)
 {
     StreamWriter file = new(appendFileName, false);
@@ -175,8 +163,6 @@ void GenererEntete(string appendFileName, params string[] values)
     file.Write(string.Join(',', t) + "\n");
     file.Close();
 }
-#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
-
 //GenererEntete("cubesopti2.csv", "move", "num", "move-1", "move-2", "move-3");
 
 //var cube2 = "0,3,2,4,0,0,3,5,5,3,0,3,2,1,3,5,2,2,1,4,0,5,2,3,0,3,2,4,1,5,1,3,0,4,1,5,4,4,1,5,4,0,1,2,3,4,1,2,2,5,5,0,4,1,0".Split(',').Select(x => float.Parse(x)).ToArray();
@@ -188,7 +174,7 @@ void PrintPercentage()
     MLContext mlContext = new();
     InferenceSession session = new("modelko2.onnx");
     double sizeM = 0.0;
-    int[] dims = new int[] { 1, 63 };
+    int[] dims = [1, 63];
     double cptTotal = 0.0;
     double cpt = 0.0;
     while (true)
@@ -199,54 +185,52 @@ void PrintPercentage()
         //var timer = new Stopwatch();
         //timer.Start();
         int i = 0;
-        var cube = cubeStringToInt(cube1.ToString()).Select(x => (float)x).ToList();
+        List<float> cube = cubeStringToInt(cube1.ToString()).Select(x => (float)x).ToList();
         cube.AddRange(new float[9] { i, -1, -1, -1, -1, -1, -1, -1, -1 });
         while (i <= 100)
         {
-            var tensor = new Microsoft.ML.OnnxRuntime.Tensors.DenseTensor<float>(cube.ToArray(), dims);
-            var xs = new List<NamedOnnxValue>() { NamedOnnxValue.CreateFromTensor<float>("normalization_input", tensor) };
-            using (var results = session.Run(xs))
-            {
-                var output = results.FirstOrDefault();
-                Debug.Assert(output is not null);
-                var resultTensor = output.Value as Microsoft.ML.OnnxRuntime.Tensors.DenseTensor<float>;
-                Debug.Assert(resultTensor is not null);
-                var tabProba = resultTensor.ToArray();
+            Microsoft.ML.OnnxRuntime.Tensors.DenseTensor<float> tensor = new(cube.ToArray(), dims);
+            List<NamedOnnxValue> xs = new() { NamedOnnxValue.CreateFromTensor<float>("normalization_input", tensor) };
+            using IDisposableReadOnlyCollection<DisposableNamedOnnxValue> results = session.Run(xs);
+            DisposableNamedOnnxValue? output = results.FirstOrDefault();
+            Debug.Assert(output is not null);
+            Microsoft.ML.OnnxRuntime.Tensors.DenseTensor<float>? resultTensor = output.Value as Microsoft.ML.OnnxRuntime.Tensors.DenseTensor<float>;
+            Debug.Assert(resultTensor is not null);
+            float[] tabProba = resultTensor.ToArray();
 
-                //var moves2 = new int[18];
-                //for (int j = 0; j < 18; j++)
-                //    moves2[j] = j;
-                //Array.Sort(tabProba, moves2);
-                var probaMax = tabProba.Max();
-                var leMove = Array.IndexOf(tabProba, probaMax);
-                //Console.WriteLine(leMove);
-                moves.Add((byte)leMove);
-                cube1.DoMove((byte)leMove);
-                //Console.WriteLine(moves2[17]);
-                i++;
-                cube = cubeStringToInt(cube1.ToString()).Select(x => (float)x).Append(i).ToList();
-                if (i <= 0) cube.Add(-1);
-                else cube.Add(moves[i - 1]);
-                if (i <= 1) cube.Add(-1);
-                else cube.Add(moves[i - 2]);
-                if (i <= 2) cube.Add(-1);
-                else cube.Add(moves[i - 3]);
-                if (i <= 3) cube.Add(-1);
-                else cube.Add(moves[i - 4]);
-                if (i <= 4) cube.Add(-1);
-                else cube.Add(moves[i - 5]);
-                if (i <= 5) cube.Add(-1);
-                else cube.Add(moves[i - 6]);
-                if (i <= 6) cube.Add(-1);
-                else cube.Add(moves[i - 7]);
-                if (i <= 7) cube.Add(-1);
-                else cube.Add(moves[i - 8]);
-                if (cube1.IsSolved)
-                {
-                    sizeM += i;
-                    solved = true;
-                    break;
-                }
+            //var moves2 = new int[18];
+            //for (int j = 0; j < 18; j++)
+            //    moves2[j] = j;
+            //Array.Sort(tabProba, moves2);
+            float probaMax = tabProba.Max();
+            int leMove = Array.IndexOf(tabProba, probaMax);
+            //Console.WriteLine(leMove);
+            moves.Add((byte)leMove);
+            cube1.DoMove((byte)leMove);
+            //Console.WriteLine(moves2[17]);
+            i++;
+            cube = cubeStringToInt(cube1.ToString()).Select(x => (float)x).Append(i).ToList();
+            if (i <= 0) cube.Add(-1);
+            else cube.Add(moves[i - 1]);
+            if (i <= 1) cube.Add(-1);
+            else cube.Add(moves[i - 2]);
+            if (i <= 2) cube.Add(-1);
+            else cube.Add(moves[i - 3]);
+            if (i <= 3) cube.Add(-1);
+            else cube.Add(moves[i - 4]);
+            if (i <= 4) cube.Add(-1);
+            else cube.Add(moves[i - 5]);
+            if (i <= 5) cube.Add(-1);
+            else cube.Add(moves[i - 6]);
+            if (i <= 6) cube.Add(-1);
+            else cube.Add(moves[i - 7]);
+            if (i <= 7) cube.Add(-1);
+            else cube.Add(moves[i - 8]);
+            if (cube1.IsSolved)
+            {
+                sizeM += i;
+                solved = true;
+                break;
             }
         }
         cptTotal++;
@@ -255,7 +239,7 @@ void PrintPercentage()
             //timer.Stop();
             //m += timer.Elapsed.TotalSeconds;
             cpt++;
-            Console.WriteLine(cpt / cptTotal + " " + cptTotal + "\n nombre moyen de moves : " + sizeM / cpt);
+            Console.WriteLine((cpt / cptTotal) + " " + cptTotal + "\n nombre moyen de moves : " + (sizeM / cpt));
         }
         //else
         //{
@@ -273,7 +257,7 @@ List<List<byte>> GetKociembaResolution(string fileName)
         while ((line = reader.ReadLine()) != null)
         {
             List<byte> res = [];
-            foreach (var item in line.Split(' '))
+            foreach (string item in line.Split(' '))
             {
                 res.Add(byte.Parse(item.ToString()));
             }
@@ -291,7 +275,7 @@ StringBuilder GenererKociembaCSV(List<byte> cheminFinal)
     List<List<int>> csvDico = [];
     for (int i = 0; i < cheminFinal.Count; i++)
     {
-        var ligne = cubeStringToInt(c.ToString());
+        List<int> ligne = cubeStringToInt(c.ToString());
         ligne.Add(cheminFinal[i]);
         ligne.Add(i);
         if (i <= 0) ligne.Add(-1);
@@ -317,47 +301,40 @@ StringBuilder GenererKociembaCSV(List<byte> cheminFinal)
     }
     return txt;
 }
-#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void KociembaAddDataOnFile(string input, string appendFileName)
 {
-    var allRes = GetKociembaResolution(input);
+    List<List<byte>> allRes = GetKociembaResolution(input);
     File.Delete(input);
     StreamWriter cubeopti = new(appendFileName, true);
-    foreach (var item in allRes)
+    foreach (List<byte> item in allRes)
     {
         cubeopti.Write(GenererKociembaCSV(item).ToString());
     }
     cubeopti.Close();
 }
-#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
-
-#pragma warning disable CS8321 // La fonction locale est déclarée mais jamais utilisée
 void KociembaParser(string input, string output)
 {
-    var moves = new List<List<byte>>();
+    List<List<byte>> moves = new();
     using (StreamReader reader = new(input))
     {
         string? line;
         while ((line = reader.ReadLine()) != null)
         {
             StringBuilder newLine = new();
-            foreach (var item in line.Split(" "))
+            foreach (string item in line.Split(" "))
             {
                 if (item != "") newLine.Append(item + " ");
                 else break;
             }
-            moves.Add(Cube.GetAlgoFromStringEnum(newLine.ToString().Trim().Split(' ')).ToList());
+            moves.Add([.. Cube.GetAlgoFromStringEnum(newLine.ToString().Trim().Split(' '))]);
         }
     }
-    using (StreamWriter writer = new(output))
+    using StreamWriter writer = new(output);
+    foreach (List<byte> item in moves)
     {
-        foreach (var item in moves)
-        {
-            writer.WriteLine(string.Join(' ', item));
-        }
+        writer.WriteLine(string.Join(' ', item));
     }
 }
-#pragma warning restore CS8321 // La fonction locale est déclarée mais jamais utilisée
 PrintPercentage();
 //KociembaParser("cubes.txt", "result.txt");
 //GenererEntete("cubesoptiKociemba.csv", "move", "num", "move-1", "move-2", "move-3");

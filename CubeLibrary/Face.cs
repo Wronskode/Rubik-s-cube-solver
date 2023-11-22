@@ -17,7 +17,7 @@ namespace Rubik_s_cube_solver
         {
             get
             {
-                foreach (var piece in Pieces)
+                foreach (char piece in Pieces)
                 {
                     if (piece != ColorFace) return false;
                 }
@@ -108,8 +108,8 @@ namespace Rubik_s_cube_solver
 
         public override string ToString()
         {
-            var sb = new StringBuilder(9);
-            foreach (var piece in Pieces)
+            StringBuilder sb = new(9);
+            foreach (char piece in Pieces)
             {
                 sb.Append(piece);
             }
@@ -118,7 +118,7 @@ namespace Rubik_s_cube_solver
 
         public string PrintFace()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new();
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)

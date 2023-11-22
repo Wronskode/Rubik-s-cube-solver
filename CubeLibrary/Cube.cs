@@ -19,18 +19,33 @@ namespace Rubik_s_cube_solver
                         BlueFace.IsUniform && OrangeFace.IsUniform;
             }
         }
-
         public Cube(List<Face> faces)
         {
             foreach (Face face in faces)
             {
-                if (face.ColorFace == 'W') WhiteFace = face;
-                else if (face.ColorFace == 'Y') YellowFace = face;
-                else if (face.ColorFace == 'R') RedFace = face;
-                else if (face.ColorFace == 'G') GreenFace = face;
-                else if (face.ColorFace == 'B') BlueFace = face;
-                else if (face.ColorFace == 'O') OrangeFace = face;
-                else throw new Exception("La couleur " + face.ColorFace + " n'existe pas");
+                switch (face.ColorFace)
+                {
+                    case 'W':
+                        WhiteFace = face;
+                        break;
+                    case 'Y':
+                        YellowFace = face;
+                        break;
+                    case 'R':
+                        RedFace = face;
+                        break;
+                    case 'G':
+                        GreenFace = face;
+                        break;
+                    case 'B':
+                        BlueFace = face;
+                        break;
+                    case 'O':
+                        OrangeFace = face;
+                        break;
+                    default:
+                        throw new Exception("La couleur " + face.ColorFace + " n'existe pas");
+                }
             }
             Debug.Assert(WhiteFace != null);
             Debug.Assert(YellowFace != null);
@@ -67,13 +82,29 @@ namespace Rubik_s_cube_solver
             }
             foreach (Face face in newFaces)
             {
-                if (face.ColorFace == 'W') WhiteFace = face;
-                else if (face.ColorFace == 'Y') YellowFace = face;
-                else if (face.ColorFace == 'R') RedFace = face;
-                else if (face.ColorFace == 'G') GreenFace = face;
-                else if (face.ColorFace == 'B') BlueFace = face;
-                else if (face.ColorFace == 'O') OrangeFace = face;
-                else throw new Exception("La couleur " + face.ColorFace + " n'existe pas");
+                switch (face.ColorFace)
+                {
+                    case 'W':
+                        WhiteFace = face;
+                        break;
+                    case 'Y':
+                        YellowFace = face;
+                        break;
+                    case 'R':
+                        RedFace = face;
+                        break;
+                    case 'G':
+                        GreenFace = face;
+                        break;
+                    case 'B':
+                        BlueFace = face;
+                        break;
+                    case 'O':
+                        OrangeFace = face;
+                        break;
+                    default:
+                        throw new Exception("La couleur " + face.ColorFace + " n'existe pas");
+                }
             }
             Debug.Assert(WhiteFace != null);
             Debug.Assert(YellowFace != null);
@@ -96,13 +127,16 @@ namespace Rubik_s_cube_solver
 
         public char[,] CopyFace(char color)
         {
-            if (color == 'W') return (char[,])WhiteFace.Pieces.Clone();
-            else if (color == 'Y') return (char[,])YellowFace.Pieces.Clone();
-            else if (color == 'R') return (char[,])RedFace.Pieces.Clone();
-            else if (color == 'G') return (char[,])GreenFace.Pieces.Clone();
-            else if (color == 'B') return (char[,])BlueFace.Pieces.Clone();
-            else if (color == 'O') return (char[,])OrangeFace.Pieces.Clone();
-            else throw new Exception("La couleur " + color + " n'existe pas");
+            return color switch
+            {
+                'W' => (char[,])WhiteFace.Pieces.Clone(),
+                'Y' => (char[,])YellowFace.Pieces.Clone(),
+                'R' => (char[,])RedFace.Pieces.Clone(),
+                'G' => (char[,])GreenFace.Pieces.Clone(),
+                'B' => (char[,])BlueFace.Pieces.Clone(),
+                'O' => (char[,])OrangeFace.Pieces.Clone(),
+                _ => throw new Exception("La couleur " + color + " n'existe pas")
+            };
         }
         public void U()
         {
@@ -632,28 +666,68 @@ namespace Rubik_s_cube_solver
             for (int i = 0; i < n; i++)
             {
                 int randInt = rnd.Next(1, 19);
-                if (randInt == 1) F();
-                else if (randInt == 2) U();
-                else if (randInt == 3) B();
-                else if (randInt == 4) L();
-                else if (randInt == 5) D();
-                else if (randInt == 6) R();
-                else if (randInt == 7) Fprime();
-                else if (randInt == 8) Uprime();
-                else if (randInt == 9) Bprime();
-                else if (randInt == 10) Lprime();
-                else if (randInt == 11) Dprime();
-                else if (randInt == 12) Rprime();
-                else if (randInt == 13) F2();
-                else if (randInt == 14) U2();
-                else if (randInt == 15) B2();
-                else if (randInt == 16) L2();
-                else if (randInt == 17) D2();
-                else if (randInt == 18) R2();
-                else Debug.Assert(false);
+                switch (randInt)
+                {
+                    case 1:
+                        F();
+                        break;
+                    case 2:
+                        U();
+                        break;
+                    case 3:
+                        B();
+                        break;
+                    case 4:
+                        L();
+                        break;
+                    case 5:
+                        D();
+                        break;
+                    case 6:
+                        R();
+                        break;
+                    case 7:
+                        Fprime();
+                        break;
+                    case 8:
+                        Uprime();
+                        break;
+                    case 9:
+                        Bprime();
+                        break;
+                    case 10:
+                        Lprime();
+                        break;
+                    case 11:
+                        Dprime();
+                        break;
+                    case 12:
+                        Rprime();
+                        break;
+                    case 13:
+                        F2();
+                        break;
+                    case 14:
+                        U2();
+                        break;
+                    case 15:
+                        B2();
+                        break;
+                    case 16:
+                        L2();
+                        break;
+                    case 17:
+                        D2();
+                        break;
+                    case 18:
+                        R2();
+                        break;
+                    default:
+                        Debug.Assert(false);
+                        break;
+                }
             }
         }
-
         public IEnumerable<byte> Scramble(int n = 20, int? seed = null)
         {
             Random rnd;
@@ -666,30 +740,69 @@ namespace Rubik_s_cube_solver
             {
                 byte randInt = (byte)rnd.Next(0, 18);
                 randPath.Add(randInt);
-                if (randInt == 0) F();
-                else if (randInt == 1) U();
-                else if (randInt == 2) B();
-                else if (randInt == 3) L();
-                else if (randInt == 4) D();
-                else if (randInt == 5) R();
-                else if (randInt == 6) Fprime();
-                else if (randInt == 7) Uprime();
-                else if (randInt == 8) Bprime();
-                else if (randInt == 9) Lprime();
-                else if (randInt == 10) Dprime();
-                else if (randInt == 11) Rprime();
-                else if (randInt == 12) F2();
-                else if (randInt == 13) U2();
-                else if (randInt == 14) B2();
-                else if (randInt == 15) L2();
-                else if (randInt == 16) D2();
-                else if (randInt == 17) R2();
-                else Debug.Assert(false);
+                switch (randInt)
+                {
+                    case 0:
+                        F();
+                        break;
+                    case 1:
+                        U();
+                        break;
+                    case 2:
+                        B();
+                        break;
+                    case 3:
+                        L();
+                        break;
+                    case 4:
+                        D();
+                        break;
+                    case 5:
+                        R();
+                        break;
+                    case 6:
+                        Fprime();
+                        break;
+                    case 7:
+                        Uprime();
+                        break;
+                    case 8:
+                        Bprime();
+                        break;
+                    case 9:
+                        Lprime();
+                        break;
+                    case 10:
+                        Dprime();
+                        break;
+                    case 11:
+                        Rprime();
+                        break;
+                    case 12:
+                        F2();
+                        break;
+                    case 13:
+                        U2();
+                        break;
+                    case 14:
+                        B2();
+                        break;
+                    case 15:
+                        L2();
+                        break;
+                    case 16:
+                        D2();
+                        break;
+                    case 17:
+                        R2();
+                        break;
+                    default:
+                        Debug.Assert(false);
+                        break;
+                }
             }
             return randPath;
         }
-
-
 
         public static byte[] GetReversalPath(IEnumerable<byte> path)
         {
@@ -697,19 +810,48 @@ namespace Rubik_s_cube_solver
             int i = 0;
             foreach (byte item in path)
             {
-                if (item == 0) newPath[i] = 6;
-                else if (item == 1) newPath[i] = 7;
-                else if (item == 2) newPath[i] = 8;
-                else if (item == 3) newPath[i] = 9;
-                else if (item == 4) newPath[i] = 10;
-                else if (item == 5) newPath[i] = 11;
-                else if (item == 6) newPath[i] = 0;
-                else if (item == 7) newPath[i] = 1;
-                else if (item == 8) newPath[i] = 2;
-                else if (item == 9) newPath[i] = 3;
-                else if (item == 10) newPath[i] = 4;
-                else if (item == 11) newPath[i] = 5;
-                else newPath[i] = item;
+                switch (item)
+                {
+                    case 0:
+                        newPath[i] = 6;
+                        break;
+                    case 1:
+                        newPath[i] = 7;
+                        break;
+                    case 2:
+                        newPath[i] = 8;
+                        break;
+                    case 3:
+                        newPath[i] = 9;
+                        break;
+                    case 4:
+                        newPath[i] = 10;
+                        break;
+                    case 5:
+                        newPath[i] = 11;
+                        break;
+                    case 6:
+                        newPath[i] = 0;
+                        break;
+                    case 7:
+                        newPath[i] = 1;
+                        break;
+                    case 8:
+                        newPath[i] = 2;
+                        break;
+                    case 9:
+                        newPath[i] = 3;
+                        break;
+                    case 10:
+                        newPath[i] = 4;
+                        break;
+                    case 11:
+                        newPath[i] = 5;
+                        break;
+                    default:
+                        newPath[i] = item;
+                        break;
+                }
                 i++;
             }
             return newPath;
@@ -730,9 +872,12 @@ namespace Rubik_s_cube_solver
             //else if (move == 10) return 4;
             //else if (move == 11) return 5;
             //else return move;
-            if (move <= 5) return (byte)(move + 6);
-            else if (move <= 11) return (byte)(move - 6);
-            else return move;
+            return move switch
+            {
+                <= 5 => (byte)(move + 6),
+                <= 11 => (byte)(move - 6),
+                _ => move,
+            };
         }
 
         public static (int, int, int, int, int, int) StringCubeToInt(string cubeRepresentation)
@@ -790,29 +935,68 @@ namespace Rubik_s_cube_solver
             StringBuilder response = new();
             foreach (byte item in path)
             {
-                if (item == 0) response.Append('F');
-                else if (item == 1) response.Append('U');
-                else if (item == 2) response.Append('B');
-                else if (item == 3) response.Append('L');
-                else if (item == 4) response.Append('D');
-                else if (item == 5) response.Append('R');
-                else if (item == 6) response.Append("F'");
-                else if (item == 7) response.Append("U'");
-                else if (item == 8) response.Append("B'");
-                else if (item == 9) response.Append("L'");
-                else if (item == 10) response.Append("D'");
-                else if (item == 11) response.Append("R'");
-                else if (item == 12) response.Append("F2");
-                else if (item == 13) response.Append("U2");
-                else if (item == 14) response.Append("B2");
-                else if (item == 15) response.Append("L2");
-                else if (item == 16) response.Append("D2");
-                else if (item == 17) response.Append("R2");
+                switch (item)
+                {
+                    case 0:
+                        response.Append('F');
+                        break;
+                    case 1:
+                        response.Append('U');
+                        break;
+                    case 2:
+                        response.Append('B');
+                        break;
+                    case 3:
+                        response.Append('L');
+                        break;
+                    case 4:
+                        response.Append('D');
+                        break;
+                    case 5:
+                        response.Append('R');
+                        break;
+                    case 6:
+                        response.Append("F'");
+                        break;
+                    case 7:
+                        response.Append("U'");
+                        break;
+                    case 8:
+                        response.Append("B'");
+                        break;
+                    case 9:
+                        response.Append("L'");
+                        break;
+                    case 10:
+                        response.Append("D'");
+                        break;
+                    case 11:
+                        response.Append("R'");
+                        break;
+                    case 12:
+                        response.Append("F2");
+                        break;
+                    case 13:
+                        response.Append("U2");
+                        break;
+                    case 14:
+                        response.Append("B2");
+                        break;
+                    case 15:
+                        response.Append("L2");
+                        break;
+                    case 16:
+                        response.Append("D2");
+                        break;
+                    case 17:
+                        response.Append("R2");
+                        break;
+                }
             }
             return response.ToString();
         }
 
-        public static IEnumerable<string> StringPathToEnum(string path)
+        public static List<string> StringPathToEnum(string path)
         {
             List<string> newPath = [];
             for (int i = 0; i < path.Length - 1; i++)
@@ -933,6 +1117,7 @@ namespace Rubik_s_cube_solver
             listDico.Add(newCubes);
         }
 
+        // Storing only two ulong representing the entire cube
         public static (Cube, byte[])? GetNextBranchWithStrongCompressionOfCubes(List<Dictionary<(ulong, ulong), byte[]>> listDico, Func<Cube, bool> f)
         {
             int methodsCount = 18;
@@ -965,6 +1150,7 @@ namespace Rubik_s_cube_solver
             return null;
         }
 
+        // Storing only tuple of int representing each face of the cube
         public static (Cube, IEnumerable<byte>)? OldGetNextBranch(List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>> listDico, Func<Cube, bool> f)
         {
             Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> newCubes = [];
@@ -997,6 +1183,7 @@ namespace Rubik_s_cube_solver
             return null;
         }
 
+        // Storing only string of cube
         public static (Cube, byte[])? NextTreeBranch(List<Dictionary<string, byte[]>> listDico, Func<Cube, bool> f)
         {
             Dictionary<string, byte[]> newCubes = [];
@@ -1028,6 +1215,7 @@ namespace Rubik_s_cube_solver
             return null;
         }
 
+        // Storing directly cubes
         public static void NextTreeBranch2(List<Dictionary<Cube, byte[]>> listDico)
         {
             Dictionary<Cube, byte[]> newCubes = [];
@@ -1037,7 +1225,6 @@ namespace Rubik_s_cube_solver
                 for (byte j = 0; j < 18; j++)
                 {
                     c1.DoMove(j);
-                    //string str = c1.ToString();
                     bool isContained = false;
                     foreach (Dictionary<Cube, byte[]> item in listDico)
                     {
@@ -1178,25 +1365,65 @@ namespace Rubik_s_cube_solver
             List<byte> data = [];
             foreach (string item in algorithme)
             {
-                if (item == "F") data.Add(0);
-                else if (item == "U") data.Add(1);
-                else if (item == "B") data.Add(2);
-                else if (item == "L") data.Add(3);
-                else if (item == "D") data.Add(4);
-                else if (item == "R") data.Add(5);
-                else if (item == "F'") data.Add(6);
-                else if (item == "U'") data.Add(7);
-                else if (item == "B'") data.Add(8);
-                else if (item == "L'") data.Add(9);
-                else if (item == "D'") data.Add(10);
-                else if (item == "R'") data.Add(11);
-                else if (item == "F2") data.Add(12);
-                else if (item == "U2") data.Add(13);
-                else if (item == "B2") data.Add(14);
-                else if (item == "L2") data.Add(15);
-                else if (item == "D2") data.Add(16);
-                else if (item == "R2") data.Add(17);
-                else throw new Exception("Le mouvement n'existe pas " + item);
+                switch (item)
+                {
+                    case "F":
+                        data.Add(0);
+                        break;
+                    case "U":
+                        data.Add(1);
+                        break;
+                    case "B":
+                        data.Add(2);
+                        break;
+                    case "L":
+                        data.Add(3);
+                        break;
+                    case "D":
+                        data.Add(4);
+                        break;
+                    case "R":
+                        data.Add(5);
+                        break;
+                    case "F'":
+                        data.Add(6);
+                        break;
+                    case "U'":
+                        data.Add(7);
+                        break;
+                    case "B'":
+                        data.Add(8);
+                        break;
+                    case "L'":
+                        data.Add(9);
+                        break;
+                    case "D'":
+                        data.Add(10);
+                        break;
+                    case "R'":
+                        data.Add(11);
+                        break;
+                    case "F2":
+                        data.Add(12);
+                        break;
+                    case "U2":
+                        data.Add(13);
+                        break;
+                    case "B2":
+                        data.Add(14);
+                        break;
+                    case "L2":
+                        data.Add(15);
+                        break;
+                    case "D2":
+                        data.Add(16);
+                        break;
+                    case "R2":
+                        data.Add(17);
+                        break;
+                    default:
+                        throw new Exception("Le mouvement n'existe pas " + item);
+                }
             }
             return data;
         }
@@ -1206,25 +1433,65 @@ namespace Rubik_s_cube_solver
             List<string> data = [];
             foreach (byte item in algorithme)
             {
-                if (item == 0) data.Add("F");
-                else if (item == 1) data.Add("U");
-                else if (item == 2) data.Add("B");
-                else if (item == 3) data.Add("L");
-                else if (item == 4) data.Add("D");
-                else if (item == 5) data.Add("R");
-                else if (item == 6) data.Add("F'");
-                else if (item == 7) data.Add("U'");
-                else if (item == 8) data.Add("B'");
-                else if (item == 9) data.Add("L'");
-                else if (item == 10) data.Add("D'");
-                else if (item == 11) data.Add("R'");
-                else if (item == 12) data.Add("F2");
-                else if (item == 13) data.Add("U2");
-                else if (item == 14) data.Add("B2");
-                else if (item == 15) data.Add("L2");
-                else if (item == 16) data.Add("D2");
-                else if (item == 17) data.Add("R2");
-                else throw new Exception("Le mouvement n'existe pas");
+                switch (item)
+                {
+                    case 0:
+                        data.Add("F");
+                        break;
+                    case 1:
+                        data.Add("U");
+                        break;
+                    case 2:
+                        data.Add("B");
+                        break;
+                    case 3:
+                        data.Add("L");
+                        break;
+                    case 4:
+                        data.Add("D");
+                        break;
+                    case 5:
+                        data.Add("R");
+                        break;
+                    case 6:
+                        data.Add("F'");
+                        break;
+                    case 7:
+                        data.Add("U'");
+                        break;
+                    case 8:
+                        data.Add("B'");
+                        break;
+                    case 9:
+                        data.Add("L'");
+                        break;
+                    case 10:
+                        data.Add("D'");
+                        break;
+                    case 11:
+                        data.Add("R'");
+                        break;
+                    case 12:
+                        data.Add("F2");
+                        break;
+                    case 13:
+                        data.Add("U2");
+                        break;
+                    case 14:
+                        data.Add("B2");
+                        break;
+                    case 15:
+                        data.Add("L2");
+                        break;
+                    case 16:
+                        data.Add("D2");
+                        break;
+                    case 17:
+                        data.Add("R2");
+                        break;
+                    default:
+                        throw new Exception("Le mouvement n'existe pas");
+                }
             }
             return [.. data];
         }
@@ -1232,25 +1499,65 @@ namespace Rubik_s_cube_solver
         {
             foreach (string item in algorithme)
             {
-                if (item == "F") DoMove(0);
-                else if (item == "U") DoMove(1);
-                else if (item == "B") DoMove(2);
-                else if (item == "L") DoMove(3);
-                else if (item == "D") DoMove(4);
-                else if (item == "R") DoMove(5);
-                else if (item == "F'") DoMove(6);
-                else if (item == "U'") DoMove(7);
-                else if (item == "B'") DoMove(8);
-                else if (item == "L'") DoMove(9);
-                else if (item == "D'") DoMove(10);
-                else if (item == "R'") DoMove(11);
-                else if (item == "F2") DoMove(12);
-                else if (item == "U2") DoMove(13);
-                else if (item == "B2") DoMove(14);
-                else if (item == "L2") DoMove(15);
-                else if (item == "D2") DoMove(16);
-                else if (item == "R2") DoMove(17);
-                else throw new Exception("Le mouvement n'existe pas");
+                switch (item)
+                {
+                    case "F":
+                        DoMove(0);
+                        break;
+                    case "U":
+                        DoMove(1);
+                        break;
+                    case "B":
+                        DoMove(2);
+                        break;
+                    case "L":
+                        DoMove(3);
+                        break;
+                    case "D":
+                        DoMove(4);
+                        break;
+                    case "R":
+                        DoMove(5);
+                        break;
+                    case "F'":
+                        DoMove(6);
+                        break;
+                    case "U'":
+                        DoMove(7);
+                        break;
+                    case "B'":
+                        DoMove(8);
+                        break;
+                    case "L'":
+                        DoMove(9);
+                        break;
+                    case "D'":
+                        DoMove(10);
+                        break;
+                    case "R'":
+                        DoMove(11);
+                        break;
+                    case "F2":
+                        DoMove(12);
+                        break;
+                    case "U2":
+                        DoMove(13);
+                        break;
+                    case "B2":
+                        DoMove(14);
+                        break;
+                    case "L2":
+                        DoMove(15);
+                        break;
+                    case "D2":
+                        DoMove(16);
+                        break;
+                    case "R2":
+                        DoMove(17);
+                        break;
+                    default:
+                        throw new Exception("Le mouvement n'existe pas");
+                }
             }
         }
 
@@ -1403,11 +1710,11 @@ namespace Rubik_s_cube_solver
             int i = 2;
             Dictionary<(ulong, ulong), byte[]> dico1 = new()
             {
-                { Cube.CompressState(initialCube.ToString()), new byte[1] { 0 } }
+                { Cube.CompressState(initialCube.ToString()), [0] }
             };
             Dictionary<(ulong, ulong), byte[]> dico2 = new()
             {
-                { Cube.CompressState(finalCube.ToString()), new byte[1] { 0 } }
+                { Cube.CompressState(finalCube.ToString()), [0] }
             };
             List<byte> solutionFromRandom = [];
             while (!isSolved)
@@ -1446,11 +1753,11 @@ namespace Rubik_s_cube_solver
             int i = 2;
             Dictionary<(ulong, ulong), byte[]> dico1 = new()
             {
-                { CompressState(initialCube.ToString()), new byte[1] { 0 } }
+                { CompressState(initialCube.ToString()), [0] }
             };
             Dictionary<(ulong, ulong), byte[]> dico2 = new()
             {
-                { CompressState(finalCube.ToString()), new byte[1] { 0 } }
+                { CompressState(finalCube.ToString()), [0] }
             };
             List<Dictionary<(ulong, ulong), byte[]>> arbreInitial = [];
             List<Dictionary<(ulong, ulong), byte[]>> arbreFinal = [];
@@ -1573,19 +1880,22 @@ namespace Rubik_s_cube_solver
 
         private static byte GetDoubleMove(byte move)
         {
-            if (move == 0) return 12;
-            else if (move == 1) return 13;
-            else if (move == 2) return 14;
-            else if (move == 3) return 15;
-            else if (move == 4) return 16;
-            else if (move == 5) return 17;
-            else if (move == 6) return 12;
-            else if (move == 7) return 13;
-            else if (move == 8) return 14;
-            else if (move == 9) return 15;
-            else if (move == 10) return 16;
-            else if (move == 11) return 17;
-            else throw new Exception("Mauvais numéro de move");
+            return move switch
+            {
+                0 => 12,
+                1 => 13,
+                2 => 14,
+                3 => 15,
+                4 => 16,
+                5 => 17,
+                6 => 12,
+                7 => 13,
+                8 => 14,
+                9 => 15,
+                10 => 16,
+                11 => 17,
+                _ => throw new Exception("Mauvais numéro de move")
+            };
         }
 
         public static List<byte> LightOptimization(List<byte> path)
@@ -1670,10 +1980,10 @@ namespace Rubik_s_cube_solver
             return newPath;
         }
 
-        public static byte[] OptimizePath(IEnumerable<byte> path, int chunkSize = 2, int sizeMax = 4, bool shifting = true)
+        public static byte[] OptimizePath(List<byte> path, int chunkSize = 2, int sizeMax = 4, bool shifting = true)
         {
-            if (!path.Any()) return path.ToArray();
-            List<byte> finalFlatPath = path.ToList();
+            if (path.Count == 0) return [.. path];
+            List<byte> finalFlatPath = path;
             const int maxDeep = 8;
             for (int k = chunkSize; k <= sizeMax; k++)
             {
@@ -1746,7 +2056,7 @@ namespace Rubik_s_cube_solver
             List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>> arbre1 = [];
             Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             List<byte> path = [];
@@ -1776,7 +2086,7 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             bool crossAndEdges(Cube c) => c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
@@ -1812,7 +2122,7 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             isPlaced = crossAndEdges(c1) && oneCornerIsPlaced(c1);
@@ -1829,7 +2139,7 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             isPlaced = crossAndEdges(c1)
@@ -1858,7 +2168,7 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             isPlaced = crossAndEdges(c1)
@@ -1883,14 +2193,14 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             isPlaced = crossAndEdges(c1)
                         && firstCornerPlaced(c1) && secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1);
             while (!isPlaced)
             {
-                (Cube, IEnumerable<byte>)? newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
+                (Cube, IEnumerable<byte>)? newC  = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
                         && firstCornerPlaced(c1) && secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1));
                 if (newC != null)
                 {
@@ -2081,49 +2391,48 @@ namespace Rubik_s_cube_solver
             }
             bool edgeIsPlaced() => c1.RedFace.Pieces[2, 1] == 'R' && c1.GreenFace.Pieces[2, 1] == 'G'
                     && c1.OrangeFace.Pieces[2, 1] == 'O' && c1.BlueFace.Pieces[2, 1] == 'B';
+            List<string> redF = ["D2", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
+            List<string> BlueF = ["D", "F", "D", "F'", "D", "F", "D2", "F'"];
+            List<string> GreenF = ["F", "D", "F'", "D", "F", "D2", "F'", "D"];
+            List<string> GreenF2 = ["D'", "F", "D", "F'", "D", "F", "D2", "F'", "D2"];
+            List<string> RedF2 = ["F", "D", "F'", "D", "F", "D2", "F'"];
+            List<string> BlueF2 = ["D", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
             while (!edgeIsPlaced())
             {
                 if (c1.RedFace.Pieces[2, 1] == 'R' && c1.BlueFace.Pieces[2, 1] == 'B')
                 {
-                    List<string> redF = ["D2", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
                     path.AddRange(GetAlgoFromStringEnum(redF));
                     c1.ExecuterAlgorithme(redF);
                 }
                 else if (c1.BlueFace.Pieces[2, 1] == 'B' && c1.OrangeFace.Pieces[2, 1] == 'O')
                 {
-                    List<string> BlueF = ["D", "F", "D", "F'", "D", "F", "D2", "F'"];
                     c1.ExecuterAlgorithme(BlueF);
                     path.AddRange(GetAlgoFromStringEnum(BlueF));
                 }
                 else if (c1.GreenFace.Pieces[2, 1] == 'G' && c1.OrangeFace.Pieces[2, 1] == 'O')
                 {
-                    List<string> GreenF = ["F", "D", "F'", "D", "F", "D2", "F'", "D"];
                     c1.ExecuterAlgorithme(GreenF);
                     path.AddRange(GetAlgoFromStringEnum(GreenF));
                 }
                 else if (c1.GreenFace.Pieces[2, 1] == 'G' && c1.RedFace.Pieces[2, 1] == 'R')
                 {
-                    List<string> GreenF2 = ["D'", "F", "D", "F'", "D", "F", "D2", "F'", "D2"];
                     c1.ExecuterAlgorithme(GreenF2);
                     path.AddRange(GetAlgoFromStringEnum(GreenF2));
                 }
                 else if (c1.RedFace.Pieces[2, 1] == 'R' && c1.OrangeFace.Pieces[2, 1] == 'O')
                 {
-                    List<string> RedF2 = ["F", "D", "F'", "D", "F", "D2", "F'"];
                     c1.ExecuterAlgorithme(RedF2);
                     path.AddRange(GetAlgoFromStringEnum(RedF2));
                 }
                 else if (c1.BlueFace.Pieces[2, 1] == 'B' && c1.GreenFace.Pieces[2, 1] == 'G')
                 {
-                    List<string> BlueF2 = ["D", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
                     c1.ExecuterAlgorithme(BlueF2);
                     path.AddRange(GetAlgoFromStringEnum(BlueF2));
                 }
                 else
                 {
                     c1.D();
-                    path.AddRange(GetAlgoFromStringEnum(new List<string>() { "D" }));
-
+                    path.AddRange(GetAlgoFromStringEnum(["D"]));
                 }
             }
             bool cornersIsPlaced() => ((c1.RedFace.Pieces[2, 2] == 'R' && c1.BlueFace.Pieces[2, 0] == 'B')
@@ -2259,7 +2568,7 @@ namespace Rubik_s_cube_solver
             List<Dictionary<string, byte[]>> arbre = [];
             Dictionary<string, byte[]> dico = new()
             {
-                { c.ToString(), new byte[1] { 0 } }
+                { c.ToString(), [0] }
             };
             arbre.Add(dico);
             bool firstEdge(Cube c) => c.WhiteFace.Pieces[2, 1] == 'W' && c.RedFace.Pieces[0, 1] == 'R';
@@ -2271,7 +2580,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, byte[])? newC = NextTreeBranch(arbre, oneEdgeIsPlaced);
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, oneEdgeIsPlaced);
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -2282,7 +2591,7 @@ namespace Rubik_s_cube_solver
             arbre = [];
             dico = new()
             {
-                { c.ToString(), new byte[1] { 0 } }
+                { c.ToString(), [0] }
             };
             arbre.Add(dico);
             isPlaced = (firstEdge(c) && secondEdge(c))
@@ -2294,7 +2603,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, byte[])? newC = NextTreeBranch(arbre, (c) => (firstEdge(c) && secondEdge(c))
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => (firstEdge(c) && secondEdge(c))
                         || (firstEdge(c) && thirdEdge(c))
                         || (firstEdge(c) && fourthEdge(c))
                         || (secondEdge(c) && thirdEdge(c))
@@ -2310,20 +2619,20 @@ namespace Rubik_s_cube_solver
             arbre = [];
             dico = new()
             {
-                { c.ToString(), new byte[1] { 0 } }
+                { c.ToString(), [0] }
             };
             arbre.Add(dico);
-            isPlaced = ((firstEdge(c) && secondEdge(c) && thirdEdge(c))
+            isPlaced = (firstEdge(c) && secondEdge(c) && thirdEdge(c))
                         || (firstEdge(c) && thirdEdge(c) && fourthEdge(c))
                         || (firstEdge(c) && fourthEdge(c) && secondEdge(c))
-                        || (secondEdge(c) && thirdEdge(c) && fourthEdge(c)));
+                        || (secondEdge(c) && thirdEdge(c) && fourthEdge(c));
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, byte[])? newC = NextTreeBranch(arbre, (c) => ((firstEdge(c) && secondEdge(c) && thirdEdge(c))
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => (firstEdge(c) && secondEdge(c) && thirdEdge(c))
                         || (firstEdge(c) && thirdEdge(c) && fourthEdge(c))
                         || (firstEdge(c) && fourthEdge(c) && secondEdge(c))
-                        || (secondEdge(c) && thirdEdge(c) && fourthEdge(c))));
+                        || (secondEdge(c) && thirdEdge(c) && fourthEdge(c)));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -2335,14 +2644,14 @@ namespace Rubik_s_cube_solver
             arbre = [];
             dico = new()
             {
-                { c.ToString(), new byte[1] { 0 } }
+                { c.ToString(), [0] }
             };
             arbre.Add(dico);
             isPlaced = firstEdge(c) && secondEdge(c) && thirdEdge(c) && fourthEdge(c);
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, byte[])? newC = NextTreeBranch(arbre, (c) => firstEdge(c) && secondEdge(c) && thirdEdge(c) && fourthEdge(c));
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => firstEdge(c) && secondEdge(c) && thirdEdge(c) && fourthEdge(c));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -2384,18 +2693,17 @@ namespace Rubik_s_cube_solver
                 || fourthCornerIsPlaced(c);
             bool allCornersIsPlaced(Cube c) => firstCornerIsPlaced(c) && secondCornerIsPlaced(c) && thirdCornerIsPlaced(c)
             && fourthCornerIsPlaced(c);
-
             List<Dictionary<string, byte[]>> arbre = [];
             Dictionary<string, byte[]> dico = new()
             {
-                { c.ToString(), new byte[1] { 0 } }
+                { c.ToString(), [0] }
             };
             arbre.Add(dico);
             bool isPlaced = crossAndEdges(c) && oneCornerIsPlaced(c);
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, byte[])? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c) && oneCornerIsPlaced(c));
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c) && oneCornerIsPlaced(c));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -2406,7 +2714,7 @@ namespace Rubik_s_cube_solver
             arbre = [];
             dico = new()
             {
-                { c.ToString(), new byte[1] { 0 } }
+                { c.ToString(), [0] }
             };
             arbre.Add(dico);
             isPlaced = crossAndEdges(c)
@@ -2419,7 +2727,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, byte[])? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
                         && ((firstCornerIsPlaced(c) && secondCornerIsPlaced(c))
                         || (firstCornerIsPlaced(c) && thirdCornerIsPlaced(c))
                         || (firstCornerIsPlaced(c) && fourthCornerIsPlaced(c))
@@ -2436,7 +2744,7 @@ namespace Rubik_s_cube_solver
             arbre = [];
             dico = new()
             {
-                { c.ToString(), new byte[1] { 0 } }
+                { c.ToString(), [0] }
             };
             arbre.Add(dico);
             isPlaced = crossAndEdges(c)
@@ -2447,7 +2755,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, byte[])? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
                         && ((firstCornerIsPlaced(c) && secondCornerIsPlaced(c) && thirdCornerIsPlaced(c))
                         || (firstCornerIsPlaced(c) && thirdCornerIsPlaced(c) && fourthCornerIsPlaced(c))
                         || (firstCornerIsPlaced(c) && fourthCornerIsPlaced(c) && secondCornerIsPlaced(c))
@@ -2462,7 +2770,7 @@ namespace Rubik_s_cube_solver
             arbre = [];
             dico = new()
             {
-                { c.ToString(), new byte[1] { 0 } }
+                { c.ToString(), [0] }
             };
             arbre.Add(dico);
             isPlaced = crossAndEdges(c)
@@ -2471,7 +2779,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, byte[])? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
                         && allCornersIsPlaced(c));
                 if (newC is not null)
                 {
@@ -2504,7 +2812,7 @@ namespace Rubik_s_cube_solver
             IEnumerable<string> quadInverseSexyMove = doubleInverseSexyMove.Concat(doubleInverseSexyMove);
             IEnumerable<byte> doubleInverseByteAlgo = inverseByteAlgo.Concat(inverseByteAlgo);
             IEnumerable<byte> quadInverseByteAlgo = doubleInverseByteAlgo.Concat(doubleInverseByteAlgo);
-            List<byte> uPrimeAlgo = GetAlgoFromStringEnum(new List<string>() { "U'" });
+            List<byte> uPrimeAlgo = GetAlgoFromStringEnum(["U'"]);
             while (!allCornersIsOriented(c))
             {
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
@@ -2523,14 +2831,12 @@ namespace Rubik_s_cube_solver
                     if (allCornersIsOriented(c)) break;
                     c.Uprime();
                     path.AddRange(uPrimeAlgo);
-
                 }
                 else
                 {
                     c.Uprime();
                     path.AddRange(uPrimeAlgo);
                 }
-
             }
             return c;
         }
@@ -2898,8 +3204,7 @@ namespace Rubik_s_cube_solver
             List<byte> byteAlgo = GetAlgoFromStringEnum(sexyMove);
             IEnumerable<byte> doubleByteAlgo = byteAlgo.Concat(byteAlgo);
             IEnumerable<byte> quadByteAlgo = doubleByteAlgo.Concat(doubleByteAlgo);
-            List<byte> dPrimeAlgo = GetAlgoFromStringEnum(new List<string>() { "D'" });
-
+            List<byte> dPrimeAlgo = GetAlgoFromStringEnum(["D'"]);
             static bool isSolvedOptim(Cube c) => c.RedFace.IsUniform && c.WhiteFace.IsUniform && c.YellowFace.IsUniform;
             while (!isSolvedOptim(c))
             {
@@ -2948,7 +3253,7 @@ namespace Rubik_s_cube_solver
             List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>> arbre1 = [];
             Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             bool firstEdge(Cube c) => c.WhiteFace.Pieces[2, 1] == 'W';
@@ -2971,7 +3276,7 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             isPlaced = (firstEdge(c1) && secondEdge(c1))
@@ -2998,19 +3303,19 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
-            isPlaced = ((firstEdge(c1) && secondEdge(c1) && thirdEdge(c1))
+            isPlaced = (firstEdge(c1) && secondEdge(c1) && thirdEdge(c1))
+                        || (firstEdge(c1) && thirdEdge(c1) && fourthEdge(c1))
+                        || (firstEdge(c1) && fourthEdge(c1) && secondEdge(c1))
+                        || (secondEdge(c1) && thirdEdge(c1) && fourthEdge(c1));
+            while (!isPlaced)
+            {
+                (Cube, IEnumerable<byte>)? newC = OldGetNextBranch(arbre1, (c1) => (firstEdge(c1) && secondEdge(c1) && thirdEdge(c1))
                         || (firstEdge(c1) && thirdEdge(c1) && fourthEdge(c1))
                         || (firstEdge(c1) && fourthEdge(c1) && secondEdge(c1))
                         || (secondEdge(c1) && thirdEdge(c1) && fourthEdge(c1)));
-            while (!isPlaced)
-            {
-                (Cube, IEnumerable<byte>)? newC = OldGetNextBranch(arbre1, (c1) => ((firstEdge(c1) && secondEdge(c1) && thirdEdge(c1))
-                        || (firstEdge(c1) && thirdEdge(c1) && fourthEdge(c1))
-                        || (firstEdge(c1) && fourthEdge(c1) && secondEdge(c1))
-                        || (secondEdge(c1) && thirdEdge(c1) && fourthEdge(c1))));
                 if (newC != null)
                 {
                     c1 = newC.Value.Item1.Clone();
@@ -3022,7 +3327,7 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             isPlaced = firstEdge(c1) && secondEdge(c1) && thirdEdge(c1) && fourthEdge(c1);
@@ -3130,7 +3435,7 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             isPlaced = crossAndEdges(c1) && oneCornerIsPlaced(c1);
@@ -3147,7 +3452,7 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             isPlaced = crossAndEdges(c1)
@@ -3176,7 +3481,7 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             isPlaced = crossAndEdges(c1)
@@ -3201,7 +3506,7 @@ namespace Rubik_s_cube_solver
             arbre1 = [];
             dico = new()
             {
-                { StringCubeToInt(c1.ToString()), new byte[1] { 0 } }
+                { StringCubeToInt(c1.ToString()), [0] }
             };
             arbre1.Add(dico);
             isPlaced = crossAndEdges(c1)
@@ -3627,6 +3932,52 @@ namespace Rubik_s_cube_solver
         public override int GetHashCode()
         {
             return HashCode.Combine(WhiteFace, YellowFace, RedFace, GreenFace, BlueFace, OrangeFace);
+        }
+
+        public static void PrintWithColors(List<string> ls)
+        {
+            foreach (string line in ls)
+            {
+                foreach (char item in line)
+                {
+                    if (item == 'Y')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write('Y');
+                    }
+                    else if (item == 'R')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write('R');
+                    }
+                    else if (item == 'B')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write('B');
+                    }
+                    else if (item == 'W')
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write('W');
+                    }
+                    else if (item == 'G')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write('G');
+                    }
+                    else if (item == 'O')
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.Write('O');
+                    }
+                    else
+                    {
+                        Console.Write(item);
+                    }
+                }
+                Console.WriteLine(' ');
+            }
+            Console.ResetColor();
         }
     }
 }

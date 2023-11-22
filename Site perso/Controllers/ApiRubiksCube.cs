@@ -7,24 +7,6 @@ namespace MySite.Controllers
     [Route("[controller]")]
     public class ApiRubiksCube : ControllerBase
     {
-        //private readonly ILogger<ApiRubiksCube> _logger;
-
-        //public ApiRubiksCube(ILogger<ApiRubiksCube> logger)
-        //{
-        //    _logger = logger;
-        //}
-
-        //[HttpGet(Name = "GetWeatherForecast")]
-        //public IEnumerable<WeatherForecast> Get()
-        //{
-        //    return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        //    {
-        //        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        //        TemperatureC = Random.Shared.Next(-20, 55),
-        //        Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        //    });
-        //}
-
         public static string SolveCube(string strCube)
         {
             int cptW = 0;
@@ -33,7 +15,7 @@ namespace MySite.Controllers
             int cptG = 0;
             int cptB = 0;
             int cptO = 0;
-            foreach (var color in strCube)
+            foreach (char color in strCube)
             {
                 if (color == 'W') cptW++;
                 else if (color == 'Y') cptY++;
@@ -53,7 +35,6 @@ namespace MySite.Controllers
             Cube cube = new(strCube);
             return Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(cube)));
         }
-
 
         [HttpPost("SolveCube")]
         public ActionResult<string> Solve([FromBody] string strCube = "")
@@ -85,7 +66,7 @@ namespace MySite.Controllers
             try
             {
                 return Ok(Cube.GetStringPath(Cube.GetReversalPath(Cube.GetAlgoFromStringEnum(
-                            Cube.StringPathToEnum(path.Replace(" ", string.Empty).ToUpper()).Reverse()))));
+                            Cube.StringPathToEnum(path.Replace(" ", string.Empty).ToUpper()).Reverse<string>()))));
             }
             catch
             {

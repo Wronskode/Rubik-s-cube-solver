@@ -10,7 +10,7 @@ namespace CubesTests
         {
             Cube c = new(500);
             Cube c2 = c.Clone();
-            var res = Cube.FastBeginnerMethod(c);
+            List<byte> res = Cube.FastBeginnerMethod(c);
             Assert.IsTrue(c2.ToString().Equals(c.ToString()));
             c.ExecuterAlgorithme(res);
             Assert.IsTrue(c.IsSolved);
@@ -30,11 +30,11 @@ namespace CubesTests
         {
             Cube c = new(500);
             Cube c1 = c.Clone();
-            var res = Cube.FastBeginnerMethod(c);
-            var res2 = Cube.LightOptimization(res);
+            List<byte> res = Cube.FastBeginnerMethod(c);
+            List<byte> res2 = Cube.LightOptimization(res);
             c.ExecuterAlgorithme(res);
             c1.ExecuterAlgorithme(res2);
-            Assert.IsTrue(c.IsSolved && c1.IsSolved && res2.Count() <= res.Count);
+            Assert.IsTrue(c.IsSolved && c1.IsSolved && res2.Count <= res.Count);
         }
 
         [TestMethod]
@@ -42,8 +42,8 @@ namespace CubesTests
         {
             Cube c = new(500);
             Cube c1 = c.Clone();
-            var res = Cube.FastBeginnerMethod(c);
-            var res2 = Cube.OptimizePath(res);
+            List<byte> res = Cube.FastBeginnerMethod(c);
+            byte[] res2 = Cube.OptimizePath(res);
             c.ExecuterAlgorithme(res);
             c1.ExecuterAlgorithme(res2);
             Assert.IsTrue(c.IsSolved && c1.IsSolved && res2.Length <= res.Count);
@@ -54,8 +54,8 @@ namespace CubesTests
         {
             Cube c = new(500);
             Cube c1 = c.Clone();
-            var res = Cube.FastBeginnerMethod(c);
-            var periodicity = Cube.Periodicity(res);
+            List<byte> res = Cube.FastBeginnerMethod(c);
+            int periodicity = Cube.Periodicity(res);
             Cube solvedCube = new();
             for (int i = 0; i < periodicity; i++)
             {
