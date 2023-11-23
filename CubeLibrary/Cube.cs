@@ -2792,20 +2792,20 @@ namespace Rubik_s_cube_solver
         }
         private static Cube OrientCorners(Cube c, List<byte> path)
         {
-            bool firstCornerOriented(Cube c) => c.BlueFace.Pieces[0, 1] == 'B'
+            bool firstCornerOriented() => c.BlueFace.Pieces[0, 1] == 'B'
                 && c.RedFace.Pieces[0, 2] == 'R'
                 && c.WhiteFace.Pieces[2, 2] == 'W';
-            bool secondCornerIsOriented(Cube c) => c.RedFace.Pieces[0, 0] == 'R'
+            bool secondCornerIsOriented() => c.RedFace.Pieces[0, 0] == 'R'
                 && c.WhiteFace.Pieces[2, 0] == 'W'
                 && c.GreenFace.Pieces[0, 2] == 'G';
-            bool thirdCornerIsOriented(Cube c) => c.OrangeFace.Pieces[0, 1] == 'O'
+            bool thirdCornerIsOriented() => c.OrangeFace.Pieces[0, 1] == 'O'
                 && c.BlueFace.Pieces[0, 2] == 'B'
                 && c.WhiteFace.Pieces[0, 2] == 'W';
-            bool fourthCornerIsOriented(Cube c) => c.WhiteFace.Pieces[0, 0] == 'W'
+            bool fourthCornerIsOriented() => c.WhiteFace.Pieces[0, 0] == 'W'
                 && c.GreenFace.Pieces[0, 0] == 'G'
                 && c.OrangeFace.Pieces[0, 2] == 'O';
-            bool allCornersIsOriented(Cube c) => firstCornerOriented(c) && secondCornerIsOriented(c) && thirdCornerIsOriented(c)
-                && fourthCornerIsOriented(c);
+            bool allCornersIsOriented() => firstCornerOriented() && secondCornerIsOriented() && thirdCornerIsOriented()
+                && fourthCornerIsOriented();
             List<string> inverseSexyMove = ["F", "D", "F'", "D'"];
             List<byte> inverseByteAlgo = GetAlgoFromStringEnum(inverseSexyMove);
             IEnumerable<string> doubleInverseSexyMove = inverseSexyMove.Concat(inverseSexyMove);
@@ -2813,14 +2813,14 @@ namespace Rubik_s_cube_solver
             IEnumerable<byte> doubleInverseByteAlgo = inverseByteAlgo.Concat(inverseByteAlgo);
             IEnumerable<byte> quadInverseByteAlgo = doubleInverseByteAlgo.Concat(doubleInverseByteAlgo);
             List<byte> uPrimeAlgo = GetAlgoFromStringEnum(["U'"]);
-            while (!allCornersIsOriented(c))
+            while (!allCornersIsOriented())
             {
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
                 if (c.RedFace.Pieces[0, 0] == 'W')
                 {
                     c.ExecuterAlgorithme(quadInverseSexyMove);
                     path.AddRange(quadInverseByteAlgo);
-                    if (allCornersIsOriented(c)) break;
+                    if (allCornersIsOriented()) break;
                     c.Uprime();
                     path.AddRange(uPrimeAlgo);
                 }
@@ -2828,7 +2828,7 @@ namespace Rubik_s_cube_solver
                 {
                     c.ExecuterAlgorithme(doubleInverseSexyMove);
                     path.AddRange(doubleInverseByteAlgo);
-                    if (allCornersIsOriented(c)) break;
+                    if (allCornersIsOriented()) break;
                     c.Uprime();
                     path.AddRange(uPrimeAlgo);
                 }
@@ -2842,7 +2842,7 @@ namespace Rubik_s_cube_solver
         }
         private static Cube SecondLayer(Cube c, List<byte> path, IEnumerable<byte> dAlgo)
         {
-            bool crossAndEdges(Cube c) => c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
+            bool crossAndEdges() => c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
             && c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
             && c.RedFace.Pieces[0, 1] == 'R' && c.BlueFace.Pieces[0, 1] == 'B'
             && c.GreenFace.Pieces[0, 1] == 'G' && c.OrangeFace.Pieces[0, 1] == 'O';
@@ -2858,7 +2858,7 @@ namespace Rubik_s_cube_solver
             List<string> secondLayerLeftGreenFace = ["D'", "R'", "D", "R", "D", "F", "D'", "F'"];
             List<string> secondLayerRightGreenFace = ["D", "L", "D'", "L'", "D'", "F'", "D", "F"];
 
-            bool isSecondLayerDone(Cube c) => crossAndEdges(c)
+            bool isSecondLayerDone() => crossAndEdges()
                     && c.WhiteFace.IsUniform && c.RedFace.Pieces[0, 1] == 'R'
                     && c.BlueFace.Pieces[0, 1] == 'B' && c.GreenFace.Pieces[0, 1] == 'G'
                     && c.OrangeFace.Pieces[0, 1] == 'O'
@@ -2867,7 +2867,7 @@ namespace Rubik_s_cube_solver
                     && c.BlueFace.Pieces[1, 0] == 'B' && c.BlueFace.Pieces[1, 2] == 'B'
                     && c.GreenFace.Pieces[1, 0] == 'G' && c.GreenFace.Pieces[1, 2] == 'G';
             int i = 0;
-            while (!isSecondLayerDone(c))
+            while (!isSecondLayerDone())
             {
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
                 if (c.RedFace.Pieces[2, 1] == 'R' && c.YellowFace.Pieces[0, 1] != 'Y')
@@ -2995,9 +2995,9 @@ namespace Rubik_s_cube_solver
             List<string> algoCrossPattern = ["R", "D", "F", "D'", "F'", "R'"];
             List<string> algoCrossPattern2 = ["R", "F", "D", "F'", "D'", "R'"];
 
-            static bool yellowCrossIsDone(Cube c) => c.YellowFace.Pieces[0, 1] == 'Y' && c.YellowFace.Pieces[1, 0] == 'Y'
+            bool yellowCrossIsDone() => c.YellowFace.Pieces[0, 1] == 'Y' && c.YellowFace.Pieces[1, 0] == 'Y'
                                      && c.YellowFace.Pieces[1, 2] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y';
-            while (!yellowCrossIsDone(c))
+            while (!yellowCrossIsDone())
             {
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
                 if (c.YellowFace.Pieces[0, 1] != 'Y' && c.YellowFace.Pieces[1, 0] != 'Y' && c.YellowFace.Pieces[1, 2] != 'Y' &&
@@ -3036,7 +3036,6 @@ namespace Rubik_s_cube_solver
                     c.D();
                     path.AddRange(dAlgo);
                 }
-
             }
             return c;
         }
@@ -3049,9 +3048,9 @@ namespace Rubik_s_cube_solver
             List<string> redF2 = ["F", "D", "F'", "D", "F", "D2", "F'"];
             List<string> blueF2 = ["D", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
 
-            static bool edgeIsPlaced(Cube c) => c.RedFace.Pieces[2, 1] == 'R' && c.GreenFace.Pieces[2, 1] == 'G'
+            bool edgeIsPlaced() => c.RedFace.Pieces[2, 1] == 'R' && c.GreenFace.Pieces[2, 1] == 'G'
                     && c.OrangeFace.Pieces[2, 1] == 'O' && c.BlueFace.Pieces[2, 1] == 'B';
-            while (!edgeIsPlaced(c))
+            while (!edgeIsPlaced())
             {
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
                 if (c.RedFace.Pieces[2, 1] == 'R' && c.BlueFace.Pieces[2, 1] == 'B')
@@ -3098,7 +3097,7 @@ namespace Rubik_s_cube_solver
         }
         private static Cube PlaceSecondCorners(Cube c, List<byte> path)
         {
-            static bool cornersIsPlaced(Cube c) => ((c.RedFace.Pieces[2, 2] == 'R' && c.BlueFace.Pieces[2, 0] == 'B')
+            bool cornersIsPlaced() => ((c.RedFace.Pieces[2, 2] == 'R' && c.BlueFace.Pieces[2, 0] == 'B')
                 || (c.RedFace.Pieces[2, 2] == 'B' && c.BlueFace.Pieces[2, 0] == 'Y' && c.YellowFace.Pieces[0, 2] == 'R')
                 || (c.RedFace.Pieces[2, 2] == 'Y' && c.BlueFace.Pieces[2, 0] == 'R' && c.YellowFace.Pieces[0, 2] == 'B'))
                 && ((c.RedFace.Pieces[2, 0] == 'R' && c.GreenFace.Pieces[2, 2] == 'G')
@@ -3118,7 +3117,7 @@ namespace Rubik_s_cube_solver
             List<string> cornerAlignementOptim3 = ["R", "D'", "L'", "D", "R'", "D'", "L", "D"];
             List<string> cornerAlignementOptim4 = ["B", "D'", "F'", "D", "B'", "D'", "F", "D"];
 
-            while (!cornersIsPlaced(c))
+            while (!cornersIsPlaced())
             {
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
                 if ((c.RedFace.Pieces[2, 2] == 'R' && c.BlueFace.Pieces[2, 0] == 'B')
@@ -3205,8 +3204,8 @@ namespace Rubik_s_cube_solver
             IEnumerable<byte> doubleByteAlgo = byteAlgo.Concat(byteAlgo);
             IEnumerable<byte> quadByteAlgo = doubleByteAlgo.Concat(doubleByteAlgo);
             List<byte> dPrimeAlgo = GetAlgoFromStringEnum(["D'"]);
-            static bool isSolvedOptim(Cube c) => c.RedFace.IsUniform && c.WhiteFace.IsUniform && c.YellowFace.IsUniform;
-            while (!isSolvedOptim(c))
+            bool isSolvedOptim() => c.RedFace.IsUniform && c.WhiteFace.IsUniform && c.YellowFace.IsUniform;
+            while (!isSolvedOptim())
             {
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
                 if (c.GreenFace.Pieces[2, 2] == 'Y')

@@ -91,28 +91,94 @@ static void LightOptimizationEvaluation()
 }
 
 //LightOptimizationEvaluation();
-Evaluate();
+//Evaluate();
 
-Cube randomCube = new(500);
-Cube cubeDeSecurite = randomCube.Clone();
-Cube cubeDeSecurite2 = randomCube.Clone();
-Console.WriteLine("Cube aléatoire : \n");
-Cube.PrintWithColors(randomCube.PrintCubeColors());
-List<byte> resolution = Cube.FastBeginnerMethod(randomCube);
-string mouvements = Cube.GetStringPath(resolution);
-List<byte> resLightOptim = Cube.LightOptimization(resolution);
-string lightOptimPath = Cube.GetStringPath(resLightOptim);
-byte[] optimRes = Cube.OptimizePath(resolution);
-string optimizedPath = Cube.GetStringPath(optimRes);
-Console.WriteLine("Résolution : " + mouvements + "\n\n");
-Console.WriteLine("Optimized Résolution : " + optimizedPath + "\n\n");
-Console.WriteLine("Light Optimized Résolution : " + lightOptimPath + "\n\n");
-Console.WriteLine("Résolution inverse : " + Cube.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>())) + "\n");
-Console.WriteLine("Longueur de la résolution : " + resolution.Count);
-Console.WriteLine("Longueur de la résolution optimisée (light) : " + resLightOptim.Count);
-Console.WriteLine("Longueur de la résolution optimisée : " + optimRes.Length);
-cubeDeSecurite.ExecuterAlgorithme(optimRes);
-randomCube.ExecuterAlgorithme(resolution);
-cubeDeSecurite2.ExecuterAlgorithme(resLightOptim);
-bool isOkay = cubeDeSecurite.IsSolved && randomCube.IsSolved && cubeDeSecurite2.IsSolved;
-Console.WriteLine("Tout s'est bien passé : " + isOkay);
+//Cube randomCube = new(500);
+//Cube cubeDeSecurite = randomCube.Clone();
+//Cube cubeDeSecurite2 = randomCube.Clone();
+//Console.WriteLine("Cube aléatoire : \n");
+//Cube.PrintWithColors(randomCube.PrintCubeColors());
+//List<byte> resolution = Cube.FastBeginnerMethod(randomCube);
+//string mouvements = Cube.GetStringPath(resolution);
+//List<byte> resLightOptim = Cube.LightOptimization(resolution);
+//string lightOptimPath = Cube.GetStringPath(resLightOptim);
+//byte[] optimRes = Cube.OptimizePath(resolution);
+//string optimizedPath = Cube.GetStringPath(optimRes);
+//Console.WriteLine("Résolution : " + mouvements + "\n\n");
+//Console.WriteLine("Optimized Résolution : " + optimizedPath + "\n\n");
+//Console.WriteLine("Light Optimized Résolution : " + lightOptimPath + "\n\n");
+//Console.WriteLine("Résolution inverse : " + Cube.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>())) + "\n");
+//Console.WriteLine("Longueur de la résolution : " + resolution.Count);
+//Console.WriteLine("Longueur de la résolution optimisée (light) : " + resLightOptim.Count);
+//Console.WriteLine("Longueur de la résolution optimisée : " + optimRes.Length);
+//cubeDeSecurite.ExecuterAlgorithme(optimRes);
+//randomCube.ExecuterAlgorithme(resolution);
+//cubeDeSecurite2.ExecuterAlgorithme(resLightOptim);
+//bool isOkay = cubeDeSecurite.IsSolved && randomCube.IsSolved && cubeDeSecurite2.IsSolved;
+//Console.WriteLine("Tout s'est bien passé : " + isOkay);
+
+while (true)
+{
+    Console.WriteLine("Enter the scramble : 1 - Random, 2 - User defined, 3 - Enter a Cube manually");
+    var str = Console.ReadLine();
+    bool ok = int.TryParse(str, out int n);
+    if (!ok) return;
+    if (n == 1)
+    {
+        Console.WriteLine("Enter the number of moves of the scramble");
+        str = Console.ReadLine();
+        ok = int.TryParse(str, out n);
+        if (!ok) return;
+        if (n < 0) return;
+        Cube randomCube = new();
+        string randomPath = Cube.GetStringPath(randomCube.Scramble(n));
+        Cube.PrintWithColors(randomCube.PrintCubeColors());
+        Console.WriteLine("Random scramble : " + randomPath + "\n");
+        var resolution = Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(randomCube)));
+        Console.WriteLine("Resolution : " + resolution+"\n");
+    }
+    else if (n == 2)
+    {
+        Console.WriteLine("Enter the moves of your scramble (one per line) (type 0 to end)");
+        Cube c = new();
+        List<string> fullAlgo = [];
+        while (true)
+        {
+            List<byte> algo;
+            str = Console.ReadLine().ToUpper();
+            if (str == "0" || str == string.Empty) break;
+            try
+            {
+                algo = Cube.GetAlgoFromStringEnum([str]);
+                fullAlgo.Add(str);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                break;
+            }
+            c.ExecuterAlgorithme(algo);
+            Cube.PrintWithColors(c.PrintCubeColors());
+        }
+        //Cube.PrintWithColors(c.PrintCubeColors());
+        Console.WriteLine("Random scramble : " + Cube.GetStringPath(Cube.GetAlgoFromStringEnum(fullAlgo)));
+        var resolution = Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
+        Console.WriteLine("Resolution : " + resolution + "\n");
+    }
+    else if (n == 3)
+    {
+        Console.WriteLine("Enter a cube :");
+        str = Console.ReadLine().ToUpper();
+        Cube c;
+        try
+        {
+            c = new(str);
+            var resolution = Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
+            Console.WriteLine("Resolution : " + resolution + "\n");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+}
