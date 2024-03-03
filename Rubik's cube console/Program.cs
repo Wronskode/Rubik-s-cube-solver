@@ -117,6 +117,7 @@ static void LightOptimizationEvaluation()
 //bool isOkay = cubeDeSecurite.IsSolved && randomCube.IsSolved && cubeDeSecurite2.IsSolved;
 //Console.WriteLine("Tout s'est bien passé : " + isOkay);
 
+
 while (true)
 {
     Console.WriteLine("Enter the scramble : 1 - Random, 2 - User defined, 3 - Enter a Cube manually");
@@ -163,7 +164,7 @@ while (true)
             Cube.PrintWithColors(c.PrintCubeColors());
         }
         //Cube.PrintWithColors(c.PrintCubeColors());
-        Console.WriteLine("Random scramble : " + Cube.GetStringPath(Cube.GetAlgoFromStringEnum(fullAlgo)));
+        Console.WriteLine("Scramble : " + Cube.GetStringPath(Cube.GetAlgoFromStringEnum(fullAlgo)));
         var resolution = Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
         Console.WriteLine("Resolution : " + resolution + "\n");
     }

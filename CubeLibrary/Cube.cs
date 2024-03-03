@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Rubik_s_cube_solver
@@ -11,6 +12,40 @@ namespace Rubik_s_cube_solver
         private readonly Face GreenFace;
         private readonly Face BlueFace;
         private readonly Face OrangeFace;
+
+        private static readonly string[] secondLayerLeftRedFace = ["D'", "B'", "D", "B", "D", "R", "D'", "R'"];
+        private static readonly string[] secondLayerRightRedFace = ["D", "F", "D'", "F'", "D'", "R'", "D", "R"];
+
+        private static readonly string[] secondLayerLeftBlueFace = ["D'", "L'", "D", "L", "D", "B", "D'", "B'"];
+        private static readonly string[] secondLayerRightBlueFace = ["D", "R", "D", "R'", "D'", "B'", "D'", "B"];
+
+        private static readonly string[] secondLayerLeftOrangeFace = ["D'", "F'", "D", "F", "D", "L", "D'", "L'"];
+        private static readonly string[] secondLayerRightOrangeFace = ["D", "B", "D'", "B'", "D'", "L'", "D", "L"];
+
+        private static readonly string[] secondLayerLeftGreenFace = ["D'", "R'", "D", "R", "D", "F", "D'", "F'"];
+        private static readonly string[] secondLayerRightGreenFace = ["D", "L", "D'", "L'", "D'", "F'", "D", "F"];
+
+        private static readonly string[] algoCrossPattern = ["R", "D", "F", "D'", "F'", "R'"];
+        private static readonly string[] algoCrossPattern2 = ["R", "F", "D", "F'", "D'", "R'"];
+
+        private static readonly string[] redF = ["D2", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
+        private static readonly string[] blueF = ["D", "F", "D", "F'", "D", "F", "D2", "F'"];
+        private static readonly string[] greenF = ["F", "D", "F'", "D", "F", "D2", "F'", "D"];
+        private static readonly string[] greenF2 = ["D'", "F", "D", "F'", "D", "F", "D2", "F'", "D2"];
+        private static readonly string[] redF2 = ["F", "D", "F'", "D", "F", "D2", "F'"];
+        private static readonly string[] blueF2 = ["D", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
+
+        private static readonly string[] cornerAlignementAlgo = ["D'", "B'", "D", "F", "D'", "B", "D", "F'"];
+        private static readonly string[] cornerAlignementAlgo2 = ["B'", "D", "F", "D'", "B", "D", "F'", "D'"];
+        private static readonly string[] cornerAlignementAlgo3 = ["D2", "B'", "D", "F", "D'", "B", "D", "F'", "D"];
+        private static readonly string[] cornerAlignementAlgo4 = ["D", "B'", "D", "F", "D'", "B", "D", "F'", "D2"];
+
+        private static readonly string[] cornerAlignementOptim = ["F", "D'", "B'", "D", "F'", "D'", "B", "D"];
+        private static readonly string[] cornerAlignementOptim2 = ["L", "D'", "R'", "D", "L'", "D'", "R", "D"];
+        private static readonly string[] cornerAlignementOptim3 = ["R", "D'", "L'", "D", "R'", "D'", "L", "D"];
+        private static readonly string[] cornerAlignementOptim4 = ["B", "D'", "F'", "D", "B'", "D'", "F", "D"];
+
+        private static readonly string[] sexyMove = ["R", "U", "R'", "U'"];
         public bool IsSolved
         {
             get
@@ -2820,18 +2855,6 @@ namespace Rubik_s_cube_solver
             && c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
             && c.RedFace.Pieces[0, 1] == 'R' && c.BlueFace.Pieces[0, 1] == 'B'
             && c.GreenFace.Pieces[0, 1] == 'G' && c.OrangeFace.Pieces[0, 1] == 'O';
-            List<string> secondLayerLeftRedFace = ["D'", "B'", "D", "B", "D", "R", "D'", "R'"];
-            List<string> secondLayerRightRedFace = ["D", "F", "D'", "F'", "D'", "R'", "D", "R"];
-
-            List<string> secondLayerLeftBlueFace = ["D'", "L'", "D", "L", "D", "B", "D'", "B'"];
-            List<string> secondLayerRightBlueFace = ["D", "R", "D", "R'", "D'", "B'", "D'", "B"];
-
-            List<string> secondLayerLeftOrangeFace = ["D'", "F'", "D", "F", "D", "L", "D'", "L'"];
-            List<string> secondLayerRightOrangeFace = ["D", "B", "D'", "B'", "D'", "L'", "D", "L"];
-
-            List<string> secondLayerLeftGreenFace = ["D'", "R'", "D", "R", "D", "F", "D'", "F'"];
-            List<string> secondLayerRightGreenFace = ["D", "L", "D'", "L'", "D'", "F'", "D", "F"];
-
             bool isSecondLayerDone() => crossAndEdges()
                     && c.WhiteFace.IsUniform && c.RedFace.Pieces[0, 1] == 'R'
                     && c.BlueFace.Pieces[0, 1] == 'B' && c.GreenFace.Pieces[0, 1] == 'G'
@@ -2966,9 +2989,6 @@ namespace Rubik_s_cube_solver
         }
         private static Cube YellowCross(Cube c, List<byte> path, IEnumerable<byte> dAlgo)
         {
-            List<string> algoCrossPattern = ["R", "D", "F", "D'", "F'", "R'"];
-            List<string> algoCrossPattern2 = ["R", "F", "D", "F'", "D'", "R'"];
-
             bool yellowCrossIsDone() => c.YellowFace.Pieces[0, 1] == 'Y' && c.YellowFace.Pieces[1, 0] == 'Y'
                                      && c.YellowFace.Pieces[1, 2] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y';
             while (!yellowCrossIsDone())
@@ -3015,13 +3035,6 @@ namespace Rubik_s_cube_solver
         }
         private static Cube OrientEdges(Cube c, List<byte> path, IEnumerable<byte> dAlgo)
         {
-            List<string> redF = ["D2", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
-            List<string> blueF = ["D", "F", "D", "F'", "D", "F", "D2", "F'"];
-            List<string> greenF = ["F", "D", "F'", "D", "F", "D2", "F'", "D"];
-            List<string> greenF2 = ["D'", "F", "D", "F'", "D", "F", "D2", "F'", "D2"];
-            List<string> redF2 = ["F", "D", "F'", "D", "F", "D2", "F'"];
-            List<string> blueF2 = ["D", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
-
             bool edgeIsPlaced() => c.RedFace.Pieces[2, 1] == 'R' && c.GreenFace.Pieces[2, 1] == 'G'
                     && c.OrangeFace.Pieces[2, 1] == 'O' && c.BlueFace.Pieces[2, 1] == 'B';
             while (!edgeIsPlaced())
@@ -3080,16 +3093,6 @@ namespace Rubik_s_cube_solver
                 && ((c.BlueFace.Pieces[2, 2] == 'B' && c.OrangeFace.Pieces[2, 0] == 'O')
                 || (c.BlueFace.Pieces[2, 2] == 'O' && c.OrangeFace.Pieces[2, 0] == 'Y' && c.YellowFace.Pieces[2, 2] == 'B')
                 || (c.BlueFace.Pieces[2, 2] == 'Y' && c.OrangeFace.Pieces[2, 0] == 'B' && c.YellowFace.Pieces[2, 2] == 'O'));
-
-            List<string> cornerAlignementAlgo = ["D'", "B'", "D", "F", "D'", "B", "D", "F'"];
-            List<string> cornerAlignementAlgo2 = ["B'", "D", "F", "D'", "B", "D", "F'", "D'"];
-            List<string> cornerAlignementAlgo3 = ["D2", "B'", "D", "F", "D'", "B", "D", "F'", "D"];
-            List<string> cornerAlignementAlgo4 = ["D", "B'", "D", "F", "D'", "B", "D", "F'", "D2"];
-
-            List<string> cornerAlignementOptim = ["F", "D'", "B'", "D", "F'", "D'", "B", "D"];
-            List<string> cornerAlignementOptim2 = ["L", "D'", "R'", "D", "L'", "D'", "R", "D"];
-            List<string> cornerAlignementOptim3 = ["R", "D'", "L'", "D", "R'", "D'", "L", "D"];
-            List<string> cornerAlignementOptim4 = ["B", "D'", "F'", "D", "B'", "D'", "F", "D"];
 
             while (!cornersIsPlaced())
             {
@@ -3171,7 +3174,6 @@ namespace Rubik_s_cube_solver
         }
         private static void OrientLastCornersOptim(Cube c, List<byte> path)
         {
-            List<string> sexyMove = ["R", "U", "R'", "U'"];
             IEnumerable<string> doubleSM = sexyMove.Concat(sexyMove);
             IEnumerable<string> quadSM = doubleSM.Concat(doubleSM);
             List<byte> byteAlgo = GetAlgoFromStringEnum(sexyMove);
