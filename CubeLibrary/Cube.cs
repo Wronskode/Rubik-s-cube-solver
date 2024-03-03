@@ -810,48 +810,22 @@ namespace Rubik_s_cube_solver
             int i = 0;
             foreach (byte item in path)
             {
-                switch (item)
+                newPath[i] = item switch
                 {
-                    case 0:
-                        newPath[i] = 6;
-                        break;
-                    case 1:
-                        newPath[i] = 7;
-                        break;
-                    case 2:
-                        newPath[i] = 8;
-                        break;
-                    case 3:
-                        newPath[i] = 9;
-                        break;
-                    case 4:
-                        newPath[i] = 10;
-                        break;
-                    case 5:
-                        newPath[i] = 11;
-                        break;
-                    case 6:
-                        newPath[i] = 0;
-                        break;
-                    case 7:
-                        newPath[i] = 1;
-                        break;
-                    case 8:
-                        newPath[i] = 2;
-                        break;
-                    case 9:
-                        newPath[i] = 3;
-                        break;
-                    case 10:
-                        newPath[i] = 4;
-                        break;
-                    case 11:
-                        newPath[i] = 5;
-                        break;
-                    default:
-                        newPath[i] = item;
-                        break;
-                }
+                    0 => 6,
+                    1 => 7,
+                    2 => 8,
+                    3 => 9,
+                    4 => 10,
+                    5 => 11,
+                    6 => 0,
+                    7 => 1,
+                    8 => 2,
+                    9 => 3,
+                    10 => 4,
+                    11 => 5,
+                    _ => item,
+                };
                 i++;
             }
             return newPath;

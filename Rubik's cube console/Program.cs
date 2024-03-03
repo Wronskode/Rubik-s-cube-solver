@@ -132,8 +132,8 @@ while (true)
         if (n < 0) return;
         Cube randomCube = new();
         string randomPath = Cube.GetStringPath(randomCube.Scramble(n));
-        Cube.PrintWithColors(randomCube.PrintCubeColors());
         Console.WriteLine("Random scramble : " + randomPath + "\n");
+        Cube.PrintWithColors(randomCube.PrintCubeColors());
         var resolution = Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(randomCube)));
         Console.WriteLine("Resolution : " + resolution+"\n");
     }
@@ -145,7 +145,9 @@ while (true)
         while (true)
         {
             List<byte> algo;
+#pragma warning disable CS8602 // Déréférencement d'une éventuelle référence null.
             str = Console.ReadLine().ToUpper();
+#pragma warning restore CS8602 // Déréférencement d'une éventuelle référence null.
             if (str == "0" || str == string.Empty) break;
             try
             {
@@ -168,7 +170,9 @@ while (true)
     else if (n == 3)
     {
         Console.WriteLine("Enter a cube :");
+#pragma warning disable CS8602 // Déréférencement d'une éventuelle référence null.
         str = Console.ReadLine().ToUpper();
+#pragma warning restore CS8602 // Déréférencement d'une éventuelle référence null.
         Cube c;
         try
         {
