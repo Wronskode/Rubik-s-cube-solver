@@ -1252,10 +1252,19 @@ namespace Rubik_s_cube_solver
             listDico.Add(newCubes);
         }
 
-
-        public static void NextTreeBranchForMITM(List<Dictionary<(ulong, ulong), byte>> listDico)
+        private static int Heuristique(string s)
         {
-            int methodsCount = 18;
+            var solution = (new Cube()).ToString();
+            int k = 0;
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (solution[i] == s[i]) k++;
+            }
+            return k;
+        }
+        public static void NextTreeBranchForMITM(List<Dictionary<(ulong, ulong), byte>> listDico, bool heuristique)
+        {
+            byte methodsCount = 18; // Nombre de mouvements possibles
             Dictionary<(ulong, ulong), byte> newCubes = [];
             foreach (KeyValuePair<(ulong, ulong), byte> cube in listDico[^1])
             {
@@ -1264,7 +1273,8 @@ namespace Rubik_s_cube_solver
                 {
                     //Cube c = c1.Clone();
                     c1.DoMove(j);
-                    (ulong, ulong) intCube = CompressState(c1.ToString());
+                    string c1String = c1.ToString();
+                    (ulong, ulong) intCube = CompressState(c1String);
                     bool isContained = false;
                     foreach (Dictionary<(ulong, ulong), byte> item in listDico)
                     {
@@ -1274,7 +1284,7 @@ namespace Rubik_s_cube_solver
                             break;
                         }
                     }
-                    if (!isContained)
+                    if (!isContained && (listDico.Count < 6 || !heuristique || Heuristique(c1String) > 15+(listDico.Count-5)*3))
                         newCubes.TryAdd(intCube, j);
                     if (j != 17)
                         c1.DoMove(GetReversalMove(j));
@@ -1832,10 +1842,11 @@ namespace Rubik_s_cube_solver
             IEnumerable<byte> solution = new List<byte>();
             while (!isSolved)
             {
+                Console.WriteLine(i);
                 if (i == deepMax) return [];
                 Parallel.Invoke(
-                    () => NextTreeBranchForMITM(arbreInitial),
-                    () => NextTreeBranchForMITM(arbreFinal)
+                    () => NextTreeBranchForMITM(arbreInitial, true),
+                    () => NextTreeBranchForMITM(arbreFinal, false)
                     );
                 ParallelQuery<KeyValuePair<(ulong, ulong), byte>> arbreFinalManySelected = arbreFinal.AsParallel().SelectMany(x => x);
                 ParallelQuery<KeyValuePair<(ulong, ulong), byte>> arbreInitialManySelected = arbreInitial.AsParallel().SelectMany(x => x);

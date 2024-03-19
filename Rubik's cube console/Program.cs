@@ -135,7 +135,7 @@ while (true)
         string randomPath = Cube.GetStringPath(randomCube.Scramble(n));
         Console.WriteLine("Random scramble : " + randomPath + "\n");
         Cube.PrintWithColors(randomCube.PrintCubeColors());
-        var resolution = Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(randomCube)));
+        var resolution = Cube.GetStringPath(Cube.LightOptimization([.. Cube.MeetInTheMiddle5(randomCube)]));
         Console.WriteLine("Resolution : " + resolution+"\n");
     }
     else if (n == 2)
