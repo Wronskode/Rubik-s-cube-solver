@@ -27,7 +27,7 @@ static void Evaluate()
         benchCube.Stop();
         //IEnumerable<byte> cheminFinal = Cube.FastMethodeDebutantOptim(c1);
         double finalTime = benchCube.Elapsed.TotalSeconds;
-        string finalStringPath = Cube.GetStringPath(cheminFinal);
+        string finalStringPath = Move.GetStringPath(cheminFinal);
         int length = cheminFinal.Count;
         Console.WriteLine("Longueur de la résolution en terme de mouvements : " + length);
         Console.WriteLine("Temps " + finalTime + "s");
@@ -62,8 +62,8 @@ static void LightOptimizationEvaluation()
         Cube c1 = new();
         Cube c2 = new();
         Cube c3 = new();
-        string path = Cube.GetStringPath(c3.Scramble(100).Select(x => x));
-        List<byte> res = Cube.GetAlgoFromStringEnum(Cube.StringPathToEnum(path));
+        string path = Move.GetStringPath(c3.Scramble(100).Select(x => x));
+        List<byte> res = Move.GetAlgoFromStringEnum(Move.StringPathToEnum(path));
         Stopwatch timer = new();
         timer.Start();
         List<byte> optRes = Cube.LightOptimization([.. Cube.LightOptimization([.. res])]);
@@ -72,15 +72,15 @@ static void LightOptimizationEvaluation()
         c2.ExecuterAlgorithme(optRes);
         if (c1.ToString() != c2.ToString())
         {
-            Console.WriteLine(Cube.GetStringPath(res) + "\n");
-            Console.WriteLine(Cube.GetStringPath(optRes));
+            Console.WriteLine(Move.GetStringPath(res) + "\n");
+            Console.WriteLine(Move.GetStringPath(optRes));
             Console.WriteLine(i);
             return;
         }
         else
         {
-            Console.WriteLine(Cube.GetStringPath(res));
-            Console.WriteLine(Cube.GetStringPath(optRes) + "\n");
+            Console.WriteLine(Move.GetStringPath(res));
+            Console.WriteLine(Move.GetStringPath(optRes) + "\n");
             somme += res.Count;
             somme2 += optRes.Count;
             secondSomme += time;
@@ -99,15 +99,15 @@ static void LightOptimizationEvaluation()
 //Console.WriteLine("Cube aléatoire : \n");
 //Cube.PrintWithColors(randomCube.PrintCubeColors());
 //List<byte> resolution = Cube.FastBeginnerMethod(randomCube);
-//string mouvements = Cube.GetStringPath(resolution);
+//string mouvements = Moves.GetStringPath(resolution);
 //List<byte> resLightOptim = Cube.LightOptimization(resolution);
-//string lightOptimPath = Cube.GetStringPath(resLightOptim);
+//string lightOptimPath = Moves.GetStringPath(resLightOptim);
 //byte[] optimRes = Cube.OptimizePath(resolution);
-//string optimizedPath = Cube.GetStringPath(optimRes);
+//string optimizedPath = Moves.GetStringPath(optimRes);
 //Console.WriteLine("Résolution : " + mouvements + "\n\n");
 //Console.WriteLine("Optimized Résolution : " + optimizedPath + "\n\n");
 //Console.WriteLine("Light Optimized Résolution : " + lightOptimPath + "\n\n");
-//Console.WriteLine("Résolution inverse : " + Cube.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>())) + "\n");
+//Console.WriteLine("Résolution inverse : " + Moves.GetStringPath(Cube.GetReversalPath(resolution.Reverse<byte>())) + "\n");
 //Console.WriteLine("Longueur de la résolution : " + resolution.Count);
 //Console.WriteLine("Longueur de la résolution optimisée (light) : " + resLightOptim.Count);
 //Console.WriteLine("Longueur de la résolution optimisée : " + optimRes.Length);
@@ -132,10 +132,10 @@ while (true)
         if (!ok) return;
         if (n < 0) return;
         Cube randomCube = new();
-        string randomPath = Cube.GetStringPath(randomCube.Scramble(n));
+        string randomPath = Move.GetStringPath(randomCube.Scramble(n));
         Console.WriteLine("Random scramble : " + randomPath + "\n");
         Cube.PrintWithColors(randomCube.PrintCubeColors());
-        var resolution = Cube.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(randomCube)]));
+        var resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(randomCube)]));
         Console.WriteLine("Resolution : " + resolution+"\n");
     }
     else if (n == 2)
@@ -152,7 +152,7 @@ while (true)
             if (str == "0" || str == string.Empty) break;
             try
             {
-                algo = Cube.GetAlgoFromStringEnum([str]);
+                algo = Move.GetAlgoFromStringEnum([str]);
                 fullAlgo.Add(str);
             }
             catch (Exception ex)
@@ -164,8 +164,8 @@ while (true)
             Cube.PrintWithColors(c.PrintCubeColors());
         }
         //Cube.PrintWithColors(c.PrintCubeColors());
-        Console.WriteLine("Scramble : " + Cube.GetStringPath(Cube.GetAlgoFromStringEnum(fullAlgo)));
-        var resolution = Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
+        Console.WriteLine("Scramble : " + Move.GetStringPath(Move.GetAlgoFromStringEnum(fullAlgo)));
+        var resolution = Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
         Console.WriteLine("Resolution : " + resolution + "\n");
     }
     else if (n == 3)
@@ -178,7 +178,7 @@ while (true)
         try
         {
             c = new(str);
-            var resolution = Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
+            var resolution = Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
             Console.WriteLine("Resolution : " + resolution + "\n");
         }
         catch (Exception ex)

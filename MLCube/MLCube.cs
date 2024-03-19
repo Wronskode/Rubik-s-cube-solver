@@ -22,7 +22,7 @@ List<int> cubeStringToInt(string cubeName)
 void GenererCSV(StreamWriter w)
 {
     Cube c = new(500);
-    byte[] cheminFinal = Cube.BeginnerMethod(c);
+    byte[] cheminFinal = [.. Cube.FastBeginnerMethod(c)];
     List<List<int>> csvDico = [];
     for (int i = 0; i < cheminFinal.Length; i++)
     {
@@ -118,7 +118,7 @@ string GenererRandomCubesCSV(int shuffling)
     Cube c = new();
     IEnumerable<byte> randPath = c.Scramble(shuffling);
     List<int> ligne = cubeStringToInt(c.ToString());
-    foreach (byte item in Cube.GetReversalPath(randPath.Reverse()))
+    foreach (byte item in Move.GetReversalPath(randPath.Reverse()))
     {
         ligne.Add(item);
     }
@@ -271,7 +271,7 @@ StringBuilder GenererKociembaCSV(List<byte> cheminFinal)
 {
     StringBuilder txt = new();
     Cube c = new();
-    c.ExecuterAlgorithme(Cube.GetReversalPath(cheminFinal.Reverse<byte>()));
+    c.ExecuterAlgorithme(Move.GetReversalPath(cheminFinal.Reverse<byte>()));
     List<List<int>> csvDico = [];
     for (int i = 0; i < cheminFinal.Count; i++)
     {
@@ -326,7 +326,7 @@ void KociembaParser(string input, string output)
                 if (item != "") newLine.Append(item + " ");
                 else break;
             }
-            moves.Add([.. Cube.GetAlgoFromStringEnum(newLine.ToString().Trim().Split(' '))]);
+            moves.Add([.. Move.GetAlgoFromStringEnum(newLine.ToString().Trim().Split(' '))]);
         }
     }
     using StreamWriter writer = new(output);

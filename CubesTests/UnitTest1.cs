@@ -21,7 +21,7 @@ namespace CubesTests
         {
             Cube c = new();
             IEnumerable<byte> scramble = c.Scramble(500);
-            c.ExecuterAlgorithme(Cube.GetReversalPath(scramble.Reverse()));
+            c.ExecuterAlgorithme(Move.GetReversalPath(scramble.Reverse()));
             Assert.IsTrue(c.IsSolved);
         }
 

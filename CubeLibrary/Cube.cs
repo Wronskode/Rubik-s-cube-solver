@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 
 namespace Rubik_s_cube_solver
@@ -13,39 +12,39 @@ namespace Rubik_s_cube_solver
         private readonly Face BlueFace;
         private readonly Face OrangeFace;
 
-        private static readonly string[] secondLayerLeftRedFace = ["D'", "B'", "D", "B", "D", "R", "D'", "R'"];
-        private static readonly string[] secondLayerRightRedFace = ["D", "F", "D'", "F'", "D'", "R'", "D", "R"];
+        private static readonly List<byte> secondLayerLeftRedFace = Move.GetAlgoFromStringEnum(["D'", "B'", "D", "B", "D", "R", "D'", "R'"]);
+        private static readonly List<byte> secondLayerRightRedFace = Move.GetAlgoFromStringEnum(["D", "F", "D'", "F'", "D'", "R'", "D", "R"]);
 
-        private static readonly string[] secondLayerLeftBlueFace = ["D'", "L'", "D", "L", "D", "B", "D'", "B'"];
-        private static readonly string[] secondLayerRightBlueFace = ["D", "R", "D", "R'", "D'", "B'", "D'", "B"];
+        private static readonly List<byte> secondLayerLeftBlueFace = Move.GetAlgoFromStringEnum(["D'", "L'", "D", "L", "D", "B", "D'", "B'"]);
+        private static readonly List<byte> secondLayerRightBlueFace = Move.GetAlgoFromStringEnum(["D", "R", "D", "R'", "D'", "B'", "D'", "B"]);
 
-        private static readonly string[] secondLayerLeftOrangeFace = ["D'", "F'", "D", "F", "D", "L", "D'", "L'"];
-        private static readonly string[] secondLayerRightOrangeFace = ["D", "B", "D'", "B'", "D'", "L'", "D", "L"];
+        private static readonly List<byte> secondLayerLeftOrangeFace = Move.GetAlgoFromStringEnum(["D'", "F'", "D", "F", "D", "L", "D'", "L'"]);
+        private static readonly List<byte> secondLayerRightOrangeFace = Move.GetAlgoFromStringEnum(["D", "B", "D'", "B'", "D'", "L'", "D", "L"]);
 
-        private static readonly string[] secondLayerLeftGreenFace = ["D'", "R'", "D", "R", "D", "F", "D'", "F'"];
-        private static readonly string[] secondLayerRightGreenFace = ["D", "L", "D'", "L'", "D'", "F'", "D", "F"];
+        private static readonly List<byte> secondLayerLeftGreenFace = Move.GetAlgoFromStringEnum(["D'", "R'", "D", "R", "D", "F", "D'", "F'"]);
+        private static readonly List<byte> secondLayerRightGreenFace = Move.GetAlgoFromStringEnum(["D", "L", "D'", "L'", "D'", "F'", "D", "F"]);
 
-        private static readonly string[] algoCrossPattern = ["R", "D", "F", "D'", "F'", "R'"];
-        private static readonly string[] algoCrossPattern2 = ["R", "F", "D", "F'", "D'", "R'"];
+        private static readonly List<byte> algoCrossPattern = Move.GetAlgoFromStringEnum(["R", "D", "F", "D'", "F'", "R'"]);
+        private static readonly List<byte> algoCrossPattern2 = Move.GetAlgoFromStringEnum(["R", "F", "D", "F'", "D'", "R'"]);
 
-        private static readonly string[] redF = ["D2", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
-        private static readonly string[] blueF = ["D", "F", "D", "F'", "D", "F", "D2", "F'"];
-        private static readonly string[] greenF = ["F", "D", "F'", "D", "F", "D2", "F'", "D"];
-        private static readonly string[] greenF2 = ["D'", "F", "D", "F'", "D", "F", "D2", "F'", "D2"];
-        private static readonly string[] redF2 = ["F", "D", "F'", "D", "F", "D2", "F'"];
-        private static readonly string[] blueF2 = ["D", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
+        private static readonly List<byte> redF = Move.GetAlgoFromStringEnum(["D2", "F", "D", "F'", "D", "F", "D2", "F'", "D'"]);
+        private static readonly List<byte> blueF = Move.GetAlgoFromStringEnum(["D", "F", "D", "F'", "D", "F", "D2", "F'"]);
+        private static readonly List<byte> greenF = Move.GetAlgoFromStringEnum(["F", "D", "F'", "D", "F", "D2", "F'", "D"]);
+        private static readonly List<byte> greenF2 = Move.GetAlgoFromStringEnum(["D'", "F", "D", "F'", "D", "F", "D2", "F'", "D2"]);
+        private static readonly List<byte> redF2 = Move.GetAlgoFromStringEnum(["F", "D", "F'", "D", "F", "D2", "F'"]);
+        private static readonly List<byte> blueF2 = Move.GetAlgoFromStringEnum(["D", "F", "D", "F'", "D", "F", "D2", "F'", "D'"]);
 
-        private static readonly string[] cornerAlignementAlgo = ["D'", "B'", "D", "F", "D'", "B", "D", "F'"];
-        private static readonly string[] cornerAlignementAlgo2 = ["B'", "D", "F", "D'", "B", "D", "F'", "D'"];
-        private static readonly string[] cornerAlignementAlgo3 = ["D2", "B'", "D", "F", "D'", "B", "D", "F'", "D"];
-        private static readonly string[] cornerAlignementAlgo4 = ["D", "B'", "D", "F", "D'", "B", "D", "F'", "D2"];
+        private static readonly List<byte> cornerAlignementAlgo = Move.GetAlgoFromStringEnum(["D'", "B'", "D", "F", "D'", "B", "D", "F'"]);
+        private static readonly List<byte> cornerAlignementAlgo2 = Move.GetAlgoFromStringEnum(["B'", "D", "F", "D'", "B", "D", "F'", "D'"]);
+        private static readonly List<byte> cornerAlignementAlgo3 = Move.GetAlgoFromStringEnum(["D2", "B'", "D", "F", "D'", "B", "D", "F'", "D"]);
+        private static readonly List<byte> cornerAlignementAlgo4 = Move.GetAlgoFromStringEnum(["D", "B'", "D", "F", "D'", "B", "D", "F'", "D2"]);
 
-        private static readonly string[] cornerAlignementOptim = ["F", "D'", "B'", "D", "F'", "D'", "B", "D"];
-        private static readonly string[] cornerAlignementOptim2 = ["L", "D'", "R'", "D", "L'", "D'", "R", "D"];
-        private static readonly string[] cornerAlignementOptim3 = ["R", "D'", "L'", "D", "R'", "D'", "L", "D"];
-        private static readonly string[] cornerAlignementOptim4 = ["B", "D'", "F'", "D", "B'", "D'", "F", "D"];
+        private static readonly List<byte> cornerAlignementOptim = Move.GetAlgoFromStringEnum(["F", "D'", "B'", "D", "F'", "D'", "B", "D"]);
+        private static readonly List<byte> cornerAlignementOptim2 = Move.GetAlgoFromStringEnum(["L", "D'", "R'", "D", "L'", "D'", "R", "D"]);
+        private static readonly List<byte> cornerAlignementOptim3 = Move.GetAlgoFromStringEnum(["R", "D'", "L'", "D", "R'", "D'", "L", "D"]);
+        private static readonly List<byte> cornerAlignementOptim4 = Move.GetAlgoFromStringEnum(["B", "D'", "F'", "D", "B'", "D'", "F", "D"]);
 
-        private static readonly string[] sexyMove = ["R", "U", "R'", "U'"];
+        private static readonly List<byte> sexyMove = Move.GetAlgoFromStringEnum(["R", "U", "R'", "U'"]);
         public bool IsSolved
         {
             get
@@ -839,226 +838,6 @@ namespace Rubik_s_cube_solver
             return randPath;
         }
 
-        public static byte[] GetReversalPath(IEnumerable<byte> path)
-        {
-            byte[] newPath = new byte[path.Count()];
-            int i = 0;
-            foreach (byte item in path)
-            {
-                newPath[i] = item switch
-                {
-                    0 => 6,
-                    1 => 7,
-                    2 => 8,
-                    3 => 9,
-                    4 => 10,
-                    5 => 11,
-                    6 => 0,
-                    7 => 1,
-                    8 => 2,
-                    9 => 3,
-                    10 => 4,
-                    11 => 5,
-                    _ => item,
-                };
-                i++;
-            }
-            return newPath;
-        }
-
-        public static byte GetReversalMove(byte move)
-        {
-            //if (move == 0) return 6;
-            //else if (move == 1) return 7;
-            //else if (move == 2) return 8;
-            //else if (move == 3) return 9;
-            //else if (move == 4) return 10;
-            //else if (move == 5) return 11;
-            //else if (move == 6) return 0;
-            //else if (move == 7) return 1;
-            //else if (move == 8) return 2;
-            //else if (move == 9) return 3;
-            //else if (move == 10) return 4;
-            //else if (move == 11) return 5;
-            //else return move;
-            return move switch
-            {
-                <= 5 => (byte)(move + 6),
-                <= 11 => (byte)(move - 6),
-                _ => move,
-            };
-        }
-
-        public static (int, int, int, int, int, int) StringCubeToInt(string cubeRepresentation)
-        {
-            int[] result = new int[6];
-            int idx = 0;
-            for (int face = 0; face < 6; face++)
-            {
-                int n = 0;
-                for (int i = 0; i < 9; i++)
-                {
-                    char c = cubeRepresentation[idx++];
-                    int code = c switch
-                    {
-                        'W' => 1,
-                        'Y' => 2,
-                        'R' => 3,
-                        'G' => 4,
-                        'B' => 5,
-                        _ => 6,
-                    };
-                    n = (n << 3) | code;
-                }
-                result[face] = n;
-            }
-            return (result[0], result[1], result[2], result[3], result[4], result[5]);
-        }
-        public static void FaceToString(int n, StringBuilder sb)
-        {
-            const string colors = "*WYRGBO";
-            sb.Append(colors[(n >> 24) & 7]);
-            sb.Append(colors[(n >> 21) & 7]);
-            sb.Append(colors[(n >> 18) & 7]);
-            sb.Append(colors[(n >> 15) & 7]);
-            sb.Append(colors[(n >> 12) & 7]);
-            sb.Append(colors[(n >> 9) & 7]);
-            sb.Append(colors[(n >> 6) & 7]);
-            sb.Append(colors[(n >> 3) & 7]);
-            sb.Append(colors[n & 7]);
-        }
-        public static string IntToCubeString((int, int, int, int, int, int) intCube)
-        {
-            StringBuilder sb = new();
-            FaceToString(intCube.Item1, sb);
-            FaceToString(intCube.Item2, sb);
-            FaceToString(intCube.Item3, sb);
-            FaceToString(intCube.Item4, sb);
-            FaceToString(intCube.Item5, sb);
-            FaceToString(intCube.Item6, sb);
-            return sb.ToString();
-        }
-
-        public static string GetStringPath(IEnumerable<byte> path)
-        {
-            StringBuilder response = new();
-            foreach (byte item in path)
-            {
-                switch (item)
-                {
-                    case 0:
-                        response.Append('F');
-                        break;
-                    case 1:
-                        response.Append('U');
-                        break;
-                    case 2:
-                        response.Append('B');
-                        break;
-                    case 3:
-                        response.Append('L');
-                        break;
-                    case 4:
-                        response.Append('D');
-                        break;
-                    case 5:
-                        response.Append('R');
-                        break;
-                    case 6:
-                        response.Append("F'");
-                        break;
-                    case 7:
-                        response.Append("U'");
-                        break;
-                    case 8:
-                        response.Append("B'");
-                        break;
-                    case 9:
-                        response.Append("L'");
-                        break;
-                    case 10:
-                        response.Append("D'");
-                        break;
-                    case 11:
-                        response.Append("R'");
-                        break;
-                    case 12:
-                        response.Append("F2");
-                        break;
-                    case 13:
-                        response.Append("U2");
-                        break;
-                    case 14:
-                        response.Append("B2");
-                        break;
-                    case 15:
-                        response.Append("L2");
-                        break;
-                    case 16:
-                        response.Append("D2");
-                        break;
-                    case 17:
-                        response.Append("R2");
-                        break;
-                }
-            }
-            return response.ToString();
-        }
-
-        public static List<string> StringPathToEnum(string path)
-        {
-            List<string> newPath = [];
-            for (int i = 0; i < path.Length - 1; i++)
-            {
-                if (path[i + 1] == '\'' || path[i + 1] == '2')
-                {
-                    newPath.Add(path[i].ToString() + path[i + 1].ToString());
-                    if (i == path.Length - 3) newPath.Add(path[i + 2].ToString());
-                    i++;
-                }
-                else
-                {
-                    newPath.Add(path[i].ToString());
-                    if (i == path.Length - 2) newPath.Add(path[i + 1].ToString());
-                }
-            }
-            if (path.Length == 1) newPath.Add(path[0].ToString());
-            return newPath;
-        }
-
-        // Storing only tuple of int representing each face of the cube
-        public static (Cube, IEnumerable<byte>)? OldGetNextBranch(List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>> listDico, Func<Cube, bool> f)
-        {
-            Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> newCubes = [];
-            bool isContained;
-            foreach (KeyValuePair<(int, int, int, int, int, int), IEnumerable<byte>> cube in listDico[^1])
-            {
-                Cube c1 = new(IntToCubeString(cube.Key));
-                for (byte j = 0; j < 18; j++)
-                {
-                    c1.DoMove(j);
-                    (int, int, int, int, int, int) intCube = StringCubeToInt(c1.ToString());
-                    isContained = false;
-                    foreach (Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> item in listDico)
-                    {
-                        if (item.ContainsKey(intCube))
-                        {
-                            isContained = true;
-                            break;
-                        }
-                    }
-                    if (!isContained)
-                        newCubes.TryAdd(intCube, cube.Value.Append(j));
-                    if (f(c1))
-                        return (c1, newCubes[intCube]);
-                    if (j != 17)
-                        c1.DoMove(GetReversalMove(j));
-                }
-            }
-            listDico.Add(newCubes);
-            return null;
-        }
-
         // Storing only string of cube
         public static (Cube, byte[])? NextTreeBranch(List<Dictionary<string, byte[]>> listDico, Func<Cube, bool> f)
         {
@@ -1084,7 +863,7 @@ namespace Rubik_s_cube_solver
                     if (f(c1))
                         return (c1, newCubes[str]);
                     if (j != 17)
-                        c1.DoMove(GetReversalMove(j));
+                        c1.DoMove(Move.GetReversalMove(j));
                 }
             }
             listDico.Add(newCubes);
@@ -1093,7 +872,7 @@ namespace Rubik_s_cube_solver
 
         private static int Heuristique(string s)
         {
-            var solution = (new Cube()).ToString();
+            var solution = new Cube().ToString();
             int k = 0;
             for (int i = 0; i < s.Length; i++)
             {
@@ -1123,10 +902,10 @@ namespace Rubik_s_cube_solver
                             break;
                         }
                     }
-                    if (!isContained && (listDico.Count < 6 || !heuristique || Heuristique(c1String) > 15+(listDico.Count-5)*3))
+                    if (!isContained && (listDico.Count < 6 || Heuristique(c1String) > 15))
                         newCubes.TryAdd(intCube, j);
                     if (j != 17)
-                        c1.DoMove(GetReversalMove(j));
+                        c1.DoMove(Move.GetReversalMove(j));
                 }
             }
             listDico.Add(newCubes);
@@ -1217,142 +996,7 @@ namespace Rubik_s_cube_solver
                 OrangeFace.PrintFace()
             ];
         }
-
-        public static List<byte> GetAlgoFromStringEnum(IEnumerable<string> algorithme)
-        {
-            List<byte> data = [];
-            foreach (string item in algorithme)
-            {
-                switch (item)
-                {
-                    case "F":
-                        data.Add(0);
-                        break;
-                    case "U":
-                        data.Add(1);
-                        break;
-                    case "B":
-                        data.Add(2);
-                        break;
-                    case "L":
-                        data.Add(3);
-                        break;
-                    case "D":
-                        data.Add(4);
-                        break;
-                    case "R":
-                        data.Add(5);
-                        break;
-                    case "F'":
-                        data.Add(6);
-                        break;
-                    case "U'":
-                        data.Add(7);
-                        break;
-                    case "B'":
-                        data.Add(8);
-                        break;
-                    case "L'":
-                        data.Add(9);
-                        break;
-                    case "D'":
-                        data.Add(10);
-                        break;
-                    case "R'":
-                        data.Add(11);
-                        break;
-                    case "F2":
-                        data.Add(12);
-                        break;
-                    case "U2":
-                        data.Add(13);
-                        break;
-                    case "B2":
-                        data.Add(14);
-                        break;
-                    case "L2":
-                        data.Add(15);
-                        break;
-                    case "D2":
-                        data.Add(16);
-                        break;
-                    case "R2":
-                        data.Add(17);
-                        break;
-                    default:
-                        throw new Exception("Le mouvement n'existe pas " + item);
-                }
-            }
-            return data;
-        }
-
-        public static string[] GetListStringAlgoFromByte(IEnumerable<byte> algorithme)
-        {
-            List<string> data = [];
-            foreach (byte item in algorithme)
-            {
-                switch (item)
-                {
-                    case 0:
-                        data.Add("F");
-                        break;
-                    case 1:
-                        data.Add("U");
-                        break;
-                    case 2:
-                        data.Add("B");
-                        break;
-                    case 3:
-                        data.Add("L");
-                        break;
-                    case 4:
-                        data.Add("D");
-                        break;
-                    case 5:
-                        data.Add("R");
-                        break;
-                    case 6:
-                        data.Add("F'");
-                        break;
-                    case 7:
-                        data.Add("U'");
-                        break;
-                    case 8:
-                        data.Add("B'");
-                        break;
-                    case 9:
-                        data.Add("L'");
-                        break;
-                    case 10:
-                        data.Add("D'");
-                        break;
-                    case 11:
-                        data.Add("R'");
-                        break;
-                    case 12:
-                        data.Add("F2");
-                        break;
-                    case 13:
-                        data.Add("U2");
-                        break;
-                    case 14:
-                        data.Add("B2");
-                        break;
-                    case 15:
-                        data.Add("L2");
-                        break;
-                    case 16:
-                        data.Add("D2");
-                        break;
-                    case 17:
-                        data.Add("R2");
-                        break;
-                    default:
-                        throw new Exception("Le mouvement n'existe pas");
-                }
-            }
-            return [.. data];
-        }
+        
         public void ExecuterAlgorithme(IEnumerable<string> algorithme)
         {
             foreach (string item in algorithme)
@@ -1549,7 +1193,7 @@ namespace Rubik_s_cube_solver
                             {
                                 if (arbreFinal[^j][elementEtapeAvant] == 255) break;
                                 path.Add(arbreFinal[^j][elementEtapeAvant]);
-                                newCube.ExecuterAlgorithme(GetReversalPath(path.TakeLast(1)));
+                                newCube.ExecuterAlgorithme(Move.GetReversalPath(path.TakeLast(1)));
                                 // On exécute le dernier mouvement mais à l'envers
                             }
                         }
@@ -1562,10 +1206,10 @@ namespace Rubik_s_cube_solver
                             {
                                 if (arbreInitial[^j][elementEtapeAvant] == 255) break;
                                 path2.Add(arbreInitial[^j][elementEtapeAvant]);
-                                newCube2.ExecuterAlgorithme(GetReversalPath(path2.TakeLast(1)));
+                                newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
                             }
                         }
-                        IEnumerable<byte> solutionFromRandom = GetReversalPath(path.Reverse<byte>()).Concat(path2).Reverse();
+                        IEnumerable<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2).Reverse();
                         int count = solutionFromRandom.Count();
                         if (count < min)
                         {
@@ -1577,26 +1221,6 @@ namespace Rubik_s_cube_solver
                 i += 1;
             }
             return solution.ToArray();
-        }
-
-        private static byte GetDoubleMove(byte move)
-        {
-            return move switch
-            {
-                0 => 12,
-                1 => 13,
-                2 => 14,
-                3 => 15,
-                4 => 16,
-                5 => 17,
-                6 => 12,
-                7 => 13,
-                8 => 14,
-                9 => 15,
-                10 => 16,
-                11 => 17,
-                _ => throw new Exception("Mauvais numéro de move")
-            };
         }
 
         public static List<byte> LightOptimization(List<byte> path)
@@ -1614,13 +1238,13 @@ namespace Rubik_s_cube_solver
                 {
                     if (i == path.Count - 3)
                     {
-                        newPath.Add(GetReversalMove(path[i]));
+                        newPath.Add(Move.GetReversalMove(path[i]));
                         return newPath;
                     }
-                    newPath.Add(GetReversalMove(path[i]));
+                    newPath.Add(Move.GetReversalMove(path[i]));
                     i += 2;
                 }
-                else if (path[i] == GetReversalMove(path[i + 1]))
+                else if (path[i] == Move.GetReversalMove(path[i + 1]))
                 {
                     i++;
                 }
@@ -1632,21 +1256,21 @@ namespace Rubik_s_cube_solver
                     }
                     else
                     {
-                        newPath.Add(GetDoubleMove(path[i]));
+                        newPath.Add(Move.GetDoubleMove(path[i]));
                         i++;
                     }
                 }
                 else
                 {
-                    if (path[i] < 12 && GetDoubleMove(path[i]) == path[i + 1])
+                    if (path[i] < 12 && Move.GetDoubleMove(path[i]) == path[i + 1])
                     {
 
-                        newPath.Add(GetReversalMove(path[i]));
+                        newPath.Add(Move.GetReversalMove(path[i]));
                         i++;
                     }
-                    else if (path[i + 1] < 12 && GetDoubleMove(path[i + 1]) == path[i])
+                    else if (path[i + 1] < 12 && Move.GetDoubleMove(path[i + 1]) == path[i])
                     {
-                        newPath.Add(GetReversalMove(path[i + 1]));
+                        newPath.Add(Move.GetReversalMove(path[i + 1]));
                         i++;
                     }
                     else
@@ -1657,22 +1281,22 @@ namespace Rubik_s_cube_solver
             {
                 if (newPath[^1] == path[^1] && newPath[^1] < 12)
                 {
-                    newPath[^1] = GetDoubleMove(newPath[^1]);
+                    newPath[^1] = Move.GetDoubleMove(newPath[^1]);
                     return newPath;
                 }
-                if (newPath[^1] == GetReversalMove(path[^1]) || newPath[^1] == path[^1])
+                if (newPath[^1] == Move.GetReversalMove(path[^1]) || newPath[^1] == path[^1])
                 {
                     return newPath.SkipLast(1).ToList();
                 }
                 if (newPath.Count > 1)
                 {
-                    if (newPath[^1] == GetReversalMove(newPath[^2]))
+                    if (newPath[^1] == Move.GetReversalMove(newPath[^2]))
                     {
                         return newPath.SkipLast(2).Append(path[^1]).ToList();
                     }
                     if (newPath[^1] == newPath[^2] && newPath[^1] < 12)
                     {
-                        newPath[^2] = GetDoubleMove(newPath[^1]);
+                        newPath[^2] = Move.GetDoubleMove(newPath[^1]);
                         return newPath.SkipLast(1).Append(path[^1]).ToList();
                     }
                 }
@@ -1750,518 +1374,6 @@ namespace Rubik_s_cube_solver
                 cpt++;
             } while (!solvedCube.IsSolved);
             return cpt;
-        }
-
-        public static byte[] BeginnerMethod(Cube c1)
-        {
-            List<Dictionary<(int, int, int, int, int, int), IEnumerable<byte>>> arbre1 = [];
-            Dictionary<(int, int, int, int, int, int), IEnumerable<byte>> dico = new()
-            {
-                { StringCubeToInt(c1.ToString()), [0] }
-            };
-            arbre1.Add(dico);
-            List<byte> path = [];
-            bool thereAreAWhiteCross(Cube c) => (c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
-                && c.RedFace.Pieces[0, 1] == 'R' && c.BlueFace.Pieces[0, 1] == 'B') ||
-                (c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
-                && c.GreenFace.Pieces[0, 1] == 'G' && c.OrangeFace.Pieces[0, 1] == 'O')
-                || (c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
-                && c.BlueFace.Pieces[0, 1] == 'B' && c.GreenFace.Pieces[0, 1] == 'G')
-                || (c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
-                && c.RedFace.Pieces[0, 1] == 'R' && c.OrangeFace.Pieces[0, 1] == 'O')
-                || (c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[0, 1] == 'W'
-                && c.BlueFace.Pieces[0, 1] == 'B' && c.OrangeFace.Pieces[0, 1] == 'O')
-                || (c.WhiteFace.Pieces[1, 0] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
-                && c.GreenFace.Pieces[0, 1] == 'G' && c.RedFace.Pieces[0, 1] == 'R');
-            bool isPlaced = thereAreAWhiteCross(c1);
-            while (!isPlaced)
-            {
-                (Cube, IEnumerable<byte>)? newC = OldGetNextBranch(arbre1, thereAreAWhiteCross);
-                if (newC != null)
-                {
-                    c1 = newC.Value.Item1.Clone();
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
-                }
-            }
-            arbre1 = [];
-            dico = new()
-            {
-                { StringCubeToInt(c1.ToString()), [0] }
-            };
-            arbre1.Add(dico);
-            bool crossAndEdges(Cube c) => c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
-            && c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
-            && c.RedFace.Pieces[0, 1] == 'R' && c.BlueFace.Pieces[0, 1] == 'B'
-            && c.GreenFace.Pieces[0, 1] == 'G' && c.OrangeFace.Pieces[0, 1] == 'O';
-            isPlaced = crossAndEdges(c1);
-            while (!isPlaced)
-            {
-                (Cube, IEnumerable<byte>)? newC = OldGetNextBranch(arbre1, crossAndEdges);
-                if (newC != null)
-                {
-                    c1 = newC.Value.Item1.Clone();
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
-                }
-            }
-            bool firstCornerPlaced(Cube c) => c.BlueFace.Pieces[0, 1] == 'B'
-                && c.RedFace.Pieces[0, 2] == 'R'
-                && c.WhiteFace.Pieces[2, 2] == 'W';
-            bool secondCornerIsPlaced(Cube c) => c.RedFace.Pieces[0, 0] == 'R'
-                && c.WhiteFace.Pieces[2, 0] == 'W'
-                && c.GreenFace.Pieces[0, 2] == 'G';
-            bool thirdCornerIsPlaced(Cube c) => c.OrangeFace.Pieces[0, 1] == 'O'
-                && c.BlueFace.Pieces[0, 2] == 'B'
-                && c.WhiteFace.Pieces[0, 2] == 'W';
-            bool fourthCornerIsPlaced(Cube c) => c.WhiteFace.Pieces[0, 0] == 'W'
-                && c.GreenFace.Pieces[0, 0] == 'G'
-                && c.OrangeFace.Pieces[0, 2] == 'O';
-
-            bool oneCornerIsPlaced(Cube c) => firstCornerPlaced(c) || secondCornerIsPlaced(c) || thirdCornerIsPlaced(c)
-                || fourthCornerIsPlaced(c);
-            arbre1 = [];
-            dico = new()
-            {
-                { StringCubeToInt(c1.ToString()), [0] }
-            };
-            arbre1.Add(dico);
-            isPlaced = crossAndEdges(c1) && oneCornerIsPlaced(c1);
-            while (!isPlaced)
-            {
-                (Cube, IEnumerable<byte>)? newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1) && oneCornerIsPlaced(c1));
-                if (newC != null)
-                {
-                    c1 = newC.Value.Item1.Clone();
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
-                }
-            }
-            arbre1 = [];
-            dico = new()
-            {
-                { StringCubeToInt(c1.ToString()), [0] }
-            };
-            arbre1.Add(dico);
-            isPlaced = crossAndEdges(c1)
-                        && ((firstCornerPlaced(c1) && secondCornerIsPlaced(c1))
-                        || (firstCornerPlaced(c1) && thirdCornerIsPlaced(c1))
-                        || (firstCornerPlaced(c1) && fourthCornerIsPlaced(c1))
-                        || (secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1))
-                        || (thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1))
-                        || (secondCornerIsPlaced(c1) && fourthCornerIsPlaced(c1)));
-            while (!isPlaced)
-            {
-                (Cube, IEnumerable<byte>)? newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
-                        && ((firstCornerPlaced(c1) && secondCornerIsPlaced(c1))
-                        || (firstCornerPlaced(c1) && thirdCornerIsPlaced(c1))
-                        || (firstCornerPlaced(c1) && fourthCornerIsPlaced(c1))
-                        || (secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1))
-                        || (thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1))
-                        || (secondCornerIsPlaced(c1) && fourthCornerIsPlaced(c1))));
-                if (newC != null)
-                {
-                    c1 = newC.Value.Item1.Clone();
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
-                }
-            }
-            arbre1 = [];
-            dico = new()
-            {
-                { StringCubeToInt(c1.ToString()), [0] }
-            };
-            arbre1.Add(dico);
-            isPlaced = crossAndEdges(c1)
-                        && ((firstCornerPlaced(c1) && secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1))
-                        || (firstCornerPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1))
-                        || (firstCornerPlaced(c1) && fourthCornerIsPlaced(c1) && secondCornerIsPlaced(c1))
-                        || (secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1)));
-            while (!isPlaced)
-            {
-                (Cube, IEnumerable<byte>)? newC = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
-                        && ((firstCornerPlaced(c1) && secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1))
-                        || (firstCornerPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1))
-                        || (firstCornerPlaced(c1) && fourthCornerIsPlaced(c1) && secondCornerIsPlaced(c1))
-                        || (secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1))));
-                if (newC != null)
-                {
-                    c1 = newC.Value.Item1.Clone();
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
-                }
-            }
-            arbre1 = [];
-            dico = new()
-            {
-                { StringCubeToInt(c1.ToString()), [0] }
-            };
-            arbre1.Add(dico);
-            isPlaced = crossAndEdges(c1)
-                        && firstCornerPlaced(c1) && secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1);
-            while (!isPlaced)
-            {
-                (Cube, IEnumerable<byte>)? newC  = OldGetNextBranch(arbre1, (c1) => crossAndEdges(c1)
-                        && firstCornerPlaced(c1) && secondCornerIsPlaced(c1) && thirdCornerIsPlaced(c1) && fourthCornerIsPlaced(c1));
-                if (newC != null)
-                {
-                    c1 = newC.Value.Item1.Clone();
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
-                }
-            }
-            List<string> secondLayerLeftRedFace = ["D'", "B'", "D", "B", "D", "R", "D'", "R'"];
-            List<string> secondLayerRightRedFace = ["D", "F", "D'", "F'", "D'", "R'", "D", "R"];
-
-            List<string> secondLayerLeftBlueFace = ["D'", "L'", "D", "L", "D", "B", "D'", "B'"];
-            List<string> secondLayerRightBlueFace = ["D", "R", "D", "R'", "D'", "B'", "D'", "B"];
-
-            List<string> secondLayerLeftOrangeFace = ["D'", "F'", "D", "F", "D", "L", "D'", "L'"];
-            List<string> secondLayerRightOrangeFace = ["D", "B", "D'", "B'", "D'", "L'", "D", "L"];
-
-            List<string> secondLayerLeftGreenFace = ["D'", "R'", "D", "R", "D", "F", "D'", "F'"];
-            List<string> secondLayerRightGreenFace = ["D", "L", "D'", "L'", "D'", "F'", "D", "F"];
-
-            bool isSecondLayerDone() => crossAndEdges(c1)
-                    && c1.WhiteFace.IsUniform && c1.RedFace.Pieces[0, 1] == 'R'
-                    && c1.BlueFace.Pieces[0, 1] == 'B' && c1.GreenFace.Pieces[0, 1] == 'G'
-                    && c1.OrangeFace.Pieces[0, 1] == 'O'
-                    && c1.RedFace.Pieces[1, 0] == 'R' && c1.RedFace.Pieces[1, 2] == 'R'
-                    && c1.OrangeFace.Pieces[1, 0] == 'O' && c1.OrangeFace.Pieces[1, 2] == 'O'
-                    && c1.BlueFace.Pieces[1, 0] == 'B' && c1.BlueFace.Pieces[1, 2] == 'B'
-                    && c1.GreenFace.Pieces[1, 0] == 'G' && c1.GreenFace.Pieces[1, 2] == 'G';
-            int i = 0;
-            while (!isSecondLayerDone())
-            {
-                if (c1.RedFace.Pieces[2, 1] == 'R' && c1.YellowFace.Pieces[0, 1] != 'Y')
-                {
-                    if (c1.YellowFace.Pieces[0, 1] == 'B')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerLeftRedFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftRedFace));
-                        i = 0;
-                    }
-                    else
-                    {
-                        c1.ExecuterAlgorithme(secondLayerRightRedFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightRedFace));
-                        i = 0;
-                    }
-                }
-
-                else if (c1.BlueFace.Pieces[2, 1] == 'B' && c1.YellowFace.Pieces[1, 2] != 'Y')
-                {
-                    if (c1.YellowFace.Pieces[1, 2] == 'O')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerLeftBlueFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftBlueFace));
-                        i = 0;
-                    }
-                    else
-                    {
-                        c1.ExecuterAlgorithme(secondLayerRightBlueFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightBlueFace));
-                        i = 0;
-                    }
-                }
-
-                else if (c1.GreenFace.Pieces[2, 1] == 'G' && c1.YellowFace.Pieces[1, 0] != 'Y')
-                {
-                    if (c1.YellowFace.Pieces[1, 0] == 'R')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerLeftGreenFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftGreenFace));
-                        i = 0;
-                    }
-                    else
-                    {
-                        c1.ExecuterAlgorithme(secondLayerRightGreenFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightGreenFace));
-                        i = 0;
-                    }
-                }
-
-                else if (c1.OrangeFace.Pieces[2, 1] == 'O' && c1.YellowFace.Pieces[2, 1] != 'Y')
-                {
-                    if (c1.YellowFace.Pieces[2, 1] == 'G')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerLeftOrangeFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftOrangeFace));
-                        i = 0;
-                    }
-                    else
-                    {
-                        c1.ExecuterAlgorithme(secondLayerRightOrangeFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightOrangeFace));
-                        i = 0;
-                    }
-                }
-                else
-                {
-                    c1.D();
-                    path.AddRange(GetAlgoFromStringEnum(new List<string>() { "D" }));
-                }
-
-                if (i >= 3)
-                {
-                    if (c1.RedFace.Pieces[1, 0] != 'R')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerRightRedFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightRedFace.Skip(1)));
-                    }
-                    else if (c1.RedFace.Pieces[1, 2] != 'R')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerLeftRedFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftRedFace.Skip(1)));
-                    }
-
-                    else if (c1.BlueFace.Pieces[1, 0] != 'B')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerRightBlueFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightBlueFace.Skip(1)));
-                    }
-                    else if (c1.BlueFace.Pieces[1, 2] != 'B')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerLeftBlueFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftBlueFace.Skip(1)));
-                    }
-
-                    else if (c1.GreenFace.Pieces[1, 0] != 'G')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerRightGreenFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightGreenFace.Skip(1)));
-                    }
-                    else if (c1.GreenFace.Pieces[1, 2] != 'G')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerLeftGreenFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftGreenFace.Skip(1)));
-                    }
-
-                    else if (c1.OrangeFace.Pieces[1, 0] != 'O')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerRightOrangeFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightOrangeFace.Skip(1)));
-                    }
-                    else if (c1.OrangeFace.Pieces[1, 2] != 'O')
-                    {
-                        c1.ExecuterAlgorithme(secondLayerLeftOrangeFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftOrangeFace.Skip(1)));
-                    }
-                    i = 0;
-                }
-                i++;
-            }
-            List<string> algoCrossPattern = ["R", "D", "F", "D'", "F'", "R'"];
-            List<string> algoCrossPattern2 = ["R", "F", "D", "F'", "D'", "R'"];
-            if (c1.YellowFace.Pieces[0, 1] != 'Y' && c1.YellowFace.Pieces[1, 0] != 'Y' && c1.YellowFace.Pieces[1, 2] != 'Y' &&
-                c1.YellowFace.Pieces[2, 1] != 'Y')
-            {
-                c1.ExecuterAlgorithme(algoCrossPattern);
-                path.AddRange(GetAlgoFromStringEnum(algoCrossPattern));
-                c1.D();
-                path.AddRange(GetAlgoFromStringEnum(new List<string>() { "D" }));
-                c1.ExecuterAlgorithme(algoCrossPattern2);
-                path.AddRange(GetAlgoFromStringEnum(algoCrossPattern2));
-            }
-            bool yellowCrossIsDone() => c1.YellowFace.Pieces[0, 1] == 'Y' && c1.YellowFace.Pieces[1, 0] == 'Y'
-                                     && c1.YellowFace.Pieces[1, 2] == 'Y' && c1.YellowFace.Pieces[2, 1] == 'Y';
-            while (!yellowCrossIsDone())
-            {
-                if (c1.YellowFace.Pieces[0, 1] == 'Y' && c1.YellowFace.Pieces[2, 1] == 'Y')
-                {
-                    c1.D();
-                    path.AddRange(GetAlgoFromStringEnum(new List<string>() { "D" }));
-                    c1.ExecuterAlgorithme(algoCrossPattern2);
-                    path.AddRange(GetAlgoFromStringEnum(algoCrossPattern2));
-                }
-                else if (c1.YellowFace.Pieces[1, 0] == 'Y' && c1.YellowFace.Pieces[1, 2] == 'Y')
-                {
-                    c1.ExecuterAlgorithme(algoCrossPattern2);
-                    path.AddRange(GetAlgoFromStringEnum(algoCrossPattern2));
-                }
-                else if (c1.YellowFace.Pieces[1, 2] == 'Y' && c1.YellowFace.Pieces[2, 1] == 'Y')
-                {
-                    c1.ExecuterAlgorithme(algoCrossPattern);
-                    path.AddRange(GetAlgoFromStringEnum(algoCrossPattern));
-                }
-                else
-                {
-                    c1.D();
-                    path.AddRange(GetAlgoFromStringEnum(new List<string>() { "D" }));
-                }
-            }
-            bool edgeIsPlaced() => c1.RedFace.Pieces[2, 1] == 'R' && c1.GreenFace.Pieces[2, 1] == 'G'
-                    && c1.OrangeFace.Pieces[2, 1] == 'O' && c1.BlueFace.Pieces[2, 1] == 'B';
-            List<string> redF = ["D2", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
-            List<string> BlueF = ["D", "F", "D", "F'", "D", "F", "D2", "F'"];
-            List<string> GreenF = ["F", "D", "F'", "D", "F", "D2", "F'", "D"];
-            List<string> GreenF2 = ["D'", "F", "D", "F'", "D", "F", "D2", "F'", "D2"];
-            List<string> RedF2 = ["F", "D", "F'", "D", "F", "D2", "F'"];
-            List<string> BlueF2 = ["D", "F", "D", "F'", "D", "F", "D2", "F'", "D'"];
-            while (!edgeIsPlaced())
-            {
-                if (c1.RedFace.Pieces[2, 1] == 'R' && c1.BlueFace.Pieces[2, 1] == 'B')
-                {
-                    path.AddRange(GetAlgoFromStringEnum(redF));
-                    c1.ExecuterAlgorithme(redF);
-                }
-                else if (c1.BlueFace.Pieces[2, 1] == 'B' && c1.OrangeFace.Pieces[2, 1] == 'O')
-                {
-                    c1.ExecuterAlgorithme(BlueF);
-                    path.AddRange(GetAlgoFromStringEnum(BlueF));
-                }
-                else if (c1.GreenFace.Pieces[2, 1] == 'G' && c1.OrangeFace.Pieces[2, 1] == 'O')
-                {
-                    c1.ExecuterAlgorithme(GreenF);
-                    path.AddRange(GetAlgoFromStringEnum(GreenF));
-                }
-                else if (c1.GreenFace.Pieces[2, 1] == 'G' && c1.RedFace.Pieces[2, 1] == 'R')
-                {
-                    c1.ExecuterAlgorithme(GreenF2);
-                    path.AddRange(GetAlgoFromStringEnum(GreenF2));
-                }
-                else if (c1.RedFace.Pieces[2, 1] == 'R' && c1.OrangeFace.Pieces[2, 1] == 'O')
-                {
-                    c1.ExecuterAlgorithme(RedF2);
-                    path.AddRange(GetAlgoFromStringEnum(RedF2));
-                }
-                else if (c1.BlueFace.Pieces[2, 1] == 'B' && c1.GreenFace.Pieces[2, 1] == 'G')
-                {
-                    c1.ExecuterAlgorithme(BlueF2);
-                    path.AddRange(GetAlgoFromStringEnum(BlueF2));
-                }
-                else
-                {
-                    c1.D();
-                    path.AddRange(GetAlgoFromStringEnum(["D"]));
-                }
-            }
-            bool cornersIsPlaced() => ((c1.RedFace.Pieces[2, 2] == 'R' && c1.BlueFace.Pieces[2, 0] == 'B')
-                || (c1.RedFace.Pieces[2, 2] == 'B' && c1.BlueFace.Pieces[2, 0] == 'Y' && c1.YellowFace.Pieces[0, 2] == 'R')
-                || (c1.RedFace.Pieces[2, 2] == 'Y' && c1.BlueFace.Pieces[2, 0] == 'R' && c1.YellowFace.Pieces[0, 2] == 'B'))
-                && ((c1.RedFace.Pieces[2, 0] == 'R' && c1.GreenFace.Pieces[2, 2] == 'G')
-                || (c1.RedFace.Pieces[2, 0] == 'G' && c1.GreenFace.Pieces[2, 2] == 'Y' && c1.YellowFace.Pieces[0, 0] == 'R')
-                || (c1.RedFace.Pieces[2, 0] == 'Y' && c1.GreenFace.Pieces[2, 2] == 'R' && c1.YellowFace.Pieces[0, 0] == 'G'))
-                && ((c1.BlueFace.Pieces[2, 2] == 'B' && c1.OrangeFace.Pieces[2, 0] == 'O')
-                || (c1.BlueFace.Pieces[2, 2] == 'O' && c1.OrangeFace.Pieces[2, 0] == 'Y' && c1.YellowFace.Pieces[2, 2] == 'B')
-                || (c1.BlueFace.Pieces[2, 2] == 'Y' && c1.OrangeFace.Pieces[2, 0] == 'B' && c1.YellowFace.Pieces[2, 2] == 'O'));
-
-            List<string> cornerAlignementAlgo = ["D'", "B'", "D", "F", "D'", "B", "D", "F'"];
-            List<string> cornerAlignementAlgo2 = ["B'", "D", "F", "D'", "B", "D", "F'", "D'"];
-            List<string> cornerAlignementAlgo3 = ["D2", "B'", "D", "F", "D'", "B", "D", "F'", "D"];
-            List<string> cornerAlignementAlgo4 = ["D", "B'", "D", "F", "D'", "B", "D", "F'", "D2"];
-
-            List<string> cornerAlignementOptim = ["F", "D'", "B'", "D", "F'", "D'", "B", "D"];
-            List<string> cornerAlignementOptim2 = ["L", "D'", "R'", "D", "L'", "D'", "R", "D"];
-            List<string> cornerAlignementOptim3 = ["R", "D'", "L'", "D", "R'", "D'", "L", "D"];
-            List<string> cornerAlignementOptim4 = ["B", "D'", "F'", "D", "B'", "D'", "F", "D"];
-
-            while (!cornersIsPlaced())
-            {
-                if ((c1.RedFace.Pieces[2, 2] == 'R' && c1.BlueFace.Pieces[2, 0] == 'B')
-                    || (c1.RedFace.Pieces[2, 2] == 'B' && c1.BlueFace.Pieces[2, 0] == 'Y' && c1.YellowFace.Pieces[0, 2] == 'R')
-                    || (c1.RedFace.Pieces[2, 2] == 'Y' && c1.BlueFace.Pieces[2, 0] == 'R' && c1.YellowFace.Pieces[0, 2] == 'B'))
-                {
-                    if (c1.BlueFace.Pieces[2, 2] == 'B' || c1.BlueFace.Pieces[2, 2] == 'O'
-                        || c1.OrangeFace.Pieces[2, 0] == 'O' || c1.OrangeFace.Pieces[2, 0] == 'B' ||
-                        c1.YellowFace.Pieces[2, 2] == 'B' || c1.YellowFace.Pieces[2, 2] == 'O')
-                    {
-                        c1.ExecuterAlgorithme(cornerAlignementAlgo);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementAlgo));
-                    }
-                    else
-                    {
-                        c1.ExecuterAlgorithme(cornerAlignementOptim);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementOptim));
-                    }
-                }
-                else if ((c1.RedFace.Pieces[2, 0] == 'R' && c1.GreenFace.Pieces[2, 2] == 'G')
-                        || (c1.RedFace.Pieces[2, 0] == 'G' && c1.GreenFace.Pieces[2, 2] == 'Y' && c1.YellowFace.Pieces[0, 0] == 'R')
-                        || (c1.RedFace.Pieces[2, 0] == 'Y' && c1.GreenFace.Pieces[2, 2] == 'R' && c1.YellowFace.Pieces[0, 0] == 'G'))
-                {
-                    if (c1.RedFace.Pieces[2, 2] == 'R' || c1.RedFace.Pieces[2, 2] == 'B' ||
-                        c1.BlueFace.Pieces[2, 0] == 'B' || c1.BlueFace.Pieces[2, 0] == 'R' ||
-                        c1.YellowFace.Pieces[0, 2] == 'R' || c1.YellowFace.Pieces[0, 2] == 'B')
-                    {
-                        c1.ExecuterAlgorithme(cornerAlignementAlgo2);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementAlgo2));
-                    }
-                    else
-                    {
-                        c1.ExecuterAlgorithme(cornerAlignementOptim2);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementOptim2));
-                    }
-
-                }
-                else if ((c1.BlueFace.Pieces[2, 2] == 'B' && c1.OrangeFace.Pieces[2, 0] == 'O')
-                        || (c1.BlueFace.Pieces[2, 2] == 'O' && c1.OrangeFace.Pieces[2, 0] == 'Y' && c1.YellowFace.Pieces[2, 2] == 'B')
-                        || (c1.BlueFace.Pieces[2, 2] == 'Y' && c1.OrangeFace.Pieces[2, 0] == 'B' && c1.YellowFace.Pieces[2, 2] == 'O'))
-                {
-                    if (c1.OrangeFace.Pieces[2, 2] == 'O' || c1.OrangeFace.Pieces[2, 2] == 'G' ||
-                        c1.GreenFace.Pieces[2, 0] == 'G' || c1.GreenFace.Pieces[2, 0] == 'O' ||
-                        c1.YellowFace.Pieces[2, 0] == 'G' || c1.YellowFace.Pieces[2, 0] == 'O')
-                    {
-                        c1.ExecuterAlgorithme(cornerAlignementAlgo3);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementAlgo3));
-                    }
-                    else
-                    {
-                        c1.ExecuterAlgorithme(cornerAlignementOptim3);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementOptim3));
-                    }
-                }
-                else
-                {
-                    if (c1.GreenFace.Pieces[2, 2] == 'R' || c1.GreenFace.Pieces[2, 2] == 'G' ||
-                        c1.RedFace.Pieces[2, 0] == 'R' || c1.RedFace.Pieces[2, 0] == 'G' ||
-                        c1.YellowFace.Pieces[0, 0] == 'G' || c1.YellowFace.Pieces[0, 0] == 'R')
-                    {
-                        c1.ExecuterAlgorithme(cornerAlignementAlgo4);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementAlgo4));
-                    }
-                    else
-                    {
-                        c1.ExecuterAlgorithme(cornerAlignementOptim4);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementOptim4));
-                    }
-                }
-            }
-            List<string> sexyMove = ["R", "U", "R'", "U'"];
-            List<byte> byteAlgo = GetAlgoFromStringEnum(sexyMove);
-            while (!c1.IsSolved)
-            {
-                if (c1.GreenFace.Pieces[2, 2] == 'Y')
-                {
-                    c1.ExecuterAlgorithme(sexyMove);
-                    c1.ExecuterAlgorithme(sexyMove);
-                    c1.ExecuterAlgorithme(sexyMove);
-                    c1.ExecuterAlgorithme(sexyMove);
-                    path.AddRange(byteAlgo);
-                    path.AddRange(byteAlgo);
-                    path.AddRange(byteAlgo);
-                    path.AddRange(byteAlgo);
-                    if (c1.IsSolved) break;
-                    c1.Dprime();
-                    path.AddRange(GetAlgoFromStringEnum(new List<string>() { "D'" }));
-                }
-                else if (c1.RedFace.Pieces[2, 0] == 'Y')
-                {
-                    c1.ExecuterAlgorithme(sexyMove);
-                    c1.ExecuterAlgorithme(sexyMove);
-                    path.AddRange(byteAlgo);
-                    path.AddRange(byteAlgo);
-                    if (c1.IsSolved) break;
-                    c1.Dprime();
-                    path.AddRange(GetAlgoFromStringEnum(new List<string>() { "D'" }));
-
-                }
-                else
-                {
-                    c1.Dprime();
-                    path.AddRange(GetAlgoFromStringEnum(new List<string>() { "D'" }));
-                }
-            }
-            return [.. path];
         }
 
         private static Cube PlaceEdges(Cube c, List<byte> path)
@@ -2508,12 +1620,12 @@ namespace Rubik_s_cube_solver
             bool allCornersIsOriented() => firstCornerOriented() && secondCornerIsOriented() && thirdCornerIsOriented()
                 && fourthCornerIsOriented();
             List<string> inverseSexyMove = ["F", "D", "F'", "D'"];
-            List<byte> inverseByteAlgo = GetAlgoFromStringEnum(inverseSexyMove);
+            List<byte> inverseByteAlgo = Move.GetAlgoFromStringEnum(inverseSexyMove);
             IEnumerable<string> doubleInverseSexyMove = inverseSexyMove.Concat(inverseSexyMove);
             IEnumerable<string> quadInverseSexyMove = doubleInverseSexyMove.Concat(doubleInverseSexyMove);
             IEnumerable<byte> doubleInverseByteAlgo = inverseByteAlgo.Concat(inverseByteAlgo);
             IEnumerable<byte> quadInverseByteAlgo = doubleInverseByteAlgo.Concat(doubleInverseByteAlgo);
-            List<byte> uPrimeAlgo = GetAlgoFromStringEnum(["U'"]);
+            List<byte> uPrimeAlgo = Move.GetAlgoFromStringEnum(["U'"]);
             while (!allCornersIsOriented())
             {
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
@@ -2564,13 +1676,13 @@ namespace Rubik_s_cube_solver
                     if (c.YellowFace.Pieces[0, 1] == 'B')
                     {
                         c.ExecuterAlgorithme(secondLayerLeftRedFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftRedFace));
+                        path.AddRange(secondLayerLeftRedFace);
                         i = 0;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(secondLayerRightRedFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightRedFace));
+                        path.AddRange(secondLayerRightRedFace);
                         i = 0;
                     }
                 }
@@ -2580,13 +1692,13 @@ namespace Rubik_s_cube_solver
                     if (c.YellowFace.Pieces[1, 2] == 'O')
                     {
                         c.ExecuterAlgorithme(secondLayerLeftBlueFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftBlueFace));
+                        path.AddRange(secondLayerLeftBlueFace);
                         i = 0;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(secondLayerRightBlueFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightBlueFace));
+                        path.AddRange(secondLayerRightBlueFace);
                         i = 0;
                     }
                 }
@@ -2596,13 +1708,13 @@ namespace Rubik_s_cube_solver
                     if (c.YellowFace.Pieces[1, 0] == 'R')
                     {
                         c.ExecuterAlgorithme(secondLayerLeftGreenFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftGreenFace));
+                        path.AddRange(secondLayerLeftGreenFace);
                         i = 0;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(secondLayerRightGreenFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightGreenFace));
+                        path.AddRange(secondLayerRightGreenFace);
                         i = 0;
                     }
                 }
@@ -2612,13 +1724,13 @@ namespace Rubik_s_cube_solver
                     if (c.YellowFace.Pieces[2, 1] == 'G')
                     {
                         c.ExecuterAlgorithme(secondLayerLeftOrangeFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftOrangeFace));
+                        path.AddRange(secondLayerLeftOrangeFace);
                         i = 0;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(secondLayerRightOrangeFace);
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightOrangeFace));
+                        path.AddRange(secondLayerRightOrangeFace);
                         i = 0;
                     }
                 }
@@ -2633,45 +1745,45 @@ namespace Rubik_s_cube_solver
                     if (c.RedFace.Pieces[1, 0] != 'R')
                     {
                         c.ExecuterAlgorithme(secondLayerRightRedFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightRedFace.Skip(1)));
+                        path.AddRange(secondLayerRightRedFace.Skip(1));
                     }
                     else if (c.RedFace.Pieces[1, 2] != 'R')
                     {
                         c.ExecuterAlgorithme(secondLayerLeftRedFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftRedFace.Skip(1)));
+                        path.AddRange(secondLayerLeftRedFace.Skip(1));
                     }
 
                     else if (c.BlueFace.Pieces[1, 0] != 'B')
                     {
                         c.ExecuterAlgorithme(secondLayerRightBlueFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightBlueFace.Skip(1)));
+                        path.AddRange(secondLayerRightBlueFace.Skip(1));
                     }
                     else if (c.BlueFace.Pieces[1, 2] != 'B')
                     {
                         c.ExecuterAlgorithme(secondLayerLeftBlueFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftBlueFace.Skip(1)));
+                        path.AddRange(secondLayerLeftBlueFace.Skip(1));
                     }
 
                     else if (c.GreenFace.Pieces[1, 0] != 'G')
                     {
                         c.ExecuterAlgorithme(secondLayerRightGreenFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightGreenFace.Skip(1)));
+                        path.AddRange(secondLayerRightGreenFace.Skip(1));
                     }
                     else if (c.GreenFace.Pieces[1, 2] != 'G')
                     {
                         c.ExecuterAlgorithme(secondLayerLeftGreenFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftGreenFace.Skip(1)));
+                        path.AddRange(secondLayerLeftGreenFace.Skip(1));
                     }
 
                     else if (c.OrangeFace.Pieces[1, 0] != 'O')
                     {
                         c.ExecuterAlgorithme(secondLayerRightOrangeFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerRightOrangeFace.Skip(1)));
+                        path.AddRange(secondLayerRightOrangeFace.Skip(1));
                     }
                     else if (c.OrangeFace.Pieces[1, 2] != 'O')
                     {
                         c.ExecuterAlgorithme(secondLayerLeftOrangeFace.Skip(1));
-                        path.AddRange(GetAlgoFromStringEnum(secondLayerLeftOrangeFace.Skip(1)));
+                        path.AddRange(secondLayerLeftOrangeFace.Skip(1));
                     }
                     i = 0;
                 }
@@ -2690,11 +1802,11 @@ namespace Rubik_s_cube_solver
                 c.YellowFace.Pieces[2, 1] != 'Y')
                 {
                     c.ExecuterAlgorithme(algoCrossPattern);
-                    path.AddRange(GetAlgoFromStringEnum(algoCrossPattern));
+                    path.AddRange(algoCrossPattern);
                     c.D();
                     path.AddRange(dAlgo);
                     c.ExecuterAlgorithme(algoCrossPattern2);
-                    path.AddRange(GetAlgoFromStringEnum(algoCrossPattern2));
+                    path.AddRange(algoCrossPattern2);
                     break;
                 }
                 else if (c.YellowFace.Pieces[0, 1] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y')
@@ -2702,19 +1814,19 @@ namespace Rubik_s_cube_solver
                     c.D();
                     path.AddRange(dAlgo);
                     c.ExecuterAlgorithme(algoCrossPattern2);
-                    path.AddRange(GetAlgoFromStringEnum(algoCrossPattern2));
+                    path.AddRange(algoCrossPattern2);
                     break;
                 }
                 else if (c.YellowFace.Pieces[1, 0] == 'Y' && c.YellowFace.Pieces[1, 2] == 'Y')
                 {
                     c.ExecuterAlgorithme(algoCrossPattern2);
-                    path.AddRange(GetAlgoFromStringEnum(algoCrossPattern2));
+                    path.AddRange(algoCrossPattern2);
                     break;
                 }
                 else if (c.YellowFace.Pieces[1, 2] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y')
                 {
                     c.ExecuterAlgorithme(algoCrossPattern);
-                    path.AddRange(GetAlgoFromStringEnum(algoCrossPattern));
+                    path.AddRange(algoCrossPattern);
                     break;
                 }
                 else
@@ -2734,37 +1846,37 @@ namespace Rubik_s_cube_solver
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
                 if (c.RedFace.Pieces[2, 1] == 'R' && c.BlueFace.Pieces[2, 1] == 'B')
                 {
-                    path.AddRange(GetAlgoFromStringEnum(redF));
+                    path.AddRange(redF);
                     c.ExecuterAlgorithme(redF);
                     break;
                 }
                 else if (c.BlueFace.Pieces[2, 1] == 'B' && c.OrangeFace.Pieces[2, 1] == 'O')
                 {
                     c.ExecuterAlgorithme(blueF);
-                    path.AddRange(GetAlgoFromStringEnum(blueF));
+                    path.AddRange(blueF);
                     break;
                 }
                 else if (c.GreenFace.Pieces[2, 1] == 'G' && c.OrangeFace.Pieces[2, 1] == 'O')
                 {
                     c.ExecuterAlgorithme(greenF);
-                    path.AddRange(GetAlgoFromStringEnum(greenF));
+                    path.AddRange(greenF);
                     break;
                 }
                 else if (c.GreenFace.Pieces[2, 1] == 'G' && c.RedFace.Pieces[2, 1] == 'R')
                 {
                     c.ExecuterAlgorithme(greenF2);
-                    path.AddRange(GetAlgoFromStringEnum(greenF2));
+                    path.AddRange(greenF2);
                     break;
                 }
                 else if (c.RedFace.Pieces[2, 1] == 'R' && c.OrangeFace.Pieces[2, 1] == 'O')
                 {
                     c.ExecuterAlgorithme(redF2);
-                    path.AddRange(GetAlgoFromStringEnum(redF2));
+                    path.AddRange(redF2);
                 }
                 else if (c.BlueFace.Pieces[2, 1] == 'B' && c.GreenFace.Pieces[2, 1] == 'G')
                 {
                     c.ExecuterAlgorithme(blueF2);
-                    path.AddRange(GetAlgoFromStringEnum(blueF2));
+                    path.AddRange(blueF2);
                 }
                 else
                 {
@@ -2798,13 +1910,13 @@ namespace Rubik_s_cube_solver
                         c.YellowFace.Pieces[2, 2] == 'B' || c.YellowFace.Pieces[2, 2] == 'O')
                     {
                         c.ExecuterAlgorithme(cornerAlignementAlgo);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementAlgo));
+                        path.AddRange((cornerAlignementAlgo));
                         break;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(cornerAlignementOptim);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementOptim));
+                        path.AddRange((cornerAlignementOptim));
                         break;
                     }
                 }
@@ -2817,13 +1929,13 @@ namespace Rubik_s_cube_solver
                         c.YellowFace.Pieces[0, 2] == 'R' || c.YellowFace.Pieces[0, 2] == 'B')
                     {
                         c.ExecuterAlgorithme(cornerAlignementAlgo2);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementAlgo2));
+                        path.AddRange((cornerAlignementAlgo2));
                         break;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(cornerAlignementOptim2);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementOptim2));
+                        path.AddRange((cornerAlignementOptim2));
                         break;
                     }
                 }
@@ -2836,13 +1948,13 @@ namespace Rubik_s_cube_solver
                         c.YellowFace.Pieces[2, 0] == 'G' || c.YellowFace.Pieces[2, 0] == 'O')
                     {
                         c.ExecuterAlgorithme(cornerAlignementAlgo3);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementAlgo3));
+                        path.AddRange((cornerAlignementAlgo3));
                         break;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(cornerAlignementOptim3);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementOptim3));
+                        path.AddRange((cornerAlignementOptim3));
                         break;
                     }
                 }
@@ -2853,12 +1965,12 @@ namespace Rubik_s_cube_solver
                         c.YellowFace.Pieces[0, 0] == 'G' || c.YellowFace.Pieces[0, 0] == 'R')
                     {
                         c.ExecuterAlgorithme(cornerAlignementAlgo4);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementAlgo4));
+                        path.AddRange((cornerAlignementAlgo4));
                     }
                     else
                     {
                         c.ExecuterAlgorithme(cornerAlignementOptim4);
-                        path.AddRange(GetAlgoFromStringEnum(cornerAlignementOptim4));
+                        path.AddRange((cornerAlignementOptim4));
                     }
                 }
             }
@@ -2866,12 +1978,12 @@ namespace Rubik_s_cube_solver
         }
         private static void OrientLastCornersOptim(Cube c, List<byte> path)
         {
-            IEnumerable<string> doubleSM = sexyMove.Concat(sexyMove);
-            IEnumerable<string> quadSM = doubleSM.Concat(doubleSM);
-            List<byte> byteAlgo = GetAlgoFromStringEnum(sexyMove);
+            IEnumerable<byte> doubleSM = sexyMove.Concat(sexyMove);
+            IEnumerable<byte> quadSM = doubleSM.Concat(doubleSM);
+            List<byte> byteAlgo = sexyMove;
             IEnumerable<byte> doubleByteAlgo = byteAlgo.Concat(byteAlgo);
             IEnumerable<byte> quadByteAlgo = doubleByteAlgo.Concat(doubleByteAlgo);
-            List<byte> dPrimeAlgo = GetAlgoFromStringEnum(["D'"]);
+            List<byte> dPrimeAlgo = Move.GetAlgoFromStringEnum(["D'"]);
             bool isSolvedOptim() => c.RedFace.IsUniform && c.WhiteFace.IsUniform && c.YellowFace.IsUniform;
             while (!isSolvedOptim())
             {
@@ -2903,7 +2015,7 @@ namespace Rubik_s_cube_solver
             c = PlaceEdges(c, path);
             c = PlaceCorners(c, path);
             c = OrientCorners(c, path);
-            List<byte> dAlgo = GetAlgoFromStringEnum(["D"]);
+            List<byte> dAlgo = Move.GetAlgoFromStringEnum(["D"]);
             c = SecondLayer(c, path, dAlgo);
             c = YellowCross(c, path, dAlgo);
             c = OrientEdges(c, path, dAlgo);

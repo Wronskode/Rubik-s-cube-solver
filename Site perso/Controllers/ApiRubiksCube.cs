@@ -33,7 +33,7 @@ namespace MySite.Controllers
             else if (cptB != 9) throw new Exception("Il y a " + cptB + " bleus à la place de 9 bleus");
             else if (cptO != 9) throw new Exception("Il y a " + cptO + " oranges à la place de 9 oranges");
             Cube cube = new(strCube);
-            return Cube.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(cube)));
+            return Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(cube)));
         }
 
         [HttpPost("SolveCube")]
@@ -65,8 +65,8 @@ namespace MySite.Controllers
 
             try
             {
-                return Ok(Cube.GetStringPath(Cube.GetReversalPath(Cube.GetAlgoFromStringEnum(
-                            Cube.StringPathToEnum(path.Replace(" ", string.Empty).ToUpper()).Reverse<string>()))));
+                return Ok(Move.GetStringPath(Move.GetReversalPath(Move.GetAlgoFromStringEnum(
+                            Move.StringPathToEnum(path.Replace(" ", string.Empty).ToUpper()).Reverse<string>()))));
             }
             catch
             {
@@ -79,7 +79,7 @@ namespace MySite.Controllers
         {
             try
             {
-                return Ok(Cube.GetStringPath(Cube.OptimizePath(Cube.GetAlgoFromStringEnum(Cube.StringPathToEnum(path.Replace(" ", string.Empty).ToUpper())))));
+                return Ok(Move.GetStringPath(Cube.OptimizePath(Move.GetAlgoFromStringEnum(Move.StringPathToEnum(path.Replace(" ", string.Empty).ToUpper())))));
             }
             catch
             {
@@ -92,7 +92,7 @@ namespace MySite.Controllers
         {
             try
             {
-                return Ok(Cube.Periodicity(Cube.StringPathToEnum(algorithm.Replace(" ", string.Empty).ToUpper())));
+                return Ok(Cube.Periodicity(Move.StringPathToEnum(algorithm.Replace(" ", string.Empty).ToUpper())));
             }
             catch
             {
