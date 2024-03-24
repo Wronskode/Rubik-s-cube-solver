@@ -47,7 +47,6 @@ StringBuilder GenererThirdCSV()
 {
     Cube c = new(500);
     StringBuilder txt = new();
-    //var cheminFinal = Cube.OptimizePath(Cube.FastMethodeDebutant(c), 3, 4, false);
     List<byte> cheminFinal = Cube.FastBeginnerMethod(c);
     List<List<int>> csvDico = [];
     for (int i = 0; i < cheminFinal.Count; i++)
@@ -64,28 +63,10 @@ StringBuilder GenererThirdCSV()
         csvDico.Add(ligne);
         if (i != cheminFinal.Count - 1)
             c.DoMove(cheminFinal[i]);
-        //w.WriteLine(string.Join(',', csvDico[i]));
         txt.AppendLine(string.Join(',', csvDico[i]));
     }
     return txt;
 }
-
-//using StreamWriter w1 = File.AppendText("cubes.csv");
-//using StreamWriter w2 = File.AppendText("cubes2.csv");
-
-
-
-//using StreamWriter w3 = File.AppendText("cubesopti.csv");
-
-//while (w2.BaseStream.Length < 10.2 * Math.Pow(10, 6))
-//{
-//    for (int i = 0; i < 100; i++)
-//    {
-//        GenererSecondCSV(w2);
-//        Console.WriteLine(i);
-//    }
-//    w2.Flush();
-//}
 
 void AddDataOnFile(string appendFileName)
 {
@@ -169,6 +150,7 @@ void GenererEntete(string appendFileName, params string[] values)
 //Console.WriteLine(cube2.Length);
 //return;
 
+// Bench the AI
 void PrintPercentage()
 {
     MLContext mlContext = new();
@@ -182,11 +164,9 @@ void PrintPercentage()
         bool solved = false;
         List<byte> moves = [];
         Cube cube1 = new(500);
-        //var timer = new Stopwatch();
-        //timer.Start();
         int i = 0;
         List<float> cube = cubeStringToInt(cube1.ToString()).Select(x => (float)x).ToList();
-        cube.AddRange(new float[9] { i, -1, -1, -1, -1, -1, -1, -1, -1 });
+        cube.AddRange([i, -1, -1, -1, -1, -1, -1, -1, -1]);
         while (i <= 100)
         {
             Microsoft.ML.OnnxRuntime.Tensors.DenseTensor<float> tensor = new(cube.ToArray(), dims);
@@ -196,18 +176,11 @@ void PrintPercentage()
             Debug.Assert(output is not null);
             Microsoft.ML.OnnxRuntime.Tensors.DenseTensor<float>? resultTensor = output.Value as Microsoft.ML.OnnxRuntime.Tensors.DenseTensor<float>;
             Debug.Assert(resultTensor is not null);
-            float[] tabProba = resultTensor.ToArray();
-
-            //var moves2 = new int[18];
-            //for (int j = 0; j < 18; j++)
-            //    moves2[j] = j;
-            //Array.Sort(tabProba, moves2);
+            float[] tabProba = [.. resultTensor];
             float probaMax = tabProba.Max();
             int leMove = Array.IndexOf(tabProba, probaMax);
-            //Console.WriteLine(leMove);
             moves.Add((byte)leMove);
             cube1.DoMove((byte)leMove);
-            //Console.WriteLine(moves2[17]);
             i++;
             cube = cubeStringToInt(cube1.ToString()).Select(x => (float)x).Append(i).ToList();
             if (i <= 0) cube.Add(-1);
@@ -236,15 +209,9 @@ void PrintPercentage()
         cptTotal++;
         if (solved)
         {
-            //timer.Stop();
-            //m += timer.Elapsed.TotalSeconds;
             cpt++;
             Console.WriteLine((cpt / cptTotal) + " " + cptTotal + "\n nombre moyen de moves : " + (sizeM / cpt));
         }
-        //else
-        //{
-        //    Console.WriteLine("Echec");
-        //}
     }
 }
 
@@ -314,7 +281,7 @@ void KociembaAddDataOnFile(string input, string appendFileName)
 }
 void KociembaParser(string input, string output)
 {
-    List<List<byte>> moves = new();
+    List<List<byte>> moves = [];
     using (StreamReader reader = new(input))
     {
         string? line;
