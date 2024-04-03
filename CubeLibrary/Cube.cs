@@ -45,6 +45,20 @@ namespace Rubik_s_cube_solver
         private static readonly List<byte> cornerAlignementOptim4 = Move.GetAlgoFromStringEnum(["B", "D'", "F'", "D", "B'", "D'", "F", "D"]);
 
         private static readonly List<byte> sexyMove = Move.GetAlgoFromStringEnum(["R", "U", "R'", "U'"]);
+        private static readonly List<byte> inverseSexyMove = Move.GetAlgoFromStringEnum(["F", "D", "F'", "D'"]);
+        private static readonly IEnumerable<byte> doubleInverseSexyMove = inverseSexyMove.Concat(inverseSexyMove);
+        private static readonly IEnumerable<byte> quadInverseSexyMove = doubleInverseSexyMove.Concat(doubleInverseSexyMove);
+        private static readonly IEnumerable<byte> doubleInverseByteAlgo = inverseSexyMove.Concat(inverseSexyMove);
+        private static readonly IEnumerable<byte> quadInverseByteAlgo = doubleInverseByteAlgo.Concat(doubleInverseByteAlgo);
+        private static readonly List<byte> uPrimeAlgo = Move.GetAlgoFromStringEnum(["U'"]);
+
+        private static readonly IEnumerable<byte> doubleSM = sexyMove.Concat(sexyMove);
+        private static readonly IEnumerable<byte> quadSM = doubleSM.Concat(doubleSM);
+        private static readonly List<byte> byteAlgo = sexyMove;
+        private static readonly IEnumerable<byte> doubleByteAlgo = byteAlgo.Concat(byteAlgo);
+        private static readonly IEnumerable<byte> quadByteAlgo = doubleByteAlgo.Concat(doubleByteAlgo);
+        private static readonly List<byte> dPrimeAlgo = Move.GetAlgoFromStringEnum(["D'"]);
+        private static readonly List<byte> dAlgo = Move.GetAlgoFromStringEnum(["D"]);
         public bool IsSolved
         {
             get
@@ -1619,13 +1633,6 @@ namespace Rubik_s_cube_solver
                 && c.OrangeFace.Pieces[0, 2] == 'O';
             bool allCornersIsOriented() => firstCornerOriented() && secondCornerIsOriented() && thirdCornerIsOriented()
                 && fourthCornerIsOriented();
-            List<string> inverseSexyMove = ["F", "D", "F'", "D'"];
-            List<byte> inverseByteAlgo = Move.GetAlgoFromStringEnum(inverseSexyMove);
-            IEnumerable<string> doubleInverseSexyMove = inverseSexyMove.Concat(inverseSexyMove);
-            IEnumerable<string> quadInverseSexyMove = doubleInverseSexyMove.Concat(doubleInverseSexyMove);
-            IEnumerable<byte> doubleInverseByteAlgo = inverseByteAlgo.Concat(inverseByteAlgo);
-            IEnumerable<byte> quadInverseByteAlgo = doubleInverseByteAlgo.Concat(doubleInverseByteAlgo);
-            List<byte> uPrimeAlgo = Move.GetAlgoFromStringEnum(["U'"]);
             while (!allCornersIsOriented())
             {
                 if (path.Count > 1000) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
@@ -1910,13 +1917,13 @@ namespace Rubik_s_cube_solver
                         c.YellowFace.Pieces[2, 2] == 'B' || c.YellowFace.Pieces[2, 2] == 'O')
                     {
                         c.ExecuterAlgorithme(cornerAlignementAlgo);
-                        path.AddRange((cornerAlignementAlgo));
+                        path.AddRange(cornerAlignementAlgo);
                         break;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(cornerAlignementOptim);
-                        path.AddRange((cornerAlignementOptim));
+                        path.AddRange(cornerAlignementOptim);
                         break;
                     }
                 }
@@ -1929,13 +1936,13 @@ namespace Rubik_s_cube_solver
                         c.YellowFace.Pieces[0, 2] == 'R' || c.YellowFace.Pieces[0, 2] == 'B')
                     {
                         c.ExecuterAlgorithme(cornerAlignementAlgo2);
-                        path.AddRange((cornerAlignementAlgo2));
+                        path.AddRange(cornerAlignementAlgo2);
                         break;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(cornerAlignementOptim2);
-                        path.AddRange((cornerAlignementOptim2));
+                        path.AddRange(cornerAlignementOptim2);
                         break;
                     }
                 }
@@ -1948,13 +1955,13 @@ namespace Rubik_s_cube_solver
                         c.YellowFace.Pieces[2, 0] == 'G' || c.YellowFace.Pieces[2, 0] == 'O')
                     {
                         c.ExecuterAlgorithme(cornerAlignementAlgo3);
-                        path.AddRange((cornerAlignementAlgo3));
+                        path.AddRange(cornerAlignementAlgo3);
                         break;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(cornerAlignementOptim3);
-                        path.AddRange((cornerAlignementOptim3));
+                        path.AddRange(cornerAlignementOptim3);
                         break;
                     }
                 }
@@ -1965,12 +1972,12 @@ namespace Rubik_s_cube_solver
                         c.YellowFace.Pieces[0, 0] == 'G' || c.YellowFace.Pieces[0, 0] == 'R')
                     {
                         c.ExecuterAlgorithme(cornerAlignementAlgo4);
-                        path.AddRange((cornerAlignementAlgo4));
+                        path.AddRange(cornerAlignementAlgo4);
                     }
                     else
                     {
                         c.ExecuterAlgorithme(cornerAlignementOptim4);
-                        path.AddRange((cornerAlignementOptim4));
+                        path.AddRange(cornerAlignementOptim4);
                     }
                 }
             }
@@ -1978,12 +1985,6 @@ namespace Rubik_s_cube_solver
         }
         private static void OrientLastCornersOptim(Cube c, List<byte> path)
         {
-            IEnumerable<byte> doubleSM = sexyMove.Concat(sexyMove);
-            IEnumerable<byte> quadSM = doubleSM.Concat(doubleSM);
-            List<byte> byteAlgo = sexyMove;
-            IEnumerable<byte> doubleByteAlgo = byteAlgo.Concat(byteAlgo);
-            IEnumerable<byte> quadByteAlgo = doubleByteAlgo.Concat(doubleByteAlgo);
-            List<byte> dPrimeAlgo = Move.GetAlgoFromStringEnum(["D'"]);
             bool isSolvedOptim() => c.RedFace.IsUniform && c.WhiteFace.IsUniform && c.YellowFace.IsUniform;
             while (!isSolvedOptim())
             {
@@ -2015,7 +2016,6 @@ namespace Rubik_s_cube_solver
             c = PlaceEdges(c, path);
             c = PlaceCorners(c, path);
             c = OrientCorners(c, path);
-            List<byte> dAlgo = Move.GetAlgoFromStringEnum(["D"]);
             c = SecondLayer(c, path, dAlgo);
             c = YellowCross(c, path, dAlgo);
             c = OrientEdges(c, path, dAlgo);
