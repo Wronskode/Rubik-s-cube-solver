@@ -116,8 +116,14 @@ static void LightOptimizationEvaluation()
 //cubeDeSecurite2.ExecuterAlgorithme(resLightOptim);
 //bool isOkay = cubeDeSecurite.IsSolved && randomCube.IsSolved && cubeDeSecurite2.IsSolved;
 //Console.WriteLine("Tout s'est bien passé : " + isOkay);
-
-
+Cube ct = new(500);
+Cube secu = ct.Clone();
+List<byte> sol = Cube.LightOptimization(Cube.TabuSearch(ct));
+Console.WriteLine("Path Length : " + sol.Count);
+secu.ExecuterAlgorithme(sol);
+Console.WriteLine("Cube est résolu : " + secu.IsSolved);
+Console.WriteLine("Résolution : " + Move.GetStringPath(sol) + "\n");
+return;
 while (true)
 {
     Console.WriteLine("Enter the scramble : 1 - Random, 2 - User defined, 3 - Enter a Cube manually");

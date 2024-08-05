@@ -884,7 +884,7 @@ namespace Rubik_s_cube_solver
             return null;
         }
 
-        private static int Heuristique(string s)
+        public static int Heuristique(string s)
         {
             var solution = new Cube().ToString();
             int k = 0;
@@ -2023,6 +2023,185 @@ namespace Rubik_s_cube_solver
             OrientLastCornersOptim(c, path);
             return path;
         }
+
+        public static int Conflits(string s, string solution)
+        {
+            int k = 0;
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (solution[i] != s[i]) k++;
+            }
+            return k;
+        }
+
+        public static List<byte> TabuSearch(Cube c)
+        {
+            //Random rand = new();
+            Cube init = c.Clone();
+            string s = new Cube().ToString();
+            List<byte> path = [];
+            List<byte> bestPath = [];
+            int evaluation = Conflits(c.ToString(), s);
+            int best = evaluation;
+            HashSet<string> hs = [c.ToString()];
+            Console.WriteLine(best);
+            PrintWithColors(c.PrintCubeColors());
+            Stopwatch sw = new();
+            Stopwatch sw2 = new();
+            sw.Start();
+            sw2.Start();
+            while (evaluation > 0)
+            {
+                evaluation = Conflits(c.ToString(), s);
+                for (byte i = 0; i < 18; i++)
+                {
+                    byte rev = Move.GetReversalMove(i);
+                    for (byte j = 0; j < 18; j++)
+                    {
+                        if (j != i && j != rev)
+                        {
+                            c.DoMove(j);
+                        }
+                        c.DoMove(i);
+                        string cString = c.ToString();
+                        //(ulong, ulong) cCompressed = CompressState(cString);
+                        int newEval = Conflits(cString, s);
+                        if (newEval < evaluation && hs.Add(cString))
+                        {
+                            if (j != i && j != rev)
+                            {
+                                path.Add(j);
+                            }
+                            path.Add(i);
+                            evaluation = newEval;
+                            if (evaluation < best)
+                            {
+                                best = evaluation;
+                                Console.WriteLine(best);
+                                bestPath = (bestPath.Concat(path)).Select(x => x).ToList();
+                                path.Clear();
+                                PrintWithColors(c.PrintCubeColors());
+                            }
+                            goto breaked;
+                        }
+                        c.DoMove(Move.GetReversalMove(i));
+                        if (j != i && j != rev)
+                        {
+                            c.DoMove(Move.GetReversalMove(j));
+                        }
+                    }
+                }
+               /* byte move = (byte)rand.Next(18);
+                c.DoMove(move);
+                path.Add(move);
+                hs.Add(c.ToString());*/
+                int minEval = int.MaxValue;
+                byte move = 0;
+                string cs = "";
+                for (byte j = 0; j < 18; j++)
+                {
+                    c.DoMove(j);
+                    cs = c.ToString();
+                    int eval = Conflits(cs, s);
+                    if (eval < minEval && hs.Add(cs))
+                    {
+                        minEval = eval;
+                        move = j;
+                    }
+                    c.DoMove(Move.GetReversalMove(j));
+                }
+                c.DoMove(move);
+                path.Add(move);
+                hs.Add(cs);
+            breaked:;
+                if (sw2.ElapsedMilliseconds >= 900 * 1000) break;
+                if (sw.ElapsedMilliseconds >= 180 * 1000)
+                {
+                    hs.Clear();
+                    sw.Restart();
+                }
+            }
+            init.ExecuterAlgorithme(bestPath);
+            return bestPath.Concat(MeetInTheMiddle(init)).ToList();
+            //return path;
+        }
+        /*  public static List<byte> TabuSearch(Cube c)
+          {
+              Random rand = new();
+              Cube init = c.Clone();
+              string s = new Cube().ToString();
+              List<byte> path = [];
+              List<byte> bestPath = [];
+              int evaluation = Conflits(c.ToString(), s);
+              int best = evaluation;
+              HashSet<string> hs = [c.ToString()];
+              Console.WriteLine(best);
+              PrintWithColors(c.PrintCubeColors());
+              Stopwatch sw = new();
+              Stopwatch sw2 = new();
+              sw.Start();
+              sw2.Start();
+              while (evaluation > 0)
+              {
+                  evaluation = Conflits(c.ToString(), s);
+                  int r = rand.Next(10);
+                  for (int i = 0; i < r; i++)
+                  {
+                      byte m = (byte)rand.Next(18);
+                      c.DoMove(m);
+                      path.Add(m);
+                  }
+                  string cString = c.ToString();
+                  //(ulong, ulong) cCompressed = CompressState(cString);
+                  int newEval = Conflits(cString, s);
+                  if (newEval < evaluation && hs.Add(cString))
+                  {
+                      evaluation = newEval;
+                      if (evaluation < best)
+                      {
+                          best = evaluation;
+                          Console.WriteLine(best);
+                          bestPath = (bestPath.Concat(path)).Select(x => x).ToList();
+                          path.Clear();
+                          PrintWithColors(c.PrintCubeColors());
+                      }
+                      goto breaked;
+                  }
+                  c.ExecuterAlgorithme(path.TakeLast(r).Reverse());
+                  *//*byte move = (byte)rand.Next(18);
+                  c.DoMove(move);
+                  path.Add(move);
+                  hs.Add(c.ToString());*//*
+                  int minEval = int.MaxValue;
+                  byte move = 0;
+                  string cs = "";
+                  for (byte j = 0; j < 18; j++)
+                  {
+                      c.DoMove(j);
+                      cs = c.ToString();
+                      int eval = Conflits(cs, s);
+                      if (eval < minEval && hs.Add(cs))
+                      {
+                          minEval = eval;
+                          move = j;
+                      }
+                      c.DoMove(Move.GetReversalMove(j));
+                  }
+                  c.DoMove(move);
+                  path.Add(move);
+                  hs.Add(cs);
+              breaked:;
+                  if (sw2.ElapsedMilliseconds >= 900 * 1000) break;
+                  *//* if (sw.ElapsedMilliseconds >= 180 * 1000)
+                   {
+                       hs.Clear();
+                       sw.Restart();
+                   }*//*
+              }
+              init.ExecuterAlgorithme(bestPath);
+              return bestPath.Concat(MeetInTheMiddle(init)).ToList();
+              //return path;
+          }*/
 
         public bool Equals(Cube? other)
         {
