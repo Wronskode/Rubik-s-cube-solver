@@ -884,16 +884,6 @@ namespace Rubik_s_cube_solver
             return null;
         }
 
-        public static int Heuristique(string s)
-        {
-            var solution = new Cube().ToString();
-            int k = 0;
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (solution[i] == s[i]) k++;
-            }
-            return k;
-        }
         public static void NextTreeBranchForMITM(List<Dictionary<(ulong, ulong), byte>> listDico, bool heuristique)
         {
             byte methodsCount = 18; // Nombre de mouvements possibles
@@ -905,8 +895,7 @@ namespace Rubik_s_cube_solver
                 {
                     //Cube c = c1.Clone();
                     c1.DoMove(j);
-                    string c1String = c1.ToString();
-                    (ulong, ulong) intCube = CompressState(c1String);
+                    (ulong, ulong) intCube = CompressState(c1.ToString());
                     bool isContained = false;
                     foreach (Dictionary<(ulong, ulong), byte> item in listDico)
                     {
@@ -916,13 +905,126 @@ namespace Rubik_s_cube_solver
                             break;
                         }
                     }
-                    if (!isContained && (listDico.Count < 6 || Heuristique(c1String) > 15))
+                    if (!isContained)
                         newCubes.TryAdd(intCube, j);
                     if (j != 17)
                         c1.DoMove(Move.GetReversalMove(j));
                 }
             }
-            listDico.Add(newCubes);
+            if (heuristique && listDico.Count >= 6)
+            {
+                HashSet<(ulong, ulong)> sortedCubes = newCubes.Select(x => x.Key).OrderBy(x => Conflits(new Cube(DecompressState(x)))).Take(1000000).ToHashSet();
+                listDico.Add(newCubes.Where(x => sortedCubes.Contains(x.Key)).ToDictionary());
+            }
+            else
+            {
+                listDico.Add(newCubes);
+            }
+        }
+
+        public static void NextTreeBranchForMITM(List<Dictionary<string, (byte, byte)>> listDico, bool heuristique)
+        {
+            byte methodsCount = 18; // Nombre de mouvements possibles
+            Dictionary<string, (byte, byte)> newCubes = [];
+            foreach (KeyValuePair<string, (byte, byte)> cube in listDico[^1])
+            {
+                Cube c1 = new(cube.Key);
+                for (byte j = 0; j < methodsCount; j++)
+                {
+                    //Cube c = c1.Clone();
+                    c1.DoMove(j);
+                    string c1String = c1.ToString();
+                    bool isContained = false;
+                    foreach (Dictionary<string, (byte, byte)> item in listDico)
+                    {
+                        if (item.ContainsKey(c1String))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(c1String, (j, Conflits(c1)));
+                    if (j != 17)
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            if (heuristique && listDico.Count >= 5)
+            {
+                Dictionary<string, (byte, byte)> sortedCubes = newCubes.OrderBy(x => x.Value.Item2).Take(100000).ToDictionary();
+                listDico.Add(sortedCubes);
+            }
+            else
+            {
+                listDico.Add(newCubes);
+            }
+        }
+
+        public static byte[] BFSWithMITM(Cube initialCube)
+        {
+            List<byte> path = [];
+            Cube copy = initialCube.Clone();
+            Dictionary<string, (byte, byte)> dico = new()
+            {
+                { copy.ToString(), (255, Conflits(copy))}
+            };
+            List<Dictionary<string, (byte, byte)>> arbre = [dico];
+            byte minEval = byte.MaxValue;
+            while (true)
+            {
+                List<Task<(byte[], bool)>> tasks = [];
+                foreach (KeyValuePair<string, (byte, byte)> element in arbre[^1])
+                {
+                    string state = element.Key;
+                    Cube nc = new(element.Key);
+                    byte eval = element.Value.Item2;
+                    if (eval < minEval)
+                    {
+                        minEval = eval;
+                        Console.WriteLine("Min eval : " + eval);
+                    }
+                    if (eval <= 4)
+                    {
+                        tasks.Add(Task.Run((byte[], bool) () =>
+                        {
+                            Cube c1 = nc.Clone();
+                            Cube secu = c1.Clone();
+                            byte[] sol = MeetInTheMiddle(c1, new Cube(), 6);
+                            secu.ExecuterAlgorithme(sol);
+                            Console.WriteLine("Solved : " + secu.IsSolved);
+                            if (secu.IsSolved)
+                            {
+                                foreach (Dictionary<string, (byte, byte)> layer in arbre.Skip(1).Reverse<Dictionary<string, (byte, byte)>>())
+                                {
+                                    foreach (KeyValuePair<string, (byte, byte)> cube in layer)
+                                    {
+                                        if (cube.Key == state)
+                                        {
+                                            path.Add(cube.Value.Item1);
+                                            nc.DoMove(Move.GetReversalMove(cube.Value.Item1));
+                                            state = nc.ToString();
+                                            break;
+                                        }
+                                    }
+                                }
+                                path.Reverse();
+                                return (LightOptimization(path.Concat(sol).ToList()).ToArray(), true);
+                            }
+                            return ([], false);
+                        }));
+                    }
+                }
+                while (tasks.Count > 0)
+                {
+                    var taskIndex = Task.WaitAny(tasks.ToArray());
+                    if (tasks[taskIndex].Result.Item2)
+                    {
+                        return tasks[taskIndex].Result.Item1;
+                    }
+                    tasks.RemoveAt(taskIndex);
+                }
+                NextTreeBranchForMITM(arbre, true);
+            }
         }
 
         public void DoMove(byte j)
@@ -1010,7 +1112,7 @@ namespace Rubik_s_cube_solver
                 OrangeFace.PrintFace()
             ];
         }
-        
+
         public void ExecuterAlgorithme(IEnumerable<string> algorithme)
         {
             foreach (string item in algorithme)
@@ -1166,7 +1268,7 @@ namespace Rubik_s_cube_solver
         {
             finalCube ??= new();
             bool isSolved = false;
-            int i = 1;
+            int i = 0;
             Dictionary<(ulong, ulong), byte> dico1 = new()
             {
                 { CompressState(initialCube.ToString()), 255}
@@ -1182,16 +1284,22 @@ namespace Rubik_s_cube_solver
             IEnumerable<byte> solution = new List<byte>();
             while (!isSolved)
             {
-                Console.WriteLine(i);
+                Console.WriteLine(i + " " + arbreInitial[^1].Count);
                 if (i == deepMax) return [];
                 Parallel.Invoke(
-                    () => NextTreeBranchForMITM(arbreInitial, true),
+                    () => NextTreeBranchForMITM(arbreInitial, false),
                     () => NextTreeBranchForMITM(arbreFinal, false)
                     );
-                ParallelQuery<KeyValuePair<(ulong, ulong), byte>> arbreFinalManySelected = arbreFinal.AsParallel().SelectMany(x => x);
-                ParallelQuery<KeyValuePair<(ulong, ulong), byte>> arbreInitialManySelected = arbreInitial.AsParallel().SelectMany(x => x);
-                ParallelQuery<(ulong, ulong)> hasCommonElements = arbreInitialManySelected.Select(x => x.Key)
-                    .Intersect(arbreFinalManySelected.Select(x => x.Key));
+                IEnumerable<(ulong, ulong)> commonLastsElements = arbreInitial.TakeLast(2).SelectMany(x => x.Keys)
+                    .Intersect(arbreFinal.TakeLast(2).SelectMany(x => x.Keys));
+                if (!commonLastsElements.Any())
+                {
+                    i++;
+                    continue;
+                }
+                IEnumerable<(ulong, ulong)> arbreFinalManySelected = arbreFinal.SelectMany(x => x.Keys);
+                IEnumerable<(ulong, ulong)> arbreInitialManySelected = arbreInitial.SelectMany(x => x.Keys);
+                IEnumerable<(ulong, ulong)> hasCommonElements = arbreInitialManySelected.Intersect(arbreFinalManySelected);
                 if (hasCommonElements.Any())
                 {
                     isSolved = true;
@@ -1232,7 +1340,7 @@ namespace Rubik_s_cube_solver
                         }
                     }
                 }
-                i += 1;
+                i++;
             }
             return solution.ToArray();
         }
@@ -2034,6 +2142,55 @@ namespace Rubik_s_cube_solver
             return k;
         }
 
+        public static byte Conflits(Cube c)
+        {
+            byte conflits = 0;
+            // Corners
+            if (c.RedFace.Pieces[0, 0] != 'R' || c.GreenFace.Pieces[0, 2] != 'G' || c.WhiteFace.Pieces[2, 0] != 'W')
+                conflits++;
+            if (c.RedFace.Pieces[0, 2] != 'R' || c.BlueFace.Pieces[0, 0] != 'B' || c.WhiteFace.Pieces[2, 2] != 'W')
+                conflits++;
+            if (c.BlueFace.Pieces[0, 2] != 'B' || c.OrangeFace.Pieces[0, 0] != 'O' || c.WhiteFace.Pieces[0, 2] != 'W')
+                conflits++;
+            if (c.OrangeFace.Pieces[0, 2] != 'O' || c.GreenFace.Pieces[0, 0] != 'G' || c.WhiteFace.Pieces[0, 0] != 'W')
+                conflits++;
+            if (c.RedFace.Pieces[2, 0] != 'R' || c.GreenFace.Pieces[2, 2] != 'G' || c.YellowFace.Pieces[0, 0] != 'Y')
+                conflits++;
+            if (c.RedFace.Pieces[2, 2] != 'R' || c.BlueFace.Pieces[2, 0] != 'B' || c.YellowFace.Pieces[0, 2] != 'Y')
+                conflits++;
+            if (c.BlueFace.Pieces[2, 2] != 'B' || c.OrangeFace.Pieces[2, 0] != 'O' || c.YellowFace.Pieces[2, 2] != 'Y')
+                conflits++;
+            if (c.OrangeFace.Pieces[2, 2] != 'O' || c.GreenFace.Pieces[2, 0] != 'G' || c.YellowFace.Pieces[2, 0] != 'Y')
+                conflits++;
+            // Edges
+            if (c.WhiteFace.Pieces[0, 1] != 'W' || c.OrangeFace.Pieces[0, 1] != 'O')
+                conflits++;
+            if (c.WhiteFace.Pieces[1, 0] != 'W' || c.GreenFace.Pieces[0, 1] != 'G')
+                conflits++;
+            if (c.WhiteFace.Pieces[1, 2] != 'W' || c.BlueFace.Pieces[0, 1] != 'B')
+                conflits++;
+            if (c.WhiteFace.Pieces[2, 1] != 'W' || c.RedFace.Pieces[0, 1] != 'R')
+                conflits++;
+            if (c.RedFace.Pieces[1, 0] != 'R' || c.GreenFace.Pieces[1, 2] != 'G')
+                conflits++;
+            if (c.RedFace.Pieces[1, 2] != 'R' || c.BlueFace.Pieces[1, 0] != 'B')
+                conflits++;
+            if (c.RedFace.Pieces[2, 1] != 'R' || c.YellowFace.Pieces[0, 1] != 'Y')
+                conflits++;
+            if (c.BlueFace.Pieces[2, 1] != 'B' || c.YellowFace.Pieces[1, 2] != 'Y')
+                conflits++;
+            if (c.BlueFace.Pieces[1, 2] != 'B' || c.OrangeFace.Pieces[1, 0] != 'O')
+                conflits++;
+            if (c.OrangeFace.Pieces[1, 1] != 'O' || c.GreenFace.Pieces[1, 0] != 'G')
+                conflits++;
+            if (c.OrangeFace.Pieces[2, 1] != 'O' || c.YellowFace.Pieces[2, 1] != 'Y')
+                conflits++;
+            if (c.GreenFace.Pieces[2, 1] != 'G' || c.YellowFace.Pieces[1, 0] != 'Y')
+                conflits++;
+            return conflits;
+
+        }
+
         public static List<byte> TabuSearch(Cube c)
         {
             //Random rand = new();
@@ -2041,7 +2198,7 @@ namespace Rubik_s_cube_solver
             string s = new Cube().ToString();
             List<byte> path = [];
             List<byte> bestPath = [];
-            int evaluation = Conflits(c.ToString(), s);
+            int evaluation = Conflits(c);
             int best = evaluation;
             HashSet<string> hs = [c.ToString()];
             Console.WriteLine(best);
@@ -2052,7 +2209,7 @@ namespace Rubik_s_cube_solver
             sw2.Start();
             while (evaluation > 0)
             {
-                evaluation = Conflits(c.ToString(), s);
+                evaluation = Conflits(c);
                 for (byte i = 0; i < 18; i++)
                 {
                     byte rev = Move.GetReversalMove(i);
@@ -2065,7 +2222,7 @@ namespace Rubik_s_cube_solver
                         c.DoMove(i);
                         string cString = c.ToString();
                         //(ulong, ulong) cCompressed = CompressState(cString);
-                        int newEval = Conflits(cString, s);
+                        int newEval = Conflits(c);
                         if (newEval < evaluation && hs.Add(cString))
                         {
                             if (j != i && j != rev)
@@ -2078,7 +2235,7 @@ namespace Rubik_s_cube_solver
                             {
                                 best = evaluation;
                                 Console.WriteLine(best);
-                                bestPath = (bestPath.Concat(path)).Select(x => x).ToList();
+                                bestPath = bestPath.Concat(path).Select(x => x).ToList();
                                 path.Clear();
                                 PrintWithColors(c.PrintCubeColors());
                             }
@@ -2091,10 +2248,10 @@ namespace Rubik_s_cube_solver
                         }
                     }
                 }
-               /* byte move = (byte)rand.Next(18);
-                c.DoMove(move);
-                path.Add(move);
-                hs.Add(c.ToString());*/
+                /* byte move = (byte)rand.Next(18);
+                 c.DoMove(move);
+                 path.Add(move);
+                 hs.Add(c.ToString());*/
                 int minEval = int.MaxValue;
                 byte move = 0;
                 string cs = "";
@@ -2102,7 +2259,7 @@ namespace Rubik_s_cube_solver
                 {
                     c.DoMove(j);
                     cs = c.ToString();
-                    int eval = Conflits(cs, s);
+                    int eval = Conflits(c);
                     if (eval < minEval && hs.Add(cs))
                     {
                         minEval = eval;
@@ -2114,7 +2271,7 @@ namespace Rubik_s_cube_solver
                 path.Add(move);
                 hs.Add(cs);
             breaked:;
-                if (sw2.ElapsedMilliseconds >= 900 * 1000) break;
+                if (sw2.ElapsedMilliseconds >= 600 * 1000) break;
                 if (sw.ElapsedMilliseconds >= 180 * 1000)
                 {
                     hs.Clear();
@@ -2125,83 +2282,80 @@ namespace Rubik_s_cube_solver
             return bestPath.Concat(MeetInTheMiddle(init)).ToList();
             //return path;
         }
-        /*  public static List<byte> TabuSearch(Cube c)
-          {
-              Random rand = new();
-              Cube init = c.Clone();
-              string s = new Cube().ToString();
-              List<byte> path = [];
-              List<byte> bestPath = [];
-              int evaluation = Conflits(c.ToString(), s);
-              int best = evaluation;
-              HashSet<string> hs = [c.ToString()];
-              Console.WriteLine(best);
-              PrintWithColors(c.PrintCubeColors());
-              Stopwatch sw = new();
-              Stopwatch sw2 = new();
-              sw.Start();
-              sw2.Start();
-              while (evaluation > 0)
-              {
-                  evaluation = Conflits(c.ToString(), s);
-                  int r = rand.Next(10);
-                  for (int i = 0; i < r; i++)
-                  {
-                      byte m = (byte)rand.Next(18);
-                      c.DoMove(m);
-                      path.Add(m);
-                  }
-                  string cString = c.ToString();
-                  //(ulong, ulong) cCompressed = CompressState(cString);
-                  int newEval = Conflits(cString, s);
-                  if (newEval < evaluation && hs.Add(cString))
-                  {
-                      evaluation = newEval;
-                      if (evaluation < best)
-                      {
-                          best = evaluation;
-                          Console.WriteLine(best);
-                          bestPath = (bestPath.Concat(path)).Select(x => x).ToList();
-                          path.Clear();
-                          PrintWithColors(c.PrintCubeColors());
-                      }
-                      goto breaked;
-                  }
-                  c.ExecuterAlgorithme(path.TakeLast(r).Reverse());
-                  *//*byte move = (byte)rand.Next(18);
-                  c.DoMove(move);
-                  path.Add(move);
-                  hs.Add(c.ToString());*//*
-                  int minEval = int.MaxValue;
-                  byte move = 0;
-                  string cs = "";
-                  for (byte j = 0; j < 18; j++)
-                  {
-                      c.DoMove(j);
-                      cs = c.ToString();
-                      int eval = Conflits(cs, s);
-                      if (eval < minEval && hs.Add(cs))
-                      {
-                          minEval = eval;
-                          move = j;
-                      }
-                      c.DoMove(Move.GetReversalMove(j));
-                  }
-                  c.DoMove(move);
-                  path.Add(move);
-                  hs.Add(cs);
-              breaked:;
-                  if (sw2.ElapsedMilliseconds >= 900 * 1000) break;
-                  *//* if (sw.ElapsedMilliseconds >= 180 * 1000)
-                   {
-                       hs.Clear();
-                       sw.Restart();
-                   }*//*
-              }
-              init.ExecuterAlgorithme(bestPath);
-              return bestPath.Concat(MeetInTheMiddle(init)).ToList();
-              //return path;
-          }*/
+
+        public static List<byte> TabuSearchExp(Cube c)
+        {
+            Random rand = new();
+            Cube init = c.Clone();
+            Cube copy = c.Clone();
+            string s = new Cube().ToString();
+            List<byte> path = new();
+            const int algoSize = 18;
+            for (int i = 0; i < algoSize; i++)
+            {
+                path.Add((byte)rand.Next(18));
+            }
+            List<byte> bestPath = path.Select(x => x).ToList();
+            copy.ExecuterAlgorithme(bestPath);
+            int evaluation = Conflits(copy);
+            int best = evaluation;
+            HashSet<string> hs = [Move.GetStringPath(bestPath)];
+            Console.WriteLine(best);
+            PrintWithColors(c.PrintCubeColors());
+            Stopwatch sw = new();
+            Stopwatch sw2 = new();
+            sw.Start();
+            sw2.Start();
+            while (evaluation > 3)
+            {
+                evaluation = Conflits(copy);
+                for (byte i = 0; i < algoSize; i++)
+                {
+                    byte k = path[i];
+                    for (byte j = 0; j < 18; j++)
+                    {
+                        if (j == Move.GetReversalMove(path[i]) || (path[i] <= 9 && j == Move.GetDoubleMove(path[i])) || j == path[i]) continue;
+                        if (i < algoSize - 1 && (path[i + 1] == j || path[i + 1] == Move.GetReversalMove(j))) continue;
+                        path[i] = j;
+                        //(ulong, ulong) cCompressed = CompressState(cString);
+                        copy = init.Clone();
+                        copy.ExecuterAlgorithme(path);
+                        string cString = copy.ToString();
+                        int newEval = Conflits(copy);
+                        if (newEval < evaluation && hs.Add(cString))
+                        {
+                            evaluation = newEval;
+                            if (evaluation < best)
+                            {
+                                best = evaluation;
+                                Console.WriteLine(best);
+                                bestPath = path.Select(x => x).ToList();
+                                PrintWithColors(copy.PrintCubeColors());
+                                Console.WriteLine(Move.GetStringPath(bestPath));
+                            }
+                            goto breaked;
+                        }
+                        path[i] = k;
+                    }
+                }
+                int r = rand.Next(algoSize-1);
+                byte l = (byte)rand.Next(18);
+                path[r] = l;
+                copy = init.Clone();
+                copy.ExecuterAlgorithme(path);
+                hs.Add(copy.ToString());
+            breaked:;
+                if (sw2.ElapsedMilliseconds >= 600 * 1000) break;
+                if (sw.ElapsedMilliseconds >= 180 * 1000)
+                {
+                    hs.Clear();
+                    sw.Restart();
+                }
+            }
+            init.ExecuterAlgorithme(bestPath);
+            return bestPath.Concat(MeetInTheMiddle(init)).ToList();
+        }
+
 
         public bool Equals(Cube? other)
         {

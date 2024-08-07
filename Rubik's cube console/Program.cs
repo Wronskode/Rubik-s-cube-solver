@@ -116,18 +116,33 @@ static void LightOptimizationEvaluation()
 //cubeDeSecurite2.ExecuterAlgorithme(resLightOptim);
 //bool isOkay = cubeDeSecurite.IsSolved && randomCube.IsSolved && cubeDeSecurite2.IsSolved;
 //Console.WriteLine("Tout s'est bien passé : " + isOkay);
-Cube ct = new(500);
+
+/*Cube ct = new(500);
 Cube secu = ct.Clone();
 List<byte> sol = Cube.LightOptimization(Cube.TabuSearch(ct));
 Console.WriteLine("Path Length : " + sol.Count);
 secu.ExecuterAlgorithme(sol);
 Console.WriteLine("Cube est résolu : " + secu.IsSolved);
 Console.WriteLine("Résolution : " + Move.GetStringPath(sol) + "\n");
+return;*/
+
+Cube ct = new(500);
+Cube.PrintWithColors(ct.PrintCubeColors());
+Cube secu = ct.Clone();
+Stopwatch sw = new();
+sw.Start();
+byte[] sol = Cube.BFSWithMITM(ct);
+sw.Stop();
+Console.WriteLine("Path Length : " + sol.Length);
+secu.ExecuterAlgorithme(sol);
+Console.WriteLine("Cube est résolu : " + secu.IsSolved + " En " + sw.ElapsedMilliseconds/1000 + "s");
+Console.WriteLine("Résolution : " + Move.GetStringPath(sol) + "\n");
+Console.WriteLine("Résolution inverse: " + Move.GetStringPath(Move.GetReversalPath(sol.Reverse<byte>())));
 return;
 while (true)
 {
     Console.WriteLine("Enter the scramble : 1 - Random, 2 - User defined, 3 - Enter a Cube manually");
-    var str = Console.ReadLine();
+    string? str = Console.ReadLine();
     bool ok = int.TryParse(str, out int n);
     if (!ok) return;
     if (n == 1)
@@ -141,8 +156,8 @@ while (true)
         string randomPath = Move.GetStringPath(randomCube.Scramble(n));
         Console.WriteLine("Random scramble : " + randomPath + "\n");
         Cube.PrintWithColors(randomCube.PrintCubeColors());
-        var resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(randomCube)]));
-        Console.WriteLine("Resolution : " + resolution+"\n");
+        string resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(randomCube)]));
+        Console.WriteLine("Resolution : " + resolution + "\n");
     }
     else if (n == 2)
     {
@@ -171,7 +186,7 @@ while (true)
         }
         //Cube.PrintWithColors(c.PrintCubeColors());
         Console.WriteLine("Scramble : " + Move.GetStringPath(Move.GetAlgoFromStringEnum(fullAlgo)));
-        var resolution = Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
+        string resolution = Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
         Console.WriteLine("Resolution : " + resolution + "\n");
     }
     else if (n == 3)
@@ -184,7 +199,7 @@ while (true)
         try
         {
             c = new(str);
-            var resolution = Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
+            string resolution = Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
             Console.WriteLine("Resolution : " + resolution + "\n");
         }
         catch (Exception ex)
