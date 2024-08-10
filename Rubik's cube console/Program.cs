@@ -126,7 +126,11 @@ Console.WriteLine("Cube est résolu : " + secu.IsSolved);
 Console.WriteLine("Résolution : " + Move.GetStringPath(sol) + "\n");
 return;*/
 
-Cube ct = new(500);
+//Cube ct = new("BORGWBORGBWWBRGBYYOWWRBOOYYGWWGOBGYYRWWOGRRYYORGGYBBOR");
+/*Cube ct = new(500);
+//Console.WriteLine(ct.ToString());
+//ct.ExecuterAlgorithme(["F2","U2","B2","L'","R","F'","R2","D","U","R'","B2","L'","U2","R'","B2","R'","B'","F'","R2","U'"]);
+//Cube ct = new(500);
 Cube.PrintWithColors(ct.PrintCubeColors());
 Cube secu = ct.Clone();
 Stopwatch sw = new();
@@ -135,7 +139,21 @@ byte[] sol = Cube.BFSWithMITM(ct);
 sw.Stop();
 Console.WriteLine("Path Length : " + sol.Length);
 secu.ExecuterAlgorithme(sol);
-Console.WriteLine("Cube est résolu : " + secu.IsSolved + " En " + sw.ElapsedMilliseconds/1000 + "s");
+Console.WriteLine("Cube est résolu : " + secu.IsSolved + " En " + sw.ElapsedMilliseconds / 1000 + "s");
+Console.WriteLine("Résolution : " + Move.GetStringPath(sol) + "\n");
+Console.WriteLine("Résolution inverse: " + Move.GetStringPath(Move.GetReversalPath(sol.Reverse<byte>())));
+return;*/
+
+Cube ct = new(500);
+Cube.PrintWithColors(ct.PrintCubeColors());
+Cube secu = ct.Clone();
+Stopwatch sw = new();
+sw.Start();
+var sol = Cube.Kociemba3(ct);
+sw.Stop();
+Console.WriteLine("Path Length : " + sol.Length);
+secu.ExecuterAlgorithme(sol);
+Console.WriteLine("Cube est résolu : " + secu.IsSolved + " En " + sw.ElapsedMilliseconds / 1000 + "s");
 Console.WriteLine("Résolution : " + Move.GetStringPath(sol) + "\n");
 Console.WriteLine("Résolution inverse: " + Move.GetStringPath(Move.GetReversalPath(sol.Reverse<byte>())));
 return;

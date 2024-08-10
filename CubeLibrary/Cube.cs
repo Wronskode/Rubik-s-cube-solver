@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace Rubik_s_cube_solver
 {
@@ -67,6 +69,37 @@ namespace Rubik_s_cube_solver
                         BlueFace.IsUniform && OrangeFace.IsUniform;
             }
         }
+
+        public static List<(int, int)> GetCorners
+        {
+            get
+            {
+                return [(0, 0), (0, 2), (2, 0), (2, 2)];
+            }
+        }
+
+        public static List<(int, int)> GetEdges
+        {
+            get
+            {
+                return [(0, 1), (1, 0), (1, 2), (2, 1)];
+            }
+        }
+
+        public List<Face> GetAllFaces
+        {
+            get
+            {
+                return [WhiteFace, RedFace, YellowFace, BlueFace, GreenFace, OrangeFace];
+            }
+        }
+
+        private static string Up = "U";
+        private static string Down = "D";
+        private static string Right = "R2";
+        private static string Left = "L2";
+        private static string Front = "F2";
+        private static string Back = "B2";
         public Cube(List<Face> faces)
         {
             foreach (Face face in faces)
@@ -226,8 +259,6 @@ namespace Rubik_s_cube_solver
 
             char[,] newYellowFace = CopyFace('Y');
 
-            char[,] newGreenFace = CopyFace('G');
-
             newWhiteFace[2, 0] = GreenFace.Pieces[2, 2];
             newWhiteFace[2, 1] = GreenFace.Pieces[1, 2];
             newWhiteFace[2, 2] = GreenFace.Pieces[0, 2];
@@ -240,15 +271,14 @@ namespace Rubik_s_cube_solver
             newYellowFace[0, 1] = BlueFace.Pieces[1, 0];
             newYellowFace[0, 2] = BlueFace.Pieces[0, 0];
 
-            newGreenFace[0, 2] = YellowFace.Pieces[0, 0];
-            newGreenFace[1, 2] = YellowFace.Pieces[0, 1];
-            newGreenFace[2, 2] = YellowFace.Pieces[0, 2];
+            GreenFace.Pieces[0, 2] = YellowFace.Pieces[0, 0];
+            GreenFace.Pieces[1, 2] = YellowFace.Pieces[0, 1];
+            GreenFace.Pieces[2, 2] = YellowFace.Pieces[0, 2];
 
 
             WhiteFace.Pieces = newWhiteFace;
             BlueFace.Pieces = newBlueFace;
             YellowFace.Pieces = newYellowFace;
-            GreenFace.Pieces = newGreenFace;
             RedFace.Rotate90Right();
         }
 
@@ -259,8 +289,6 @@ namespace Rubik_s_cube_solver
             char[,] newBlueFace = CopyFace('B');
 
             char[,] newYellowFace = CopyFace('Y');
-
-            char[,] newGreenFace = CopyFace('G');
 
             newWhiteFace[2, 0] = BlueFace.Pieces[0, 0];
             newWhiteFace[2, 1] = BlueFace.Pieces[1, 0];
@@ -274,15 +302,14 @@ namespace Rubik_s_cube_solver
             newYellowFace[0, 1] = GreenFace.Pieces[1, 2];
             newYellowFace[0, 2] = GreenFace.Pieces[2, 2];
 
-            newGreenFace[0, 2] = WhiteFace.Pieces[2, 2];
-            newGreenFace[1, 2] = WhiteFace.Pieces[2, 1];
-            newGreenFace[2, 2] = WhiteFace.Pieces[2, 0];
+            GreenFace.Pieces[0, 2] = WhiteFace.Pieces[2, 2];
+            GreenFace.Pieces[1, 2] = WhiteFace.Pieces[2, 1];
+            GreenFace.Pieces[2, 2] = WhiteFace.Pieces[2, 0];
 
 
             WhiteFace.Pieces = newWhiteFace;
             BlueFace.Pieces = newBlueFace;
             YellowFace.Pieces = newYellowFace;
-            GreenFace.Pieces = newGreenFace;
             RedFace.Rotate90Left();
 
         }
@@ -328,7 +355,6 @@ namespace Rubik_s_cube_solver
 
             char[,] newYellowFace = CopyFace('Y');
 
-            char[,] newGreenFace = CopyFace('G');
 
             newWhiteFace[0, 0] = BlueFace.Pieces[0, 2];
             newWhiteFace[0, 1] = BlueFace.Pieces[1, 2];
@@ -342,15 +368,14 @@ namespace Rubik_s_cube_solver
             newYellowFace[2, 1] = GreenFace.Pieces[1, 0];
             newYellowFace[2, 2] = GreenFace.Pieces[2, 0];
 
-            newGreenFace[0, 0] = WhiteFace.Pieces[0, 2];
-            newGreenFace[1, 0] = WhiteFace.Pieces[0, 1];
-            newGreenFace[2, 0] = WhiteFace.Pieces[0, 0];
+            GreenFace.Pieces[0, 0] = WhiteFace.Pieces[0, 2];
+            GreenFace.Pieces[1, 0] = WhiteFace.Pieces[0, 1];
+            GreenFace.Pieces[2, 0] = WhiteFace.Pieces[0, 0];
 
 
             WhiteFace.Pieces = newWhiteFace;
             BlueFace.Pieces = newBlueFace;
             YellowFace.Pieces = newYellowFace;
-            GreenFace.Pieces = newGreenFace;
             OrangeFace.Rotate90Right();
         }
 
@@ -361,8 +386,6 @@ namespace Rubik_s_cube_solver
             char[,] newBlueFace = CopyFace('B');
 
             char[,] newYellowFace = CopyFace('Y');
-
-            char[,] newGreenFace = CopyFace('G');
 
             newWhiteFace[0, 0] = GreenFace.Pieces[2, 0];
             newWhiteFace[0, 1] = GreenFace.Pieces[1, 0];
@@ -376,23 +399,20 @@ namespace Rubik_s_cube_solver
             newYellowFace[2, 1] = BlueFace.Pieces[1, 2];
             newYellowFace[2, 2] = BlueFace.Pieces[0, 2];
 
-            newGreenFace[0, 0] = YellowFace.Pieces[2, 0];
-            newGreenFace[1, 0] = YellowFace.Pieces[2, 1];
-            newGreenFace[2, 0] = YellowFace.Pieces[2, 2];
+            GreenFace.Pieces[0, 0] = YellowFace.Pieces[2, 0];
+            GreenFace.Pieces[1, 0] = YellowFace.Pieces[2, 1];
+            GreenFace.Pieces[2, 0] = YellowFace.Pieces[2, 2];
 
 
             WhiteFace.Pieces = newWhiteFace;
             BlueFace.Pieces = newBlueFace;
             YellowFace.Pieces = newYellowFace;
-            GreenFace.Pieces = newGreenFace;
             OrangeFace.Rotate90Left();
         }
 
         public void F()
         {
             char[,] newWhiteFace = CopyFace('W');
-
-            char[,] newRedFace = CopyFace('R');
 
             char[,] newYellowFace = CopyFace('Y');
 
@@ -410,22 +430,19 @@ namespace Rubik_s_cube_solver
             newYellowFace[1, 0] = RedFace.Pieces[1, 0];
             newYellowFace[2, 0] = RedFace.Pieces[2, 0];
 
-            newRedFace[0, 0] = WhiteFace.Pieces[0, 0];
-            newRedFace[1, 0] = WhiteFace.Pieces[1, 0];
-            newRedFace[2, 0] = WhiteFace.Pieces[2, 0];
+            RedFace.Pieces[0, 0] = WhiteFace.Pieces[0, 0];
+            RedFace.Pieces[1, 0] = WhiteFace.Pieces[1, 0];
+            RedFace.Pieces[2, 0] = WhiteFace.Pieces[2, 0];
 
             WhiteFace.Pieces = newWhiteFace;
             OrangeFace.Pieces = newOrangeFace;
             YellowFace.Pieces = newYellowFace;
-            RedFace.Pieces = newRedFace;
             GreenFace.Rotate90Right();
         }
 
         public void Fprime()
         {
             char[,] newWhiteFace = CopyFace('W');
-
-            char[,] newRedFace = CopyFace('R');
 
             char[,] newYellowFace = CopyFace('Y');
 
@@ -443,23 +460,20 @@ namespace Rubik_s_cube_solver
             newYellowFace[1, 0] = OrangeFace.Pieces[1, 2];
             newYellowFace[2, 0] = OrangeFace.Pieces[0, 2];
 
-            newRedFace[0, 0] = YellowFace.Pieces[0, 0];
-            newRedFace[1, 0] = YellowFace.Pieces[1, 0];
-            newRedFace[2, 0] = YellowFace.Pieces[2, 0];
+            RedFace.Pieces[0, 0] = YellowFace.Pieces[0, 0];
+            RedFace.Pieces[1, 0] = YellowFace.Pieces[1, 0];
+            RedFace.Pieces[2, 0] = YellowFace.Pieces[2, 0];
 
 
             WhiteFace.Pieces = newWhiteFace;
             OrangeFace.Pieces = newOrangeFace;
             YellowFace.Pieces = newYellowFace;
-            RedFace.Pieces = newRedFace;
             GreenFace.Rotate90Left();
         }
 
         public void B()
         {
             char[,] newWhiteFace = CopyFace('W');
-
-            char[,] newRedFace = CopyFace('R');
 
             char[,] newYellowFace = CopyFace('Y');
 
@@ -477,23 +491,20 @@ namespace Rubik_s_cube_solver
             newYellowFace[1, 2] = OrangeFace.Pieces[1, 0];
             newYellowFace[2, 2] = OrangeFace.Pieces[0, 0];
 
-            newRedFace[0, 2] = YellowFace.Pieces[0, 2];
-            newRedFace[1, 2] = YellowFace.Pieces[1, 2];
-            newRedFace[2, 2] = YellowFace.Pieces[2, 2];
+            RedFace.Pieces[0, 2] = YellowFace.Pieces[0, 2];
+            RedFace.Pieces[1, 2] = YellowFace.Pieces[1, 2];
+            RedFace.Pieces[2, 2] = YellowFace.Pieces[2, 2];
 
 
             WhiteFace.Pieces = newWhiteFace;
             OrangeFace.Pieces = newOrangeFace;
             YellowFace.Pieces = newYellowFace;
-            RedFace.Pieces = newRedFace;
             BlueFace.Rotate90Right();
         }
 
         public void Bprime()
         {
             char[,] newWhiteFace = CopyFace('W');
-
-            char[,] newRedFace = CopyFace('R');
 
             char[,] newYellowFace = CopyFace('Y');
 
@@ -511,23 +522,20 @@ namespace Rubik_s_cube_solver
             newYellowFace[1, 2] = RedFace.Pieces[1, 2];
             newYellowFace[2, 2] = RedFace.Pieces[2, 2];
 
-            newRedFace[0, 2] = WhiteFace.Pieces[0, 2];
-            newRedFace[1, 2] = WhiteFace.Pieces[1, 2];
-            newRedFace[2, 2] = WhiteFace.Pieces[2, 2];
+            RedFace.Pieces[0, 2] = WhiteFace.Pieces[0, 2];
+            RedFace.Pieces[1, 2] = WhiteFace.Pieces[1, 2];
+            RedFace.Pieces[2, 2] = WhiteFace.Pieces[2, 2];
 
 
             WhiteFace.Pieces = newWhiteFace;
             OrangeFace.Pieces = newOrangeFace;
             YellowFace.Pieces = newYellowFace;
-            RedFace.Pieces = newRedFace;
             BlueFace.Rotate90Left();
         }
 
         public void F2()
         {
             char[,] newWhiteFace = CopyFace('W');
-
-            char[,] newRedFace = CopyFace('R');
 
             char[,] newYellowFace = CopyFace('Y');
 
@@ -545,14 +553,13 @@ namespace Rubik_s_cube_solver
             newYellowFace[1, 0] = WhiteFace.Pieces[1, 0];
             newYellowFace[2, 0] = WhiteFace.Pieces[2, 0];
 
-            newRedFace[0, 0] = OrangeFace.Pieces[2, 2];
-            newRedFace[1, 0] = OrangeFace.Pieces[1, 2];
-            newRedFace[2, 0] = OrangeFace.Pieces[0, 2];
+            RedFace.Pieces[0, 0] = OrangeFace.Pieces[2, 2];
+            RedFace.Pieces[1, 0] = OrangeFace.Pieces[1, 2];
+            RedFace.Pieces[2, 0] = OrangeFace.Pieces[0, 2];
 
             WhiteFace.Pieces = newWhiteFace;
             OrangeFace.Pieces = newOrangeFace;
             YellowFace.Pieces = newYellowFace;
-            RedFace.Pieces = newRedFace;
             GreenFace.Rotate180();
         }
 
@@ -575,8 +582,6 @@ namespace Rubik_s_cube_solver
         {
             char[,] newWhiteFace = CopyFace('W');
 
-            char[,] newRedFace = CopyFace('R');
-
             char[,] newYellowFace = CopyFace('Y');
 
             char[,] newOrangeFace = CopyFace('O');
@@ -593,15 +598,13 @@ namespace Rubik_s_cube_solver
             newYellowFace[1, 2] = WhiteFace.Pieces[1, 2];
             newYellowFace[2, 2] = WhiteFace.Pieces[2, 2];
 
-            newRedFace[0, 2] = OrangeFace.Pieces[2, 0];
-            newRedFace[1, 2] = OrangeFace.Pieces[1, 0];
-            newRedFace[2, 2] = OrangeFace.Pieces[0, 0];
-
+            RedFace.Pieces[0, 2] = OrangeFace.Pieces[2, 0];
+            RedFace.Pieces[1, 2] = OrangeFace.Pieces[1, 0];
+            RedFace.Pieces[2, 2] = OrangeFace.Pieces[0, 0];
 
             WhiteFace.Pieces = newWhiteFace;
             OrangeFace.Pieces = newOrangeFace;
             YellowFace.Pieces = newYellowFace;
-            RedFace.Pieces = newRedFace;
             BlueFace.Rotate180();
         }
         public void L2()
@@ -611,8 +614,6 @@ namespace Rubik_s_cube_solver
             char[,] newBlueFace = CopyFace('B');
 
             char[,] newYellowFace = CopyFace('Y');
-
-            char[,] newGreenFace = CopyFace('G');
 
             newWhiteFace[0, 0] = YellowFace.Pieces[2, 2];
             newWhiteFace[0, 1] = YellowFace.Pieces[2, 1];
@@ -626,15 +627,14 @@ namespace Rubik_s_cube_solver
             newYellowFace[2, 1] = WhiteFace.Pieces[0, 1];
             newYellowFace[2, 2] = WhiteFace.Pieces[0, 0];
 
-            newGreenFace[0, 0] = BlueFace.Pieces[2, 2];
-            newGreenFace[1, 0] = BlueFace.Pieces[1, 2];
-            newGreenFace[2, 0] = BlueFace.Pieces[0, 2];
+            GreenFace.Pieces[0, 0] = BlueFace.Pieces[2, 2];
+            GreenFace.Pieces[1, 0] = BlueFace.Pieces[1, 2];
+            GreenFace.Pieces[2, 0] = BlueFace.Pieces[0, 2];
 
 
             WhiteFace.Pieces = newWhiteFace;
             BlueFace.Pieces = newBlueFace;
             YellowFace.Pieces = newYellowFace;
-            GreenFace.Pieces = newGreenFace;
             OrangeFace.Rotate180();
         }
         public void D2()
@@ -660,8 +660,6 @@ namespace Rubik_s_cube_solver
 
             char[,] newYellowFace = CopyFace('Y');
 
-            char[,] newGreenFace = CopyFace('G');
-
             newWhiteFace[2, 0] = YellowFace.Pieces[0, 2];
             newWhiteFace[2, 1] = YellowFace.Pieces[0, 1];
             newWhiteFace[2, 2] = YellowFace.Pieces[0, 0];
@@ -674,15 +672,14 @@ namespace Rubik_s_cube_solver
             newYellowFace[0, 1] = WhiteFace.Pieces[2, 1];
             newYellowFace[0, 2] = WhiteFace.Pieces[2, 0];
 
-            newGreenFace[0, 2] = BlueFace.Pieces[2, 0];
-            newGreenFace[1, 2] = BlueFace.Pieces[1, 0];
-            newGreenFace[2, 2] = BlueFace.Pieces[0, 0];
+            GreenFace.Pieces[0, 2] = BlueFace.Pieces[2, 0];
+            GreenFace.Pieces[1, 2] = BlueFace.Pieces[1, 0];
+            GreenFace.Pieces[2, 2] = BlueFace.Pieces[0, 0];
 
 
             WhiteFace.Pieces = newWhiteFace;
             BlueFace.Pieces = newBlueFace;
             YellowFace.Pieces = newYellowFace;
-            GreenFace.Pieces = newGreenFace;
             RedFace.Rotate180();
         }
 
@@ -886,14 +883,12 @@ namespace Rubik_s_cube_solver
 
         public static void NextTreeBranchForMITM(List<Dictionary<(ulong, ulong), byte>> listDico, bool heuristique)
         {
-            byte methodsCount = 18; // Nombre de mouvements possibles
             Dictionary<(ulong, ulong), byte> newCubes = [];
             foreach (KeyValuePair<(ulong, ulong), byte> cube in listDico[^1])
             {
                 Cube c1 = new(DecompressState(cube.Key));
-                for (byte j = 0; j < methodsCount; j++)
+                for (byte j = 0; j < 18; j++)
                 {
-                    //Cube c = c1.Clone();
                     c1.DoMove(j);
                     (ulong, ulong) intCube = CompressState(c1.ToString());
                     bool isContained = false;
@@ -913,8 +908,8 @@ namespace Rubik_s_cube_solver
             }
             if (heuristique && listDico.Count >= 6)
             {
-                HashSet<(ulong, ulong)> sortedCubes = newCubes.Select(x => x.Key).OrderBy(x => Conflits(new Cube(DecompressState(x)))).Take(1000000).ToHashSet();
-                listDico.Add(newCubes.Where(x => sortedCubes.Contains(x.Key)).ToDictionary());
+                Dictionary<(ulong, ulong), byte> sortedCubes = newCubes.OrderBy(x => new Cube(DecompressState(x.Key)).Conflits()).Take(1000000).ToDictionary();
+                listDico.Add(sortedCubes);
             }
             else
             {
@@ -924,14 +919,12 @@ namespace Rubik_s_cube_solver
 
         public static void NextTreeBranchForMITM(List<Dictionary<string, (byte, byte)>> listDico, bool heuristique)
         {
-            byte methodsCount = 18; // Nombre de mouvements possibles
             Dictionary<string, (byte, byte)> newCubes = [];
             foreach (KeyValuePair<string, (byte, byte)> cube in listDico[^1])
             {
                 Cube c1 = new(cube.Key);
-                for (byte j = 0; j < methodsCount; j++)
+                for (byte j = 0; j < 18; j++)
                 {
-                    //Cube c = c1.Clone();
                     c1.DoMove(j);
                     string c1String = c1.ToString();
                     bool isContained = false;
@@ -944,14 +937,121 @@ namespace Rubik_s_cube_solver
                         }
                     }
                     if (!isContained)
-                        newCubes.TryAdd(c1String, (j, Conflits(c1)));
+                        newCubes.TryAdd(c1String, (j, c1.Conflits()));
                     if (j != 17)
                         c1.DoMove(Move.GetReversalMove(j));
                 }
             }
             if (heuristique && listDico.Count >= 5)
             {
-                Dictionary<string, (byte, byte)> sortedCubes = newCubes.OrderBy(x => x.Value.Item2).Take(100000).ToDictionary();
+                IEnumerable<KeyValuePair<string, (byte, byte)>> ordered = newCubes.OrderBy(x => x.Value.Item2).Take(100000);
+                listDico.Add(ordered.ToDictionary());
+            }
+            else
+            {
+                listDico.Add(newCubes);
+            }
+        }
+
+        public static void NextTreeBranchForKociemba(List<Dictionary<(ulong, ulong), byte>> listDico)
+        {
+            List<byte> allowedMoves = [1, 4, 12, 14, 15, 17]; // U D F2 B2 L2 R2
+            Dictionary<(ulong, ulong), byte> newCubes = [];
+            foreach (KeyValuePair<(ulong, ulong), byte> cube in listDico[^1])
+            {
+                Cube c1 = new(DecompressState(cube.Key));
+                foreach (byte j in allowedMoves)
+                {
+                    c1.DoMove(j);
+                    string c1String = c1.ToString();
+                    (ulong, ulong) compressedCube = CompressState(c1String);
+                    bool isContained = false;
+                    foreach (Dictionary<(ulong, ulong), byte> item in listDico)
+                    {
+                        if (item.ContainsKey(compressedCube))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(compressedCube, j);
+                    if (j != 17)
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            /*      if (heuristique && listDico.Count >= 5)
+                  {
+                      IEnumerable<KeyValuePair<string, (byte, byte)>> ordered = newCubes.OrderBy(x => x.Value.Item2).Take(100000);
+                      listDico.Add(ordered.ToDictionary());
+                  }*/
+            listDico.Add(newCubes);
+        }
+
+        public static void NextTreeBranchForKociembaHTR(List<Dictionary<(ulong, ulong), byte>> listDico)
+        {
+            List<byte> allowedMoves = Move.GetAlgoFromStringEnum([Up, Down, Right, Left, Front, Back]);
+            //List<byte> allowedMoves = Move.GetAlgoFromStringEnum(["U", "D", "R", "L", "F2", "B2"]);
+            Dictionary<(ulong, ulong), byte> newCubes = [];
+            foreach (KeyValuePair<(ulong, ulong), byte> cube in listDico[^1])
+            {
+                Cube c1 = new(DecompressState(cube.Key));
+                foreach (byte j in allowedMoves)
+                {
+                    c1.DoMove(j);
+                    string c1String = c1.ToString();
+                    (ulong, ulong) compressedCube = CompressState(c1String);
+                    bool isContained = false;
+                    foreach (Dictionary<(ulong, ulong), byte> item in listDico)
+                    {
+                        if (item.ContainsKey(compressedCube))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(compressedCube, j);
+                    if (j != allowedMoves.Last())
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            /*      if (heuristique && listDico.Count >= 5)
+                  {
+                      IEnumerable<KeyValuePair<string, (byte, byte)>> ordered = newCubes.OrderBy(x => x.Value.Item2).Take(100000);
+                      listDico.Add(ordered.ToDictionary());
+                  }*/
+            listDico.Add(newCubes);
+        }
+
+        public static void NextTreeBranchForMITM(List<Dictionary<string, byte>> listDico, bool heuristique)
+        {
+            Dictionary<string, byte> newCubes = [];
+            foreach (KeyValuePair<string, byte> cube in listDico[^1])
+            {
+                Cube c1 = new(cube.Key);
+                for (byte j = 0; j < 18; j++)
+                {
+                    c1.DoMove(j);
+                    string stringCube = c1.ToString();
+                    bool isContained = false;
+                    foreach (Dictionary<string, byte> item in listDico)
+                    {
+                        if (item.ContainsKey(stringCube))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(stringCube, j);
+                    if (j != 17)
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            if (heuristique && listDico.Count >= 6)
+            {
+                Dictionary<string, byte> sortedCubes = newCubes.OrderBy(x => new Cube(x.Key).Conflits()).Take(1000000).ToDictionary();
                 listDico.Add(sortedCubes);
             }
             else
@@ -960,24 +1060,287 @@ namespace Rubik_s_cube_solver
             }
         }
 
-        public static byte[] BFSWithMITM(Cube initialCube)
+        public static void NextTreeBranchForPhase1(List<Dictionary<string, (byte, byte)>> listDico, bool heuristique)
+        {
+            Dictionary<string, (byte, byte)> newCubes = [];
+            foreach (KeyValuePair<string, (byte, byte)> cube in listDico[^1])
+            {
+                Cube c1 = new(cube.Key);
+                for (byte j = 0; j < 18; j++)
+                {
+                    c1.DoMove(j);
+                    string c1String = c1.ToString();
+                    bool isContained = false;
+                    foreach (Dictionary<string, (byte, byte)> item in listDico)
+                    {
+                        if (item.ContainsKey(c1String))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(c1String, (j, c1.Conflits()));
+                    if (j != 17)
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            if (heuristique && listDico.Count >= 6)
+            {
+                IEnumerable<KeyValuePair<string, (byte, byte)>> ordered = newCubes.OrderBy(x => x.Value.Item2).Take(200000);
+                listDico.Add(ordered.ToDictionary());
+            }
+            else
+            {
+                listDico.Add(newCubes);
+            }
+        }
+
+        public static void NextTreeBranchForPhase1Compressed(List<Dictionary<(ulong, ulong), (byte, byte)>> listDico, bool heuristique)
+        {
+            Dictionary<(ulong, ulong), (byte, byte)> newCubes = [];
+            foreach (KeyValuePair<(ulong, ulong), (byte, byte)> cube in listDico[^1])
+            {
+                Cube c1 = new(DecompressState(cube.Key));
+                for (byte j = 0; j < 18; j++)
+                {
+                    c1.DoMove(j);
+                    (ulong, ulong) c1Compressed = CompressState(c1.ToString());
+                    bool isContained = false;
+                    foreach (Dictionary<(ulong, ulong), (byte, byte)> item in listDico)
+                    {
+                        if (item.ContainsKey(c1Compressed))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(c1Compressed, (j, c1.Conflits()));
+                    if (j != 17)
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            if (heuristique && listDico.Count >= 6)
+            {
+                IEnumerable<KeyValuePair<(ulong, ulong), (byte, byte)>> ordered = newCubes.OrderBy(x => x.Value.Item2).Take(100000);
+                listDico.Add(ordered.ToDictionary());
+            }
+            else
+            {
+                listDico.Add(newCubes);
+            }
+        }
+
+        public static void NextTreeBranchForPhase1Compressed(List<Dictionary<(ulong, ulong), byte>> listDico)
+        {
+            Dictionary<(ulong, ulong), byte> newCubes = [];
+            foreach (KeyValuePair<(ulong, ulong), byte> cube in listDico[^1])
+            {
+                Cube c1 = new(DecompressState(cube.Key));
+                for (byte j = 0; j < 18; j++)
+                {
+                    c1.DoMove(j);
+                    (ulong, ulong) c1Compressed = CompressState(c1.ToString());
+                    bool isContained = false;
+                    foreach (Dictionary<(ulong, ulong), byte> item in listDico)
+                    {
+                        if (item.ContainsKey(c1Compressed))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(c1Compressed, j);
+                    if (j != 17)
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            listDico.Add(newCubes);
+        }
+
+        public static void NextTreeBranchForPhase1Compressed(List<Dictionary<(ulong, ulong), byte>> listDico, bool heuristique, int nodesTaken = 100000, int level = 6)
+        {
+            Dictionary<(ulong, ulong), byte> newCubes = [];
+            foreach (KeyValuePair<(ulong, ulong), byte> cube in listDico[^1])
+            {
+                Cube c1 = new(DecompressState(cube.Key));
+                for (byte j = 0; j < 18; j++)
+                {
+                    c1.DoMove(j);
+                    (ulong, ulong) c1Compressed = CompressState(c1.ToString());
+                    bool isContained = false;
+                    foreach (Dictionary<(ulong, ulong), byte> item in listDico)
+                    {
+                        if (item.ContainsKey(c1Compressed))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(c1Compressed, j);
+                    if (j != 17)
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            if (heuristique && listDico.Count >= level)
+            {
+                IEnumerable<KeyValuePair<(ulong, ulong), byte>> ordered = newCubes.OrderBy(x => new Cube(DecompressState(x.Key)).Conflits()).Take(nodesTaken);
+                listDico.Add(ordered.ToDictionary());
+            }
+            else
+            {
+                listDico.Add(newCubes);
+            }
+        }
+
+
+        public static void NextTreeBranchForPhase1Domino(List<Dictionary<(ulong, ulong), byte>> listDico, bool heuristique)
+        {
+            List<byte> allowedMoves = [1, 4, 12, 14, 15, 17]; // U D F2 B2 L2 R2
+            //List<byte> allowedMoves = Move.GetAlgoFromStringEnum(["U", "D", "R", "L", "F2", "B2"]);
+            Dictionary<(ulong, ulong), byte> newCubes = [];
+            foreach (KeyValuePair<(ulong, ulong), byte> cube in listDico[^1])
+            {
+                Cube c1 = new(DecompressState(cube.Key));
+                foreach (byte j in allowedMoves)
+                {
+                    c1.DoMove(j);
+                    (ulong, ulong) c1Compressed = CompressState(c1.ToString());
+                    bool isContained = false;
+                    foreach (Dictionary<(ulong, ulong), byte> item in listDico)
+                    {
+                        if (item.ContainsKey(c1Compressed))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(c1Compressed, j);
+                    if (j != 17)
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            if (heuristique && listDico.Count >= 6)
+            {
+                IEnumerable<KeyValuePair<(ulong, ulong), byte>> ordered = newCubes.OrderBy(x => new Cube(DecompressState(x.Key)).Conflits()).Take(100000);
+                listDico.Add(ordered.ToDictionary());
+            }
+            else
+            {
+                listDico.Add(newCubes);
+            }
+        }
+
+        public static void NextTreeBranchForPhase1HTR(List<Dictionary<(ulong, ulong), byte>> listDico, bool heuristique)
+        {
+            Dictionary<(ulong, ulong), byte> newCubes = [];
+            foreach (KeyValuePair<(ulong, ulong), byte> cube in listDico[^1])
+            {
+                Cube c1 = new(DecompressState(cube.Key));
+                for (byte j = 12; j < 18; j++)
+                {
+                    c1.DoMove(j);
+                    (ulong, ulong) c1Compressed = CompressState(c1.ToString());
+                    bool isContained = false;
+                    foreach (Dictionary<(ulong, ulong), byte> item in listDico)
+                    {
+                        if (item.ContainsKey(c1Compressed))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(c1Compressed, j);
+                    if (j != 17)
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            if (heuristique && listDico.Count >= 6)
+            {
+                IEnumerable<KeyValuePair<(ulong, ulong), byte>> ordered = newCubes.OrderBy(x => new Cube(DecompressState(x.Key)).Conflits()).Take(100000);
+                listDico.Add(ordered.ToDictionary());
+            }
+            else
+            {
+                listDico.Add(newCubes);
+            }
+        }
+
+        public static void NextTreeBranchForPhase1(List<Dictionary<string, byte>> listDico)
+        {
+            Dictionary<string, byte> newCubes = [];
+            foreach (KeyValuePair<string, byte> cube in listDico[^1])
+            {
+                Cube c1 = new(cube.Key);
+                for (byte j = 0; j < 18; j++)
+                {
+                    c1.DoMove(j);
+                    string c1String = c1.ToString();
+                    bool isContained = false;
+                    foreach (Dictionary<string, byte> item in listDico)
+                    {
+                        if (item.ContainsKey(c1String))
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                        newCubes.TryAdd(c1String, j);
+                    if (j != 17)
+                        c1.DoMove(Move.GetReversalMove(j));
+                }
+            }
+            listDico.Add(newCubes);
+        }
+
+        private static (byte[], bool) EvaluateTask(Cube nc, Cube emptyCube, List<Dictionary<string, (byte, byte)>> arbre, string state)
         {
             List<byte> path = [];
-            Cube copy = initialCube.Clone();
+            Cube secu = nc.Clone();
+            byte[] sol = MeetInTheMiddle(nc, emptyCube, 6);
+            secu.ExecuterAlgorithme(sol);
+            Console.WriteLine("Solved : " + secu.IsSolved);
+            if (secu.IsSolved)
+            {
+                foreach (Dictionary<string, (byte move, byte eval)> layer in arbre.Skip(1).Reverse())
+                {
+                    foreach (KeyValuePair<string, (byte move, byte eval)> cube in layer)
+                    {
+                        if (cube.Key == state)
+                        {
+                            path.Add(cube.Value.move);
+                            nc.DoMove(Move.GetReversalMove(cube.Value.move));
+                            state = nc.ToString();
+                            break;
+                        }
+                    }
+                }
+                return (path.Reverse<byte>().Concat(sol).ToArray(), true);
+            }
+            return ([], false);
+        }
+
+        public static byte[] BFSWithMITM(Cube initialCube)
+        {
+            Cube emptyCube = new();
             Dictionary<string, (byte, byte)> dico = new()
             {
-                { copy.ToString(), (255, Conflits(copy))}
+                { initialCube.ToString(), (255, initialCube.Conflits())}
             };
             List<Dictionary<string, (byte, byte)>> arbre = [dico];
             byte minEval = byte.MaxValue;
             while (true)
             {
                 List<Task<(byte[], bool)>> tasks = [];
-                foreach (KeyValuePair<string, (byte, byte)> element in arbre[^1])
+                foreach (KeyValuePair<string, (byte move, byte eval)> element in arbre[^1])
                 {
-                    string state = element.Key;
-                    Cube nc = new(element.Key);
-                    byte eval = element.Value.Item2;
+                    byte eval = element.Value.eval;
                     if (eval < minEval)
                     {
                         minEval = eval;
@@ -985,23 +1348,27 @@ namespace Rubik_s_cube_solver
                     }
                     if (eval <= 4)
                     {
-                        tasks.Add(Task.Run((byte[], bool) () =>
+                        string state = element.Key;
+                        Cube nc = new(state);
+                        PrintWithColors(nc.PrintCubeColors());
+
+                        /*tasks.Add(Task.Run(() =>
                         {
                             Cube c1 = nc.Clone();
                             Cube secu = c1.Clone();
-                            byte[] sol = MeetInTheMiddle(c1, new Cube(), 6);
+                            byte[] sol = MeetInTheMiddle(c1, emptyCube, 6);
                             secu.ExecuterAlgorithme(sol);
                             Console.WriteLine("Solved : " + secu.IsSolved);
                             if (secu.IsSolved)
                             {
-                                foreach (Dictionary<string, (byte, byte)> layer in arbre.Skip(1).Reverse<Dictionary<string, (byte, byte)>>())
+                                foreach (Dictionary<string, (byte move, byte eval)> layer in arbre.Skip(1).Reverse<Dictionary<string, (byte, byte)>>())
                                 {
-                                    foreach (KeyValuePair<string, (byte, byte)> cube in layer)
+                                    foreach (KeyValuePair<string, (byte move, byte eval)> cube in layer)
                                     {
                                         if (cube.Key == state)
                                         {
-                                            path.Add(cube.Value.Item1);
-                                            nc.DoMove(Move.GetReversalMove(cube.Value.Item1));
+                                            path.Add(cube.Value.move);
+                                            nc.DoMove(Move.GetReversalMove(cube.Value.move));
                                             state = nc.ToString();
                                             break;
                                         }
@@ -1011,19 +1378,271 @@ namespace Rubik_s_cube_solver
                                 return (LightOptimization(path.Concat(sol).ToList()).ToArray(), true);
                             }
                             return ([], false);
-                        }));
+                        }));*/
+                        //tasks.Add(Task.Factory.StartNew(() => EvaluateTask(nc.Clone(), emptyCube, arbre, state)));
+                        tasks.Add(new Task<(byte[], bool)>(() => EvaluateTask(nc.Clone(), emptyCube, arbre, state)));
                     }
                 }
                 while (tasks.Count > 0)
                 {
-                    var taskIndex = Task.WaitAny(tasks.ToArray());
+                    var newTasks = tasks.Take(4).ToArray();
+                    foreach(var t in newTasks)
+                    {
+                        t.Start();
+                    }
+                    Task.WaitAll(newTasks);
+                    foreach (Task<(byte[], bool)> task in newTasks)
+                    {
+                        if (task.Result.Item2)
+                        {
+                            return task.Result.Item1;
+                        }
+                    }
+                    tasks = tasks.Skip(4).ToList();
+                }
+                /*while (tasks.Count > 0)
+                {
+                    Task.WaitAll(tasks.ToArray());
                     if (tasks[taskIndex].Result.Item2)
                     {
                         return tasks[taskIndex].Result.Item1;
                     }
                     tasks.RemoveAt(taskIndex);
-                }
+                }*/
                 NextTreeBranchForMITM(arbre, true);
+            }
+        }
+
+        public static byte[] Kociemba(Cube c)
+        {
+            List<byte> path = [];
+            Cube secu = c.Clone();
+            Dictionary<(ulong, ulong), (byte, byte)> dico = new()
+            {
+                { CompressState(c.ToString()), (255, c.Conflits())}
+            };
+            List<Dictionary<(ulong, ulong), (byte, byte)>> arbre = [dico];
+            while (true)
+            {
+                Console.WriteLine(arbre.Count + " " + arbre[^1].Count);
+                foreach (KeyValuePair<(ulong, ulong), (byte move, byte eval)> element in arbre[^1])
+                {
+                    Cube nc = new(DecompressState(element.Key));
+                    if (nc.IsInG1())
+                    {
+                        string state = nc.ToString();
+                        PrintWithColors(nc.PrintCubeColors());
+                        foreach (Dictionary<(ulong, ulong), (byte move, byte eval)> layer in arbre.Skip(1).Reverse())
+                        {
+                            foreach (KeyValuePair<(ulong, ulong), (byte move, byte eval)> cube in layer)
+                            {
+                                if (cube.Key == CompressState(state))
+                                {
+                                    path.Add(cube.Value.move);
+                                    nc.DoMove(Move.GetReversalMove(cube.Value.move));
+                                    state = nc.ToString();
+                                    break;
+                                }
+                            }
+                        }
+                        path.Reverse();
+                        secu.ExecuterAlgorithme(path);
+                        byte[] phase2 = MeetInTheMiddleForKociembaHTR(secu);
+                        secu.ExecuterAlgorithme(phase2);
+                        PrintWithColors(secu.PrintCubeColors());
+                        return path.Concat(phase2).ToArray();
+                    }
+                }
+                NextTreeBranchForPhase1Compressed(arbre, true);
+            }
+        }
+
+        public static byte[] Kociemba2(Cube c)
+        {
+            List<byte> path = [];
+            Cube secu = c.Clone();
+            Dictionary<(ulong, ulong), byte> dico = new()
+            {
+                { CompressState(c.ToString()), 255}
+            };
+            List<Dictionary<(ulong, ulong), byte>> arbre = [dico];
+            while (true)
+            {
+                Console.WriteLine(arbre.Count + " " + arbre[^1].Count);
+                foreach (KeyValuePair<(ulong, ulong), byte> element in arbre[^1])
+                {
+                    Cube nc = new(DecompressState(element.Key));
+                    if (nc.EdgeReduction())
+                    {
+                        string state = nc.ToString();
+                        PrintWithColors(nc.PrintCubeColors());
+                        foreach (Dictionary<(ulong, ulong), byte> layer in arbre.Skip(1).Reverse())
+                        {
+                            foreach (KeyValuePair<(ulong, ulong), byte> cube in layer)
+                            {
+                                if (cube.Key == CompressState(state))
+                                {
+                                    path.Add(cube.Value);
+                                    nc.DoMove(Move.GetReversalMove(cube.Value));
+                                    state = nc.ToString();
+                                    break;
+                                }
+                            }
+                        }
+                        path.Reverse();
+                        secu.ExecuterAlgorithme(path);
+                        dico = new()
+                        {
+                            { CompressState(secu.ToString()), 255}
+                        };
+                        arbre = [dico];
+
+                        while (true)
+                        {
+                            Console.WriteLine(arbre.Count + " " + arbre[^1].Count);
+                            foreach (KeyValuePair<(ulong, ulong), byte> element2 in arbre[^1])
+                            {
+                                Cube nc2 = new(DecompressState(element2.Key));
+                                if (nc2.IsInG1())
+                                {
+                                    state = nc2.ToString();
+                                    (ulong, ulong) compressedState = CompressState(state);
+                                    PrintWithColors(nc2.PrintCubeColors());
+                                    List<byte> path2 = [];
+                                    foreach (Dictionary<(ulong, ulong), byte> layer in arbre.Skip(1).Reverse())
+                                    {
+                                        if (layer.TryGetValue(compressedState, out byte value))
+                                        {
+                                            path2.Add(value);
+                                            nc2.DoMove(Move.GetReversalMove(value));
+                                            state = nc2.ToString();
+                                            compressedState = CompressState(state);
+                                        }
+                                    }
+                                    path2.Reverse();
+                                    secu.ExecuterAlgorithme(path2);
+                                    dico = new()
+                                    {
+                                        { CompressState(secu.ToString()), 255}
+                                    };
+                                    arbre = [dico];
+                                    while (true)
+                                    {
+                                        Console.WriteLine(arbre.Count + " " + arbre[^1].Count);
+                                        foreach (KeyValuePair<(ulong, ulong), byte> element3 in arbre[^1])
+                                        {
+                                            Cube nc3 = new(DecompressState(element3.Key));
+                                            if (HTR(nc3))
+                                            {
+                                                state = nc3.ToString();
+                                                compressedState = CompressState(state);
+                                                PrintWithColors(nc3.PrintCubeColors());
+                                                List<byte> path3 = [];
+                                                foreach (Dictionary<(ulong, ulong), byte> layer in arbre.Skip(1).Reverse())
+                                                {
+                                                    if (layer.TryGetValue(compressedState, out byte value))
+                                                    {
+                                                        path2.Add(value);
+                                                        nc2.DoMove(Move.GetReversalMove(value));
+                                                        state = nc2.ToString();
+                                                        compressedState = CompressState(state);
+                                                    }
+                                                }
+                                                path3.Reverse();
+                                                path = path.Concat(path2).Concat(path3).ToList();
+                                                secu.ExecuterAlgorithme(path3);
+                                                byte[] phase2 = MeetInTheMiddleForKociembaHTR(secu);
+                                                secu.ExecuterAlgorithme(phase2);
+                                                PrintWithColors(secu.PrintCubeColors());
+                                                return path.Concat(phase2).ToArray();
+                                            }
+                                        }
+                                        NextTreeBranchForPhase1Domino(arbre, false);
+                                    }
+                                }
+                            }
+                            NextTreeBranchForPhase1Compressed(arbre, true, 100000);
+                        }
+                    }
+                }
+                NextTreeBranchForPhase1Compressed(arbre, true, 100000);
+            }
+        }
+
+        public static byte[] Kociemba3(Cube c)
+        {
+            List<byte> path = [];
+            Cube secu = c.Clone();
+            Dictionary<(ulong, ulong), (byte, byte)> dico = new()
+            {
+                { CompressState(c.ToString()), (255, 255)}
+            };
+            List<Dictionary<(ulong, ulong), (byte, byte)>> arbre = [dico];
+            while (true)
+            {
+                Console.WriteLine(arbre.Count + " " + arbre[^1].Count);
+                foreach (KeyValuePair<(ulong, ulong), (byte, byte)> element in arbre[^1])
+                {
+                    Cube nc = new(DecompressState(element.Key));
+                    if (nc.EdgeReduction())
+                    {
+                        string state = nc.ToString();
+                        (ulong, ulong) compressedState = CompressState(state);
+                        PrintWithColors(nc.PrintCubeColors());
+                        foreach (Dictionary<(ulong, ulong), (byte, byte)> layer in arbre.Skip(1).Reverse())
+                        {
+                            if (layer.TryGetValue(compressedState, out (byte, byte) value))
+                            {
+                                path.Add(value.Item1);
+                                nc.DoMove(Move.GetReversalMove(value.Item1));
+                                state = nc.ToString();
+                                compressedState = CompressState(state);
+                            }
+                        }
+                        path.Reverse();
+                        secu.ExecuterAlgorithme(path);
+                        dico = new()
+                        {
+                            { CompressState(secu.ToString()), (255, 255)}
+                        };
+                        arbre = [dico];
+
+                        while (true)
+                        {
+                            Console.WriteLine(arbre.Count + " " + arbre[^1].Count);
+                            foreach (KeyValuePair<(ulong, ulong), (byte, byte)> element2 in arbre[^1])
+                            {
+                                Cube nc2 = new(DecompressState(element2.Key));
+                                if (nc2.IsInG1())
+                                {
+                                    state = nc2.ToString();
+                                    compressedState = CompressState(state);
+                                    PrintWithColors(nc2.PrintCubeColors());
+                                    List<byte> path2 = [];
+                                    foreach (Dictionary<(ulong, ulong), (byte, byte)> layer in arbre.Skip(1).Reverse())
+                                    {
+                                        if (layer.TryGetValue(compressedState, out (byte, byte) value))
+                                        {
+                                            path2.Add(value.Item1);
+                                            nc2.DoMove(Move.GetReversalMove(value.Item1));
+                                            state = nc2.ToString();
+                                            compressedState = CompressState(state);
+                                        }
+                                    }
+                                    path2.Reverse();
+                                    secu.ExecuterAlgorithme(path2);
+                                    path = path.Concat(path2).ToList();
+                                    byte[] phase2 = MeetInTheMiddleForKociembaHTR(secu);
+                                    secu.ExecuterAlgorithme(phase2);
+                                    PrintWithColors(secu.PrintCubeColors());
+                                    return LightOptimization(path.Concat(phase2).ToList()).ToArray();
+                                }
+                            }
+                            NextTreeBranchForPhase1Compressed(arbre, true);
+                        }
+                    }
+                }
+                NextTreeBranchForPhase1Compressed(arbre, true);
             }
         }
 
@@ -1281,24 +1900,26 @@ namespace Rubik_s_cube_solver
             List<Dictionary<(ulong, ulong), byte>> arbreFinal = [];
             arbreInitial.Add(dico1);
             arbreFinal.Add(dico2);
-            IEnumerable<byte> solution = new List<byte>();
+            byte[] solution = [];
             while (!isSolved)
             {
-                Console.WriteLine(i + " " + arbreInitial[^1].Count);
+                i++;
                 if (i == deepMax) return [];
                 Parallel.Invoke(
                     () => NextTreeBranchForMITM(arbreInitial, false),
                     () => NextTreeBranchForMITM(arbreFinal, false)
                     );
-                IEnumerable<(ulong, ulong)> commonLastsElements = arbreInitial.TakeLast(2).SelectMany(x => x.Keys)
-                    .Intersect(arbreFinal.TakeLast(2).SelectMany(x => x.Keys));
+                IEnumerable<(ulong, ulong)> takedLastInitial = arbreInitial.TakeLast(2).SelectMany(x => x.Keys);
+                IEnumerable<(ulong, ulong)> takedLastFinal = arbreFinal.TakeLast(2).SelectMany(x => x.Keys);
+                IEnumerable<(ulong, ulong)> commonLastsElements = takedLastInitial
+                    .Intersect(takedLastFinal);
                 if (!commonLastsElements.Any())
                 {
-                    i++;
+                    Console.WriteLine(i + " " + arbreInitial[^1].Count);
                     continue;
                 }
-                IEnumerable<(ulong, ulong)> arbreFinalManySelected = arbreFinal.SelectMany(x => x.Keys);
-                IEnumerable<(ulong, ulong)> arbreInitialManySelected = arbreInitial.SelectMany(x => x.Keys);
+                IEnumerable<(ulong, ulong)> arbreFinalManySelected = arbreFinal.SkipLast(2).SelectMany(x => x.Keys).Concat(takedLastFinal);
+                IEnumerable<(ulong, ulong)> arbreInitialManySelected = arbreInitial.SkipLast(2).SelectMany(x => x.Keys).Concat(takedLastInitial);
                 IEnumerable<(ulong, ulong)> hasCommonElements = arbreInitialManySelected.Intersect(arbreFinalManySelected);
                 if (hasCommonElements.Any())
                 {
@@ -1331,18 +1952,270 @@ namespace Rubik_s_cube_solver
                                 newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
                             }
                         }
-                        IEnumerable<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2).Reverse();
+                        IEnumerable<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2);
                         int count = solutionFromRandom.Count();
                         if (count < min)
                         {
-                            solution = solutionFromRandom;
+                            solution = solutionFromRandom.Reverse().ToArray();
+                            min = count;
+                        }
+                    }
+                }
+                Console.WriteLine(i + " " + arbreInitial[^1].Count);
+            }
+            return solution;
+        }
+
+        public static byte[] MeetInTheMiddleForKociemba(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
+        {
+            finalCube ??= new();
+            bool isSolved = false;
+            int i = 0;
+            Dictionary<(ulong, ulong), byte> dico1 = new()
+            {
+                { CompressState(initialCube.ToString()), 255}
+            };
+            Dictionary<(ulong, ulong), byte> dico2 = new()
+            {
+                { CompressState(finalCube.ToString()), 255}
+            };
+            List<Dictionary<(ulong, ulong), byte>> arbreInitial = [];
+            List<Dictionary<(ulong, ulong), byte>> arbreFinal = [];
+            arbreInitial.Add(dico1);
+            arbreFinal.Add(dico2);
+            byte[] solution = [];
+            while (!isSolved)
+            {
+                i++;
+                if (i == deepMax) return [];
+                Parallel.Invoke(
+                    () => NextTreeBranchForKociemba(arbreInitial),
+                    () => NextTreeBranchForKociemba(arbreFinal)
+                    );
+                IEnumerable<(ulong, ulong)> takedLastInitial = arbreInitial.TakeLast(2).SelectMany(x => x.Keys);
+                IEnumerable<(ulong, ulong)> takedLastFinal = arbreFinal.TakeLast(2).SelectMany(x => x.Keys);
+                IEnumerable<(ulong, ulong)> commonLastsElements = takedLastInitial
+                    .Intersect(takedLastFinal);
+                if (!commonLastsElements.Any())
+                {
+                    Console.WriteLine(i + " " + arbreInitial[^1].Count);
+                    continue;
+                }
+                IEnumerable<(ulong, ulong)> arbreFinalManySelected = arbreFinal.SkipLast(2).SelectMany(x => x.Keys).Concat(takedLastFinal);
+                IEnumerable<(ulong, ulong)> arbreInitialManySelected = arbreInitial.SkipLast(2).SelectMany(x => x.Keys).Concat(takedLastInitial);
+                IEnumerable<(ulong, ulong)> hasCommonElements = arbreInitialManySelected.Intersect(arbreFinalManySelected);
+                if (hasCommonElements.Any())
+                {
+                    isSolved = true;
+                    int min = int.MaxValue;
+                    foreach ((ulong, ulong) element in hasCommonElements)
+                    {
+                        List<byte> path = [];
+                        Cube newCube = new(DecompressState(element));
+                        for (int j = 1; j <= arbreFinal.Count; j++)
+                        {
+                            (ulong, ulong) elementEtapeAvant = CompressState(newCube.ToString());
+                            if (arbreFinal[^j].ContainsKey(elementEtapeAvant))
+                            {
+                                if (arbreFinal[^j][elementEtapeAvant] == 255) break;
+                                path.Add(arbreFinal[^j][elementEtapeAvant]);
+                                newCube.ExecuterAlgorithme(Move.GetReversalPath(path.TakeLast(1)));
+                                // On exécute le dernier mouvement mais à l'envers
+                            }
+                        }
+                        List<byte> path2 = [];
+                        Cube newCube2 = new(DecompressState(element));
+                        for (int j = 1; j <= arbreInitial.Count; j++)
+                        {
+                            (ulong, ulong) elementEtapeAvant = CompressState(newCube2.ToString());
+                            if (arbreInitial[^j].ContainsKey(elementEtapeAvant))
+                            {
+                                if (arbreInitial[^j][elementEtapeAvant] == 255) break;
+                                path2.Add(arbreInitial[^j][elementEtapeAvant]);
+                                newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
+                            }
+                        }
+                        IEnumerable<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2);
+                        int count = solutionFromRandom.Count();
+                        if (count < min)
+                        {
+                            solution = solutionFromRandom.Reverse().ToArray();
+                            min = count;
+                        }
+                    }
+                }
+                Console.WriteLine(i + " " + arbreInitial[^1].Count);
+            }
+            return solution;
+        }
+
+        public static byte[] MeetInTheMiddleForKociembaHTR(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
+        {
+            finalCube ??= new();
+            bool isSolved = false;
+            int i = 0;
+            Cube secu = initialCube.Clone();
+            Dictionary<(ulong, ulong), byte> dico1 = new()
+            {
+                { CompressState(initialCube.ToString()), 255}
+            };
+            Dictionary<(ulong, ulong), byte> dico2 = new()
+            {
+                { CompressState(finalCube.ToString()), 255}
+            };
+            List<Dictionary<(ulong, ulong), byte>> arbreInitial = [];
+            List<Dictionary<(ulong, ulong), byte>> arbreFinal = [];
+            arbreInitial.Add(dico1);
+            arbreFinal.Add(dico2);
+            byte[] solution = [];
+            while (!isSolved)
+            {
+                i++;
+                if (i == deepMax || i == 30) return [];
+                Parallel.Invoke(
+                    () => NextTreeBranchForKociembaHTR(arbreInitial),
+                    () => NextTreeBranchForKociembaHTR(arbreFinal)
+                    );
+                IEnumerable<(ulong, ulong)> takedLastInitial = arbreInitial.TakeLast(2).SelectMany(x => x.Keys);
+                IEnumerable<(ulong, ulong)> takedLastFinal = arbreFinal.TakeLast(2).SelectMany(x => x.Keys);
+                IEnumerable<(ulong, ulong)> commonLastsElements = takedLastInitial
+                    .Intersect(takedLastFinal);
+                if (!commonLastsElements.Any())
+                {
+                    Console.WriteLine(i + " " + arbreInitial[^1].Count);
+                    continue;
+                }
+                IEnumerable<(ulong, ulong)> arbreFinalManySelected = arbreFinal.SkipLast(2).SelectMany(x => x.Keys).Concat(takedLastFinal);
+                IEnumerable<(ulong, ulong)> arbreInitialManySelected = arbreInitial.SkipLast(2).SelectMany(x => x.Keys).Concat(takedLastInitial);
+                IEnumerable<(ulong, ulong)> hasCommonElements = arbreInitialManySelected.Intersect(arbreFinalManySelected);
+                if (hasCommonElements.Any())
+                {
+                    isSolved = true;
+                    int min = int.MaxValue;
+                    foreach ((ulong, ulong) element in hasCommonElements)
+                    {
+                        List<byte> path = [];
+                        Cube newCube = new(DecompressState(element));
+                        for (int j = 1; j <= arbreFinal.Count; j++)
+                        {
+                            (ulong, ulong) elementEtapeAvant = CompressState(newCube.ToString());
+                            if (arbreFinal[^j].ContainsKey(elementEtapeAvant))
+                            {
+                                if (arbreFinal[^j][elementEtapeAvant] == 255) break;
+                                path.Add(arbreFinal[^j][elementEtapeAvant]);
+                                newCube.ExecuterAlgorithme(Move.GetReversalPath(path.TakeLast(1)));
+                                // On exécute le dernier mouvement mais à l'envers
+                            }
+                        }
+                        List<byte> path2 = [];
+                        Cube newCube2 = new(DecompressState(element));
+                        for (int j = 1; j <= arbreInitial.Count; j++)
+                        {
+                            (ulong, ulong) elementEtapeAvant = CompressState(newCube2.ToString());
+                            if (arbreInitial[^j].ContainsKey(elementEtapeAvant))
+                            {
+                                if (arbreInitial[^j][elementEtapeAvant] == 255) break;
+                                path2.Add(arbreInitial[^j][elementEtapeAvant]);
+                                newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
+                            }
+                        }
+                        IEnumerable<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2);
+                        int count = solutionFromRandom.Count();
+                        if (count < min)
+                        {
+                            solution = solutionFromRandom.Reverse().ToArray();
+                            min = count;
+                        }
+                    }
+                }
+                Console.WriteLine(i + " " + arbreInitial[^1].Count);
+            }
+            secu.ExecuterAlgorithme(solution);
+            Trace.Assert(secu.IsSolved);
+            return solution;
+        }
+
+        public static byte[] MeetInTheMiddleString(Cube initialCube, Cube? finalCube = null, int? deepMax = null)
+        {
+            finalCube ??= new();
+            bool isSolved = false;
+            int i = 0;
+            Dictionary<string, byte> dico1 = new()
+            {
+                { initialCube.ToString(), 255}
+            };
+            Dictionary<string, byte> dico2 = new()
+            {
+                { finalCube.ToString(), 255}
+            };
+            List<Dictionary<string, byte>> arbreInitial = [];
+            List<Dictionary<string, byte>> arbreFinal = [];
+            arbreInitial.Add(dico1);
+            arbreFinal.Add(dico2);
+            byte[] solution = [];
+            while (!isSolved)
+            {
+                Console.WriteLine(i + " " + arbreInitial[^1].Count);
+                if (i == deepMax) return [];
+                Parallel.Invoke(
+                    () => NextTreeBranchForMITM(arbreInitial, false),
+                    () => NextTreeBranchForMITM(arbreFinal, false)
+                    );
+                IEnumerable<string> takedLastInitial = arbreInitial.TakeLast(2).SelectMany(x => x.Keys);
+                IEnumerable<string> takedLastFinal = arbreFinal.TakeLast(2).SelectMany(x => x.Keys);
+                IEnumerable<string> commonLastsElements = takedLastInitial
+                    .Intersect(takedLastFinal);
+                if (!commonLastsElements.Any())
+                {
+                    i++;
+                    continue;
+                }
+                IEnumerable<string> arbreFinalManySelected = arbreFinal.SkipLast(2).SelectMany(x => x.Keys).Concat(takedLastFinal);
+                IEnumerable<string> arbreInitialManySelected = arbreInitial.SkipLast(2).SelectMany(x => x.Keys).Concat(takedLastInitial);
+                IEnumerable<string> hasCommonElements = arbreInitialManySelected.Intersect(arbreFinalManySelected);
+                if (hasCommonElements.Any())
+                {
+                    isSolved = true;
+                    int min = int.MaxValue;
+                    foreach (string element in hasCommonElements)
+                    {
+                        List<byte> path = [];
+                        Cube newCube = new(element);
+                        for (int j = 1; j <= arbreFinal.Count; j++)
+                        {
+                            string elementEtapeAvant = newCube.ToString();
+                            if (arbreFinal[^j].ContainsKey(elementEtapeAvant))
+                            {
+                                if (arbreFinal[^j][elementEtapeAvant] == 255) break;
+                                path.Add(arbreFinal[^j][elementEtapeAvant]);
+                                newCube.ExecuterAlgorithme(Move.GetReversalPath(path.TakeLast(1)));
+                                // On exécute le dernier mouvement mais à l'envers
+                            }
+                        }
+                        List<byte> path2 = [];
+                        Cube newCube2 = new(element);
+                        for (int j = 1; j <= arbreInitial.Count; j++)
+                        {
+                            string elementEtapeAvant = newCube2.ToString();
+                            if (arbreInitial[^j].ContainsKey(elementEtapeAvant))
+                            {
+                                if (arbreInitial[^j][elementEtapeAvant] == 255) break;
+                                path2.Add(arbreInitial[^j][elementEtapeAvant]);
+                                newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
+                            }
+                        }
+                        IEnumerable<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2);
+                        int count = solutionFromRandom.Count();
+                        if (count < min)
+                        {
+                            solution = solutionFromRandom.Reverse().ToArray();
                             min = count;
                         }
                     }
                 }
                 i++;
             }
-            return solution.ToArray();
+            return solution;
         }
 
         public static List<byte> LightOptimization(List<byte> path)
@@ -2132,63 +3005,239 @@ namespace Rubik_s_cube_solver
             return path;
         }
 
-        public static int Conflits(string s, string solution)
-        {
-            int k = 0;
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (solution[i] != s[i]) k++;
-            }
-            return k;
-        }
-
-        public static byte Conflits(Cube c)
+        public byte Conflits()
         {
             byte conflits = 0;
             // Corners
-            if (c.RedFace.Pieces[0, 0] != 'R' || c.GreenFace.Pieces[0, 2] != 'G' || c.WhiteFace.Pieces[2, 0] != 'W')
+            if (RedFace.Pieces[0, 0] != 'R' || GreenFace.Pieces[0, 2] != 'G' || WhiteFace.Pieces[2, 0] != 'W')
                 conflits++;
-            if (c.RedFace.Pieces[0, 2] != 'R' || c.BlueFace.Pieces[0, 0] != 'B' || c.WhiteFace.Pieces[2, 2] != 'W')
+            if (RedFace.Pieces[0, 2] != 'R' || BlueFace.Pieces[0, 0] != 'B' || WhiteFace.Pieces[2, 2] != 'W')
                 conflits++;
-            if (c.BlueFace.Pieces[0, 2] != 'B' || c.OrangeFace.Pieces[0, 0] != 'O' || c.WhiteFace.Pieces[0, 2] != 'W')
+            if (BlueFace.Pieces[0, 2] != 'B' || OrangeFace.Pieces[0, 0] != 'O' || WhiteFace.Pieces[0, 2] != 'W')
                 conflits++;
-            if (c.OrangeFace.Pieces[0, 2] != 'O' || c.GreenFace.Pieces[0, 0] != 'G' || c.WhiteFace.Pieces[0, 0] != 'W')
+            if (OrangeFace.Pieces[0, 2] != 'O' || GreenFace.Pieces[0, 0] != 'G' || WhiteFace.Pieces[0, 0] != 'W')
                 conflits++;
-            if (c.RedFace.Pieces[2, 0] != 'R' || c.GreenFace.Pieces[2, 2] != 'G' || c.YellowFace.Pieces[0, 0] != 'Y')
+            if (RedFace.Pieces[2, 0] != 'R' || GreenFace.Pieces[2, 2] != 'G' || YellowFace.Pieces[0, 0] != 'Y')
                 conflits++;
-            if (c.RedFace.Pieces[2, 2] != 'R' || c.BlueFace.Pieces[2, 0] != 'B' || c.YellowFace.Pieces[0, 2] != 'Y')
+            if (RedFace.Pieces[2, 2] != 'R' || BlueFace.Pieces[2, 0] != 'B' || YellowFace.Pieces[0, 2] != 'Y')
                 conflits++;
-            if (c.BlueFace.Pieces[2, 2] != 'B' || c.OrangeFace.Pieces[2, 0] != 'O' || c.YellowFace.Pieces[2, 2] != 'Y')
+            if (BlueFace.Pieces[2, 2] != 'B' || OrangeFace.Pieces[2, 0] != 'O' || YellowFace.Pieces[2, 2] != 'Y')
                 conflits++;
-            if (c.OrangeFace.Pieces[2, 2] != 'O' || c.GreenFace.Pieces[2, 0] != 'G' || c.YellowFace.Pieces[2, 0] != 'Y')
+            if (OrangeFace.Pieces[2, 2] != 'O' || GreenFace.Pieces[2, 0] != 'G' || YellowFace.Pieces[2, 0] != 'Y')
                 conflits++;
             // Edges
-            if (c.WhiteFace.Pieces[0, 1] != 'W' || c.OrangeFace.Pieces[0, 1] != 'O')
+            if (WhiteFace.Pieces[0, 1] != 'W' || OrangeFace.Pieces[0, 1] != 'O')
                 conflits++;
-            if (c.WhiteFace.Pieces[1, 0] != 'W' || c.GreenFace.Pieces[0, 1] != 'G')
+            if (WhiteFace.Pieces[1, 0] != 'W' || GreenFace.Pieces[0, 1] != 'G')
                 conflits++;
-            if (c.WhiteFace.Pieces[1, 2] != 'W' || c.BlueFace.Pieces[0, 1] != 'B')
+            if (WhiteFace.Pieces[1, 2] != 'W' || BlueFace.Pieces[0, 1] != 'B')
                 conflits++;
-            if (c.WhiteFace.Pieces[2, 1] != 'W' || c.RedFace.Pieces[0, 1] != 'R')
+            if (WhiteFace.Pieces[2, 1] != 'W' || RedFace.Pieces[0, 1] != 'R')
                 conflits++;
-            if (c.RedFace.Pieces[1, 0] != 'R' || c.GreenFace.Pieces[1, 2] != 'G')
+            if (RedFace.Pieces[1, 0] != 'R' || GreenFace.Pieces[1, 2] != 'G')
                 conflits++;
-            if (c.RedFace.Pieces[1, 2] != 'R' || c.BlueFace.Pieces[1, 0] != 'B')
+            if (RedFace.Pieces[1, 2] != 'R' || BlueFace.Pieces[1, 0] != 'B')
                 conflits++;
-            if (c.RedFace.Pieces[2, 1] != 'R' || c.YellowFace.Pieces[0, 1] != 'Y')
+            if (RedFace.Pieces[2, 1] != 'R' || YellowFace.Pieces[0, 1] != 'Y')
                 conflits++;
-            if (c.BlueFace.Pieces[2, 1] != 'B' || c.YellowFace.Pieces[1, 2] != 'Y')
+            if (BlueFace.Pieces[2, 1] != 'B' || YellowFace.Pieces[1, 2] != 'Y')
                 conflits++;
-            if (c.BlueFace.Pieces[1, 2] != 'B' || c.OrangeFace.Pieces[1, 0] != 'O')
+            if (BlueFace.Pieces[1, 2] != 'B' || OrangeFace.Pieces[1, 0] != 'O')
                 conflits++;
-            if (c.OrangeFace.Pieces[1, 1] != 'O' || c.GreenFace.Pieces[1, 0] != 'G')
+            if (OrangeFace.Pieces[1, 2] != 'O' || GreenFace.Pieces[1, 0] != 'G')
                 conflits++;
-            if (c.OrangeFace.Pieces[2, 1] != 'O' || c.YellowFace.Pieces[2, 1] != 'Y')
+            if (OrangeFace.Pieces[2, 1] != 'O' || YellowFace.Pieces[2, 1] != 'Y')
                 conflits++;
-            if (c.GreenFace.Pieces[2, 1] != 'G' || c.YellowFace.Pieces[1, 0] != 'Y')
+            if (GreenFace.Pieces[2, 1] != 'G' || YellowFace.Pieces[1, 0] != 'Y')
                 conflits++;
             return conflits;
+            /*foreach (Face face in new List<Face>([WhiteFace, GreenFace, RedFace]))
+            {
+                foreach ((int, int) edge in GetEdges)
+                {
+                    if (face.Pieces[edge.Item1, edge.Item2] != face.ColorFace || face.Pieces[edge.Item1, edge.Item2] != GetOppositeColor(face.ColorFace))
+                    {
+                        conflits++;
+                    }
+                }
+                foreach ((int, int) corner in GetCorners)
+                {
+                    if (face.Pieces[corner.Item1, corner.Item2] != face.ColorFace || face.Pieces[corner.Item1, corner.Item2] != GetOppositeColor(face.ColorFace))
+                    {
+                        conflits++;
+                    }
+                }
+            }
+            return conflits;*/
+        }
 
+        public bool IsInG1()
+        {
+            return EdgeReduction() && CornerReduction();
+        }
+
+        public static bool SecondLayerEdgeReduction(Face face1, Face face2, Face face3, Face face4)
+        {
+            if (face1.Pieces[1, 0] != face1.ColorFace && face1.Pieces[1, 0] != GetOppositeColor(face1.ColorFace)
+                || face1.Pieces[1, 2] != face1.ColorFace && face1.Pieces[1, 2] != GetOppositeColor(face1.ColorFace)
+                || face2.Pieces[1, 0] != face2.ColorFace && face2.Pieces[1, 0] != GetOppositeColor(face2.ColorFace)
+                || face2.Pieces[1, 2] != face2.ColorFace && face2.Pieces[1, 2] != GetOppositeColor(face2.ColorFace)
+                || face3.Pieces[1, 0] != face3.ColorFace && face3.Pieces[1, 0] != GetOppositeColor(face3.ColorFace)
+                || face3.Pieces[1, 2] != face3.ColorFace && face3.Pieces[1, 2] != GetOppositeColor(face3.ColorFace)
+                || face4.Pieces[1, 0] != face4.ColorFace && face1.Pieces[1, 0] != GetOppositeColor(face4.ColorFace)
+                || face4.Pieces[1, 2] != face4.ColorFace && face4.Pieces[1, 2] != GetOppositeColor(face4.ColorFace))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool EdgeReduction()
+        {
+            foreach (Face face in new List<Face>([WhiteFace, YellowFace]))
+            {
+                foreach ((int, int) p in GetEdges)
+                {
+                    if (face.Pieces[p.Item1, p.Item2] != face.ColorFace && face.Pieces[p.Item1, p.Item2] != GetOppositeColor(face.ColorFace))
+                    {
+                        goto breaked1;
+                    }
+                }
+            }
+            bool whiteYellow = SecondLayerEdgeReduction(OrangeFace, RedFace, BlueFace, GreenFace);
+            if (whiteYellow)
+            {
+                Up = "U";
+                Down = "D";
+                Right = "R2";
+                Left = "L2";
+                Front = "F2";
+                Back = "B2";
+                return true;
+            }
+            breaked1:
+            foreach (Face face in new List<Face>([BlueFace, GreenFace]))
+            {
+                foreach ((int, int) p in GetEdges)
+                {
+                    if (face.Pieces[p.Item1, p.Item2] != face.ColorFace && face.Pieces[p.Item1, p.Item2] != GetOppositeColor(face.ColorFace))
+                    {
+                        goto breaked2;
+                    }
+                }
+            }
+            bool blueGreen = SecondLayerEdgeReduction(OrangeFace, RedFace, WhiteFace, YellowFace);
+            if (blueGreen)
+            {
+                Up = "F";
+                Down = "B";
+                Right = "R2";
+                Left = "L2";
+                Front = "U2";
+                Back = "D2";
+                return true;
+            }
+            breaked2:
+            foreach (Face face in new List<Face>([RedFace, OrangeFace]))
+            {
+                foreach ((int, int) p in GetEdges)
+                {
+                    if (face.Pieces[p.Item1, p.Item2] != face.ColorFace && face.Pieces[p.Item1, p.Item2] != GetOppositeColor(face.ColorFace))
+                    {
+                        return false;
+                    }
+                }
+            }
+            bool redOrange = SecondLayerEdgeReduction(WhiteFace, YellowFace, BlueFace, GreenFace);
+            if (redOrange)
+            {
+                Up = "L";
+                Down = "R";
+                Right = "U2";
+                Left = "D2";
+                Front = "F2";
+                Back = "B2";
+                return true;
+            }
+            return false;
+        }
+
+        public bool CornerReduction()
+        {
+            Face face1 = Up switch
+            {
+                "U" => WhiteFace,
+                "F" => BlueFace,
+                "L" => RedFace,
+                _ => WhiteFace
+            };
+            Face face2 = Up switch
+            {
+                "U" => YellowFace,
+                "F" => GreenFace,
+                "L" => OrangeFace,
+                _ => WhiteFace
+            };
+            foreach (Face face in new List<Face>([face1, face2]))
+            {
+                foreach ((int, int) p in GetCorners)
+                {
+                    if (face.Pieces[p.Item1, p.Item2] != face.ColorFace && face.Pieces[p.Item1, p.Item2] != GetOppositeColor(face.ColorFace))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public static char GetOppositeColor(char color)
+        {
+            return color switch
+            {
+                'W' => 'Y',
+                'G' => 'B',
+                'Y' => 'W',
+                'B' => 'G',
+                'R' => 'O',
+                'O' => 'R',
+                _  => throw new Exception("Pas de telle couleur")
+            };
+        }
+
+        public static bool HTR(Cube c)
+        {
+            foreach (Face face in c.GetAllFaces)
+            {
+                foreach ((int, int) cornerPos in GetCorners)
+                {
+                    if (face.Pieces[cornerPos.Item1, cornerPos.Item2] != face.ColorFace && face.Pieces[cornerPos.Item1, cornerPos.Item2] != GetOppositeColor(face.ColorFace))
+                    {
+                        return false;
+                    }
+                }
+                foreach ((int, int) edges in GetEdges)
+                {
+                    if (face.Pieces[edges.Item1, edges.Item2] != face.ColorFace && face.Pieces[edges.Item1, edges.Item2] != GetOppositeColor(face.ColorFace))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public bool HTR()
+        {
+            foreach (Face face in GetAllFaces)
+            {
+                foreach (char p in face.Pieces)
+                {
+                    if (p != face.ColorFace && p != GetOppositeColor(face.ColorFace)) 
+                        return false;
+                }
+            }
+            return IsInG1();
         }
 
         public static List<byte> TabuSearch(Cube c)
@@ -2198,7 +3247,7 @@ namespace Rubik_s_cube_solver
             string s = new Cube().ToString();
             List<byte> path = [];
             List<byte> bestPath = [];
-            int evaluation = Conflits(c);
+            int evaluation = c.Conflits();
             int best = evaluation;
             HashSet<string> hs = [c.ToString()];
             Console.WriteLine(best);
@@ -2209,7 +3258,7 @@ namespace Rubik_s_cube_solver
             sw2.Start();
             while (evaluation > 0)
             {
-                evaluation = Conflits(c);
+                evaluation = c.Conflits();
                 for (byte i = 0; i < 18; i++)
                 {
                     byte rev = Move.GetReversalMove(i);
@@ -2222,7 +3271,7 @@ namespace Rubik_s_cube_solver
                         c.DoMove(i);
                         string cString = c.ToString();
                         //(ulong, ulong) cCompressed = CompressState(cString);
-                        int newEval = Conflits(c);
+                        int newEval = c.Conflits();
                         if (newEval < evaluation && hs.Add(cString))
                         {
                             if (j != i && j != rev)
@@ -2259,7 +3308,7 @@ namespace Rubik_s_cube_solver
                 {
                     c.DoMove(j);
                     cs = c.ToString();
-                    int eval = Conflits(c);
+                    int eval = c.Conflits();
                     if (eval < minEval && hs.Add(cs))
                     {
                         minEval = eval;
@@ -2297,7 +3346,7 @@ namespace Rubik_s_cube_solver
             }
             List<byte> bestPath = path.Select(x => x).ToList();
             copy.ExecuterAlgorithme(bestPath);
-            int evaluation = Conflits(copy);
+            int evaluation = copy.Conflits();
             int best = evaluation;
             HashSet<string> hs = [Move.GetStringPath(bestPath)];
             Console.WriteLine(best);
@@ -2308,7 +3357,7 @@ namespace Rubik_s_cube_solver
             sw2.Start();
             while (evaluation > 3)
             {
-                evaluation = Conflits(copy);
+                evaluation = copy.Conflits();
                 for (byte i = 0; i < algoSize; i++)
                 {
                     byte k = path[i];
@@ -2321,7 +3370,7 @@ namespace Rubik_s_cube_solver
                         copy = init.Clone();
                         copy.ExecuterAlgorithme(path);
                         string cString = copy.ToString();
-                        int newEval = Conflits(copy);
+                        int newEval = copy.Conflits();
                         if (newEval < evaluation && hs.Add(cString))
                         {
                             evaluation = newEval;
