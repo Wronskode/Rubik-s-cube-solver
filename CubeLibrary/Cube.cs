@@ -1686,8 +1686,8 @@ namespace Rubik_s_cube_solver
                             if (arbreInitial[^j].TryGetValue(elementEtapeAvant, out byte value))
                             {
                                 if (value == 255) break;
-                                path.Add(value);
-                                newCube.ExecuterAlgorithme(Move.GetReversalPath(path.TakeLast(1)));
+                                path2.Add(value);
+                                newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
                             }
                         }
                         IEnumerable<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2);
