@@ -66,7 +66,7 @@ namespace Rubik_s_cube_solver
 
         public void Rotate90Left()
         {
-            char[,] nouvelleFace = (char[,])Pieces.Clone();
+            char[,] nouvelleFace = new char[3,3];
             nouvelleFace[0, 0] = Pieces[0, 2];
             nouvelleFace[0, 1] = Pieces[1, 2];
             nouvelleFace[0, 2] = Pieces[2, 2];
@@ -75,12 +75,13 @@ namespace Rubik_s_cube_solver
             nouvelleFace[2, 0] = Pieces[0, 0];
             nouvelleFace[2, 1] = Pieces[1, 0];
             nouvelleFace[2, 2] = Pieces[2, 0];
+            nouvelleFace[1, 1] = Pieces[1, 1];
             Pieces = nouvelleFace;
         }
 
         public void Rotate90Right()
         {
-            char[,] nouvelleFace = (char[,])Pieces.Clone();
+            char[,] nouvelleFace = new char[3, 3];
             nouvelleFace[0, 0] = Pieces[2, 0];
             nouvelleFace[0, 1] = Pieces[1, 0];
             nouvelleFace[0, 2] = Pieces[0, 0];
@@ -89,12 +90,13 @@ namespace Rubik_s_cube_solver
             nouvelleFace[2, 0] = Pieces[2, 2];
             nouvelleFace[2, 1] = Pieces[1, 2];
             nouvelleFace[2, 2] = Pieces[0, 2];
+            nouvelleFace[1, 1] = Pieces[1, 1];
             Pieces = nouvelleFace;
         }
 
         public void Rotate180()
         {
-            char[,] nouvelleFace = (char[,])Pieces.Clone();
+            char[,] nouvelleFace = new char[3, 3];
             nouvelleFace[0, 0] = Pieces[2, 2];
             nouvelleFace[0, 1] = Pieces[2, 1];
             nouvelleFace[0, 2] = Pieces[2, 0];
@@ -103,6 +105,7 @@ namespace Rubik_s_cube_solver
             nouvelleFace[2, 0] = Pieces[0, 2];
             nouvelleFace[2, 1] = Pieces[0, 1];
             nouvelleFace[2, 2] = Pieces[0, 0];
+            nouvelleFace[1, 1] = Pieces[1, 1];
             Pieces = nouvelleFace;
         }
 

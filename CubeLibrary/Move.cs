@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace Rubik_s_cube_solver
 {
@@ -227,7 +226,7 @@ namespace Rubik_s_cube_solver
             return response.ToString();
         }
 
-        public static List<string> StringPathToEnum(string path)
+        public static IEnumerable<string> StringPathToEnum(string path)
         {
             List<string> newPath = [];
             for (int i = 0; i < path.Length - 1; i++)
