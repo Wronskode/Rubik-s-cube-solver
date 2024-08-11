@@ -144,19 +144,21 @@ Console.WriteLine("Résolution : " + Move.GetStringPath(sol) + "\n");
 Console.WriteLine("Résolution inverse: " + Move.GetStringPath(Move.GetReversalPath(sol.Reverse<byte>())));
 return;*/
 
-Cube ct = new(500);
+/*Cube ct = new(500);
+//Cube ct = new("BORGWBORGBWWBRGBYYOWWRBOOYYGWWGOBGYYRWWOGRRYYORGGYBBOR");
+//ct.ExecuterAlgorithme(["F2","U2","B2","L'","R","F'","R2","D","U","R'","B2","L'","U2","R'","B2","R'","B'","F'","R2","U'"]);
 Cube.PrintWithColors(ct.PrintCubeColors());
 Cube secu = ct.Clone();
 Stopwatch sw = new();
 sw.Start();
-var sol = Cube.Kociemba3(ct);
+var sol = ct.Kociemba();
 sw.Stop();
 Console.WriteLine("Path Length : " + sol.Length);
 secu.ExecuterAlgorithme(sol);
 Console.WriteLine("Cube est résolu : " + secu.IsSolved + " En " + sw.ElapsedMilliseconds / 1000 + "s");
 Console.WriteLine("Résolution : " + Move.GetStringPath(sol) + "\n");
 Console.WriteLine("Résolution inverse: " + Move.GetStringPath(Move.GetReversalPath(sol.Reverse<byte>())));
-return;
+return;*/
 while (true)
 {
     Console.WriteLine("Enter the scramble : 1 - Random, 2 - User defined, 3 - Enter a Cube manually");
@@ -174,7 +176,27 @@ while (true)
         string randomPath = Move.GetStringPath(randomCube.Scramble(n));
         Console.WriteLine("Random scramble : " + randomPath + "\n");
         Cube.PrintWithColors(randomCube.PrintCubeColors());
-        string resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(randomCube)]));
+        string? resolution = null;
+        do
+        {
+            Console.WriteLine("1 - Solve by beginner method, 2 - Solve by Kociemba algorithm (this may take time, avg : <120s)");
+            str = Console.ReadLine();
+            bool v = int.TryParse(str, out int result);
+            while (!v)
+            {
+                str = Console.ReadLine();
+                v = int.TryParse(str, out result);
+            }
+            if (result == 1)
+            {
+                resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(randomCube)]));
+            }
+            else if (result == 2)
+            {
+                Console.WriteLine("Solving...");
+                resolution = Move.GetStringPath(randomCube.Kociemba());
+            }
+        } while (resolution is null);
         Console.WriteLine("Resolution : " + resolution + "\n");
     }
     else if (n == 2)
@@ -185,10 +207,9 @@ while (true)
         while (true)
         {
             List<byte> algo;
-#pragma warning disable CS8602 // Déréférencement d'une éventuelle référence null.
-            str = Console.ReadLine().ToUpper();
-#pragma warning restore CS8602 // Déréférencement d'une éventuelle référence null.
-            if (str == "0" || str == string.Empty) break;
+            str = Console.ReadLine();
+            if (str != null) str = str.ToUpper();
+            if (str == "0" || str == string.Empty || str == null) break;
             try
             {
                 algo = Move.GetAlgoFromStringEnum([str]);
@@ -204,20 +225,61 @@ while (true)
         }
         //Cube.PrintWithColors(c.PrintCubeColors());
         Console.WriteLine("Scramble : " + Move.GetStringPath(Move.GetAlgoFromStringEnum(fullAlgo)));
-        string resolution = Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
+        string? resolution = null;
+        do
+        {
+            Console.WriteLine("1 - Solve by beginner method, 2 - Solve by Kociemba algorithm (this may take time, avg : <120s)");
+            str = Console.ReadLine();
+            bool v = int.TryParse(str, out int result);
+            while (!v)
+            {
+                str = Console.ReadLine();
+                v = int.TryParse(str, out result);
+            }
+            if (result == 1)
+            {
+                resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(c)]));
+            }
+            else if (result == 2)
+            {
+                Console.WriteLine("Solving...");
+                resolution = Move.GetStringPath(c.Kociemba());
+            }
+        } while (resolution is null);
         Console.WriteLine("Resolution : " + resolution + "\n");
     }
     else if (n == 3)
     {
         Console.WriteLine("Enter a cube :");
-#pragma warning disable CS8602 // Déréférencement d'une éventuelle référence null.
-        str = Console.ReadLine().ToUpper();
-#pragma warning restore CS8602 // Déréférencement d'une éventuelle référence null.
+        str = Console.ReadLine();
+        if (str != null) str = str.ToUpper();
+        else continue;
         Cube c;
         try
         {
             c = new(str);
-            string resolution = Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(c)));
+            string? resolution = null;
+            do
+            {
+                Console.WriteLine("1 - Solve by beginner method, 2 - Solve by Kociemba algorithm (this may take time, avg : <120s)");
+                str = Console.ReadLine();
+                bool v = int.TryParse(str, out int result);
+                while (!v)
+                {
+                    str = Console.ReadLine();
+                    v = int.TryParse(str, out result);
+                }
+                
+                if (result == 1)
+                {
+                    resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(c)]));
+                }
+                else if (result == 2)
+                {
+                    Console.WriteLine("Solving...");
+                    resolution = Move.GetStringPath(c.Kociemba());
+                }
+            } while (resolution == null);
             Console.WriteLine("Resolution : " + resolution + "\n");
         }
         catch (Exception ex)
