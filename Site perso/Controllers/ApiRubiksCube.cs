@@ -59,6 +59,29 @@ namespace MySite.Controllers
             }
         }
 
+        /*[HttpPost("Kociemba")]
+        public ActionResult<string> Kociemba([FromBody] string strCube = "")
+        {
+            if (strCube == string.Empty)
+            {
+                Cube cube = new(500);
+                return Ok(Move.GetStringPath(cube.Kociemba()));
+            }
+            try
+            {
+                SolveCube(strCube.ToUpper());
+                return Move.GetStringPath(new Cube(strCube.ToUpper()).Kociemba());
+            }
+            catch (Exception ex) when (ex is ArgumentException || ex is IndexOutOfRangeException)
+            {
+                return Ok("Le cube n'est pas résoluble, vérifiez l'entrée");
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }*/
+
         [HttpPost("ReverseResolution")]
         public ActionResult<string> ReversePath([FromBody] string path)
         {
@@ -67,19 +90,6 @@ namespace MySite.Controllers
             {
                 return Ok(Move.GetStringPath(Move.GetReversalPath(Move.GetAlgoFromStringEnum(
                             Move.StringPathToEnum(path.Replace(" ", string.Empty).ToUpper()).Reverse<string>()))));
-            }
-            catch
-            {
-                return Ok("Erreur");
-            }
-        }
-
-        [HttpPost("OptimizeAlgo")]
-        public ActionResult<string> Optimize([FromBody] string path)
-        {
-            try
-            {
-                return Ok(Move.GetStringPath(Cube.OptimizePath(Move.GetAlgoFromStringEnum(Move.StringPathToEnum(path.Replace(" ", string.Empty).ToUpper())))));
             }
             catch
             {
