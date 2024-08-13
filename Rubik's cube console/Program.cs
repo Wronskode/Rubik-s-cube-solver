@@ -56,7 +56,7 @@ while (true)
     {
         Console.WriteLine("Enter the scramble (e.g. : URU'R'F2B'R)");
         Cube c = new();
-        IEnumerable<string> fullAlgo = [];
+        IEnumerable<string> fullAlgo;
         List<byte> algo;
         str = Console.ReadLine();
         if (str != null) str = str.ToUpper();
@@ -67,7 +67,7 @@ while (true)
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex);
             break;
         }
         c.ExecuterAlgorithme(fullAlgo);
