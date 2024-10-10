@@ -1,4 +1,4 @@
-using Rubik_s_cube_solver;
+using CubeLibrary;
 
 namespace CubesTests
 {

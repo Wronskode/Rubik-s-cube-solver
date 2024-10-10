@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
 
-namespace Rubik_s_cube_solver
+namespace CubeLibrary
 {
     public class Cube : IEquatable<Cube?>
     {
@@ -126,6 +126,12 @@ namespace Rubik_s_cube_solver
                         throw new Exception("La couleur " + face.ColorFace + " n'existe pas");
                 }
             }
+            Debug.Assert(WhiteFace is not null);
+            Debug.Assert(YellowFace is not null);
+            Debug.Assert(RedFace is not null);
+            Debug.Assert(GreenFace is not null);
+            Debug.Assert(BlueFace is not null);
+            Debug.Assert(OrangeFace is not null);
         }
 
         public Cube()
@@ -174,6 +180,12 @@ namespace Rubik_s_cube_solver
                         throw new Exception("La couleur " + face.ColorFace + " n'existe pas");
                 }
             }
+            Debug.Assert(WhiteFace is not null);
+            Debug.Assert(YellowFace is not null);
+            Debug.Assert(RedFace is not null);
+            Debug.Assert(GreenFace is not null);
+            Debug.Assert(BlueFace is not null);
+            Debug.Assert(OrangeFace is not null);
         }
 
         public Cube(int n)
@@ -962,14 +974,15 @@ namespace Rubik_s_cube_solver
                 }
                 while (tasks.Count > 0)
                 {
-                    var newTasks = tasks.Take(4).ToArray();
+                    Task[] newTasks = tasks.Take(4).ToArray<Task>();
                     foreach(var t in newTasks)
                     {
                         t.Start();
                     }
                     Task.WaitAll(newTasks);
-                    foreach (Task<(byte[], bool)> task in newTasks)
+                    foreach (Task task1 in newTasks)
                     {
+                        var task = (Task<(byte[], bool)>)task1;
                         if (task.Result.Item2)
                         {
                             return task.Result.Item1;
@@ -1248,7 +1261,7 @@ namespace Rubik_s_cube_solver
                     fst *= 6;
                     fst += state[i] switch
                     {
-                        'W' => 0,
+                        'W' => (ulong) 0,
                         'Y' => 1,
                         'R' => 2,
                         'G' => 3,
@@ -1265,7 +1278,7 @@ namespace Rubik_s_cube_solver
                     snd *= 6;
                     snd += state[i] switch
                     {
-                        'W' => 0,
+                        'W' => (ulong) 0,
                         'Y' => 1,
                         'R' => 2,
                         'G' => 3,
@@ -1332,9 +1345,9 @@ namespace Rubik_s_cube_solver
                     );
                 IEnumerable<(ulong, ulong)> takedLastInitial = arbreInitial.TakeLast(2).SelectMany(x => x.Keys);
                 IEnumerable<(ulong, ulong)> takedLastFinal = arbreFinal.TakeLast(2).SelectMany(x => x.Keys);
-                IEnumerable<(ulong, ulong)> hasCommonElements = takedLastInitial
-                    .Intersect(takedLastFinal);
-                if (hasCommonElements.Any())
+                List<(ulong, ulong)> hasCommonElements = takedLastInitial
+                    .Intersect(takedLastFinal).ToList();
+                if (hasCommonElements.Count > 0)
                 {
                     isSolved = true;
                     int min = int.MaxValue;
@@ -1364,11 +1377,11 @@ namespace Rubik_s_cube_solver
                                 newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
                             }
                         }
-                        IEnumerable<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2);
-                        int count = solutionFromRandom.Count();
+                        List<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2).ToList();
+                        int count = solutionFromRandom.Count;
                         if (count < min)
                         {
-                            solution = solutionFromRandom.Reverse().ToArray();
+                            solution = solutionFromRandom.Reverse<byte>().ToArray();
                             min = count;
                         }
                     }
@@ -1406,9 +1419,9 @@ namespace Rubik_s_cube_solver
                     );
                 IEnumerable<(ulong, ulong)> takedLastInitial = arbreInitial.TakeLast(2).SelectMany(x => x.Keys);
                 IEnumerable<(ulong, ulong)> takedLastFinal = arbreFinal.TakeLast(2).SelectMany(x => x.Keys);
-                IEnumerable<(ulong, ulong)> hasCommonElements = takedLastInitial
-                    .Intersect(takedLastFinal);
-                if (hasCommonElements.Any())
+                List<(ulong, ulong)> hasCommonElements = takedLastInitial
+                    .Intersect(takedLastFinal).ToList();
+                if (hasCommonElements.Count > 0)
                 {
                     isSolved = true;
                     int min = int.MaxValue;
@@ -1438,11 +1451,11 @@ namespace Rubik_s_cube_solver
                                 newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
                             }
                         }
-                        IEnumerable<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2);
-                        int count = solutionFromRandom.Count();
+                        List<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2).ToList();
+                        int count = solutionFromRandom.Count;
                         if (count < min)
                         {
-                            solution = solutionFromRandom.Reverse().ToArray();
+                            solution = solutionFromRandom.Reverse<byte>().ToArray();
                             min = count;
                         }
                     }
@@ -1536,9 +1549,10 @@ namespace Rubik_s_cube_solver
         {
             int cpt = 0;
             Cube solvedCube = new();
+            List<string> algo = algorithm.ToList();
             do
             {
-                solvedCube.ExecuterAlgorithme(algorithm);
+                solvedCube.ExecuterAlgorithme(algo);
                 cpt++;
             } while (!solvedCube.IsSolved);
             return cpt;
@@ -1548,9 +1562,10 @@ namespace Rubik_s_cube_solver
         {
             int cpt = 0;
             Cube solvedCube = new();
+            List<byte> algo = algorithm.ToList();
             do
             {
-                solvedCube.ExecuterAlgorithme(algorithm);
+                solvedCube.ExecuterAlgorithme(algo);
                 cpt++;
             } while (!solvedCube.IsSolved);
             return cpt;
@@ -1564,11 +1579,11 @@ namespace Rubik_s_cube_solver
                 { c.ToString(), [0] }
             };
             arbre.Add(dico);
-            bool firstEdge(Cube c) => c.WhiteFace.Pieces[2, 1] == 'W' && c.RedFace.Pieces[0, 1] == 'R';
-            bool secondEdge(Cube c) => c.WhiteFace.Pieces[1, 2] == 'W' && c.BlueFace.Pieces[0, 1] == 'B';
-            bool thirdEdge(Cube c) => c.WhiteFace.Pieces[1, 0] == 'W' && c.GreenFace.Pieces[0, 1] == 'G';
-            bool fourthEdge(Cube c) => c.WhiteFace.Pieces[0, 1] == 'W' && c.OrangeFace.Pieces[0, 1] == 'O';
-            bool oneEdgeIsPlaced(Cube c) => firstEdge(c) || secondEdge(c) || thirdEdge(c) || fourthEdge(c);
+            bool firstEdge(Cube cube) => cube.WhiteFace.Pieces[2, 1] == 'W' && cube.RedFace.Pieces[0, 1] == 'R';
+            bool secondEdge(Cube cube) => cube.WhiteFace.Pieces[1, 2] == 'W' && cube.BlueFace.Pieces[0, 1] == 'B';
+            bool thirdEdge(Cube cube) => cube.WhiteFace.Pieces[1, 0] == 'W' && cube.GreenFace.Pieces[0, 1] == 'G';
+            bool fourthEdge(Cube cube) => cube.WhiteFace.Pieces[0, 1] == 'W' && cube.OrangeFace.Pieces[0, 1] == 'O';
+            bool oneEdgeIsPlaced(Cube cube) => firstEdge(cube) || secondEdge(cube) || thirdEdge(cube) || fourthEdge(cube);
             bool isPlaced = oneEdgeIsPlaced(c);
             while (!isPlaced)
             {
@@ -1596,12 +1611,12 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => (firstEdge(c) && secondEdge(c))
-                        || (firstEdge(c) && thirdEdge(c))
-                        || (firstEdge(c) && fourthEdge(c))
-                        || (secondEdge(c) && thirdEdge(c))
-                        || (thirdEdge(c) && fourthEdge(c))
-                        || (secondEdge(c) && fourthEdge(c)));
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => (firstEdge(cube) && secondEdge(cube))
+                        || (firstEdge(cube) && thirdEdge(cube))
+                        || (firstEdge(cube) && fourthEdge(cube))
+                        || (secondEdge(cube) && thirdEdge(cube))
+                        || (thirdEdge(cube) && fourthEdge(cube))
+                        || (secondEdge(cube) && fourthEdge(cube)));
                 if (newC != null)
                 {
                     c = newC.Value.Item1;
@@ -1622,10 +1637,10 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => (firstEdge(c) && secondEdge(c) && thirdEdge(c))
-                        || (firstEdge(c) && thirdEdge(c) && fourthEdge(c))
-                        || (firstEdge(c) && fourthEdge(c) && secondEdge(c))
-                        || (secondEdge(c) && thirdEdge(c) && fourthEdge(c)));
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => (firstEdge(cube) && secondEdge(cube) && thirdEdge(cube))
+                        || (firstEdge(cube) && thirdEdge(cube) && fourthEdge(cube))
+                        || (firstEdge(cube) && fourthEdge(cube) && secondEdge(cube))
+                        || (secondEdge(cube) && thirdEdge(cube) && fourthEdge(cube)));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -1644,7 +1659,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => firstEdge(c) && secondEdge(c) && thirdEdge(c) && fourthEdge(c));
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => firstEdge(cube) && secondEdge(cube) && thirdEdge(cube) && fourthEdge(cube));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -1657,35 +1672,35 @@ namespace Rubik_s_cube_solver
 
         private static Cube PlaceCorners(Cube c, List<byte> path)
         {
-            bool crossAndEdges(Cube c) => c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
-            && c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
-            && c.RedFace.Pieces[0, 1] == 'R' && c.BlueFace.Pieces[0, 1] == 'B'
-            && c.GreenFace.Pieces[0, 1] == 'G' && c.OrangeFace.Pieces[0, 1] == 'O';
+            bool crossAndEdges(Cube cube) => cube.WhiteFace.Pieces[0, 1] == 'W' && cube.WhiteFace.Pieces[1, 0] == 'W'
+            && cube.WhiteFace.Pieces[1, 2] == 'W' && cube.WhiteFace.Pieces[2, 1] == 'W'
+            && cube.RedFace.Pieces[0, 1] == 'R' && cube.BlueFace.Pieces[0, 1] == 'B'
+            && cube.GreenFace.Pieces[0, 1] == 'G' && cube.OrangeFace.Pieces[0, 1] == 'O';
 
-            bool firstCornerIsPlaced(Cube c) =>
-                (c.BlueFace.Pieces[0, 0] == 'B' && c.WhiteFace.Pieces[2, 2] == 'W' && c.RedFace.Pieces[0, 2] == 'R')
-                || (c.BlueFace.Pieces[0, 0] == 'R' && c.WhiteFace.Pieces[2, 2] == 'B' && c.RedFace.Pieces[0, 2] == 'W')
-                || (c.BlueFace.Pieces[0, 0] == 'W' && c.WhiteFace.Pieces[2, 2] == 'R' && c.RedFace.Pieces[0, 2] == 'B');
+            bool firstCornerIsPlaced(Cube cube) =>
+                (cube.BlueFace.Pieces[0, 0] == 'B' && cube.WhiteFace.Pieces[2, 2] == 'W' && cube.RedFace.Pieces[0, 2] == 'R')
+                || (cube.BlueFace.Pieces[0, 0] == 'R' && cube.WhiteFace.Pieces[2, 2] == 'B' && cube.RedFace.Pieces[0, 2] == 'W')
+                || (cube.BlueFace.Pieces[0, 0] == 'W' && cube.WhiteFace.Pieces[2, 2] == 'R' && cube.RedFace.Pieces[0, 2] == 'B');
 
-            bool secondCornerIsPlaced(Cube c) =>
-                (c.RedFace.Pieces[0, 0] == 'R' && c.WhiteFace.Pieces[2, 0] == 'W' && c.GreenFace.Pieces[0, 2] == 'G')
-                || (c.RedFace.Pieces[0, 0] == 'G' && c.WhiteFace.Pieces[2, 0] == 'R' && c.GreenFace.Pieces[0, 2] == 'W')
-                || (c.RedFace.Pieces[0, 0] == 'W' && c.WhiteFace.Pieces[2, 0] == 'G' && c.GreenFace.Pieces[0, 2] == 'R');
+            bool secondCornerIsPlaced(Cube cube) =>
+                (cube.RedFace.Pieces[0, 0] == 'R' && cube.WhiteFace.Pieces[2, 0] == 'W' && cube.GreenFace.Pieces[0, 2] == 'G')
+                || (cube.RedFace.Pieces[0, 0] == 'G' && cube.WhiteFace.Pieces[2, 0] == 'R' && cube.GreenFace.Pieces[0, 2] == 'W')
+                || (cube.RedFace.Pieces[0, 0] == 'W' && cube.WhiteFace.Pieces[2, 0] == 'G' && cube.GreenFace.Pieces[0, 2] == 'R');
 
-            bool thirdCornerIsPlaced(Cube c) =>
-                (c.OrangeFace.Pieces[0, 0] == 'O' && c.BlueFace.Pieces[0, 2] == 'B' && c.WhiteFace.Pieces[0, 2] == 'W')
-                || (c.OrangeFace.Pieces[0, 0] == 'B' && c.BlueFace.Pieces[0, 2] == 'W' && c.WhiteFace.Pieces[0, 2] == 'O')
-                || (c.OrangeFace.Pieces[0, 0] == 'W' && c.BlueFace.Pieces[0, 2] == 'O' && c.WhiteFace.Pieces[0, 2] == 'B');
+            bool thirdCornerIsPlaced(Cube cube) =>
+                (cube.OrangeFace.Pieces[0, 0] == 'O' && cube.BlueFace.Pieces[0, 2] == 'B' && cube.WhiteFace.Pieces[0, 2] == 'W')
+                || (cube.OrangeFace.Pieces[0, 0] == 'B' && cube.BlueFace.Pieces[0, 2] == 'W' && cube.WhiteFace.Pieces[0, 2] == 'O')
+                || (cube.OrangeFace.Pieces[0, 0] == 'W' && cube.BlueFace.Pieces[0, 2] == 'O' && cube.WhiteFace.Pieces[0, 2] == 'B');
 
-            bool fourthCornerIsPlaced(Cube c) =>
-            (c.WhiteFace.Pieces[0, 0] == 'W' && c.GreenFace.Pieces[0, 0] == 'G' && c.OrangeFace.Pieces[0, 2] == 'O')
-            || (c.WhiteFace.Pieces[0, 0] == 'G' && c.GreenFace.Pieces[0, 0] == 'O' && c.OrangeFace.Pieces[0, 2] == 'W')
-            || (c.WhiteFace.Pieces[0, 0] == 'O' && c.GreenFace.Pieces[0, 0] == 'W' && c.OrangeFace.Pieces[0, 2] == 'G');
+            bool fourthCornerIsPlaced(Cube cube) =>
+            (cube.WhiteFace.Pieces[0, 0] == 'W' && cube.GreenFace.Pieces[0, 0] == 'G' && cube.OrangeFace.Pieces[0, 2] == 'O')
+            || (cube.WhiteFace.Pieces[0, 0] == 'G' && cube.GreenFace.Pieces[0, 0] == 'O' && cube.OrangeFace.Pieces[0, 2] == 'W')
+            || (cube.WhiteFace.Pieces[0, 0] == 'O' && cube.GreenFace.Pieces[0, 0] == 'W' && cube.OrangeFace.Pieces[0, 2] == 'G');
 
-            bool oneCornerIsPlaced(Cube c) => firstCornerIsPlaced(c) || secondCornerIsPlaced(c) || thirdCornerIsPlaced(c)
-                || fourthCornerIsPlaced(c);
-            bool allCornersIsPlaced(Cube c) => firstCornerIsPlaced(c) && secondCornerIsPlaced(c) && thirdCornerIsPlaced(c)
-            && fourthCornerIsPlaced(c);
+            bool oneCornerIsPlaced(Cube cube) => firstCornerIsPlaced(cube) || secondCornerIsPlaced(cube) || thirdCornerIsPlaced(cube)
+                || fourthCornerIsPlaced(cube);
+            bool allCornersIsPlaced(Cube cube) => firstCornerIsPlaced(cube) && secondCornerIsPlaced(cube) && thirdCornerIsPlaced(cube)
+            && fourthCornerIsPlaced(cube);
             List<Dictionary<string, byte[]>> arbre = [];
             Dictionary<string, byte[]> dico = new()
             {
@@ -1696,7 +1711,7 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c) && oneCornerIsPlaced(c));
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => crossAndEdges(cube) && oneCornerIsPlaced(cube));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -1720,13 +1735,13 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
-                        && ((firstCornerIsPlaced(c) && secondCornerIsPlaced(c))
-                        || (firstCornerIsPlaced(c) && thirdCornerIsPlaced(c))
-                        || (firstCornerIsPlaced(c) && fourthCornerIsPlaced(c))
-                        || (secondCornerIsPlaced(c) && thirdCornerIsPlaced(c))
-                        || (thirdCornerIsPlaced(c) && fourthCornerIsPlaced(c))
-                        || (secondCornerIsPlaced(c) && fourthCornerIsPlaced(c))));
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => crossAndEdges(cube)
+                        && ((firstCornerIsPlaced(cube) && secondCornerIsPlaced(cube))
+                        || (firstCornerIsPlaced(cube) && thirdCornerIsPlaced(cube))
+                        || (firstCornerIsPlaced(cube) && fourthCornerIsPlaced(cube))
+                        || (secondCornerIsPlaced(cube) && thirdCornerIsPlaced(cube))
+                        || (thirdCornerIsPlaced(cube) && fourthCornerIsPlaced(cube))
+                        || (secondCornerIsPlaced(cube) && fourthCornerIsPlaced(cube))));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -1748,11 +1763,11 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
-                        && ((firstCornerIsPlaced(c) && secondCornerIsPlaced(c) && thirdCornerIsPlaced(c))
-                        || (firstCornerIsPlaced(c) && thirdCornerIsPlaced(c) && fourthCornerIsPlaced(c))
-                        || (firstCornerIsPlaced(c) && fourthCornerIsPlaced(c) && secondCornerIsPlaced(c))
-                        || (secondCornerIsPlaced(c) && thirdCornerIsPlaced(c) && fourthCornerIsPlaced(c))));
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => crossAndEdges(cube)
+                        && ((firstCornerIsPlaced(cube) && secondCornerIsPlaced(cube) && thirdCornerIsPlaced(cube))
+                        || (firstCornerIsPlaced(cube) && thirdCornerIsPlaced(cube) && fourthCornerIsPlaced(cube))
+                        || (firstCornerIsPlaced(cube) && fourthCornerIsPlaced(cube) && secondCornerIsPlaced(cube))
+                        || (secondCornerIsPlaced(cube) && thirdCornerIsPlaced(cube) && fourthCornerIsPlaced(cube))));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -1772,8 +1787,8 @@ namespace Rubik_s_cube_solver
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (c) => crossAndEdges(c)
-                        && allCornersIsPlaced(c));
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => crossAndEdges(cube)
+                        && allCornersIsPlaced(cube));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -1826,7 +1841,7 @@ namespace Rubik_s_cube_solver
             }
             return c;
         }
-        private static Cube SecondLayer(Cube c, List<byte> path, IEnumerable<byte> dAlgo)
+        private static Cube SecondLayer(Cube c, List<byte> path)
         {
             bool crossAndEdges() => c.WhiteFace.Pieces[0, 1] == 'W' && c.WhiteFace.Pieces[1, 0] == 'W'
             && c.WhiteFace.Pieces[1, 2] == 'W' && c.WhiteFace.Pieces[2, 1] == 'W'
@@ -1964,7 +1979,7 @@ namespace Rubik_s_cube_solver
             }
             return c;
         }
-        private static Cube YellowCross(Cube c, List<byte> path, IEnumerable<byte> dAlgo)
+        private static Cube YellowCross(Cube c, List<byte> path)
         {
             bool yellowCrossIsDone() => c.YellowFace.Pieces[0, 1] == 'Y' && c.YellowFace.Pieces[1, 0] == 'Y'
                                      && c.YellowFace.Pieces[1, 2] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y';
@@ -2010,7 +2025,7 @@ namespace Rubik_s_cube_solver
             }
             return c;
         }
-        private static Cube OrientEdges(Cube c, List<byte> path, IEnumerable<byte> dAlgo)
+        private static Cube OrientEdges(Cube c, List<byte> path)
         {
             bool edgeIsPlaced() => c.RedFace.Pieces[2, 1] == 'R' && c.GreenFace.Pieces[2, 1] == 'G'
                     && c.OrangeFace.Pieces[2, 1] == 'O' && c.BlueFace.Pieces[2, 1] == 'B';
@@ -2182,9 +2197,9 @@ namespace Rubik_s_cube_solver
             c = PlaceEdges(c, path);
             c = PlaceCorners(c, path);
             c = OrientCorners(c, path);
-            c = SecondLayer(c, path, dAlgo);
-            c = YellowCross(c, path, dAlgo);
-            c = OrientEdges(c, path, dAlgo);
+            c = SecondLayer(c, path);
+            c = YellowCross(c, path);
+            c = OrientEdges(c, path);
             c = PlaceSecondCorners(c, path);
             OrientLastCornersOptim(c, path);
             return path;

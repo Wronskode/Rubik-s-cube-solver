@@ -1,5 +1,5 @@
-﻿using Rubik_s_cube_solver;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using CubeLibrary;
 
 while (true)
 {
