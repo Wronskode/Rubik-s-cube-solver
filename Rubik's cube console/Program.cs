@@ -1,5 +1,5 @@
-﻿using Rubik_s_cube_solver;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using CubeLibrary;
 
 while (true)
 {
@@ -57,7 +57,6 @@ while (true)
         Console.WriteLine("Enter the scramble (e.g. : URU'R'F2B'R)");
         Cube c = new();
         IEnumerable<string> fullAlgo;
-        List<byte> algo;
         str = Console.ReadLine();
         if (str != null) str = str.ToUpper();
         if (str == "0" || str == string.Empty || str == null) break;
@@ -70,9 +69,10 @@ while (true)
             Console.WriteLine(ex);
             break;
         }
-        c.ExecuterAlgorithme(fullAlgo);
+        List<string> algo = fullAlgo.ToList();
+        c.ExecuterAlgorithme(algo);
         Cube.PrintWithColors(c.PrintCubeColors());
-        Console.WriteLine("Scramble : " + Move.GetStringPath(Move.GetAlgoFromStringEnum(fullAlgo)));
+        Console.WriteLine("Scramble : " + Move.GetStringPath(Move.GetAlgoFromStringEnum(algo)));
         string? resolution = null;
         long duration = 0;
         do

@@ -1,8 +1,8 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.OnnxRuntime;
-using Rubik_s_cube_solver;
 using System.Diagnostics;
 using System.Text;
+using CubeLibrary;
 
 List<int> cubeStringToInt(string cubeName)
 {

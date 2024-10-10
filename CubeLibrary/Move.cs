@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Rubik_s_cube_solver
+namespace CubeLibrary
 {
     public class Move
     {

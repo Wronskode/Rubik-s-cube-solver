@@ -1,5 +1,5 @@
+using CubeLibrary;
 using Microsoft.AspNetCore.Mvc;
-using Rubik_s_cube_solver;
 
 namespace MySite.Controllers
 {
@@ -26,12 +26,12 @@ namespace MySite.Controllers
                 else throw new Exception(color + " n'est pas une couleur");
             }
 
-            if (cptW != 9) throw new Exception("Il y a " + cptW + " blancs à la place de 9 blancs");
-            else if (cptY != 9) throw new Exception("Il y a " + cptY + " jaunes à la place de 9 jaunes");
-            else if (cptR != 9) throw new Exception("Il y a " + cptR + " rouges à la place de 9 rouges");
-            else if (cptG != 9) throw new Exception("Il y a " + cptG + " verts à la place de 9 verts");
-            else if (cptB != 9) throw new Exception("Il y a " + cptB + " bleus à la place de 9 bleus");
-            else if (cptO != 9) throw new Exception("Il y a " + cptO + " oranges à la place de 9 oranges");
+            if (cptW != 9) throw new Exception("Il y a " + cptW + " blancs ï¿½ la place de 9 blancs");
+            else if (cptY != 9) throw new Exception("Il y a " + cptY + " jaunes ï¿½ la place de 9 jaunes");
+            else if (cptR != 9) throw new Exception("Il y a " + cptR + " rouges ï¿½ la place de 9 rouges");
+            else if (cptG != 9) throw new Exception("Il y a " + cptG + " verts ï¿½ la place de 9 verts");
+            else if (cptB != 9) throw new Exception("Il y a " + cptB + " bleus ï¿½ la place de 9 bleus");
+            else if (cptO != 9) throw new Exception("Il y a " + cptO + " oranges ï¿½ la place de 9 oranges");
             Cube cube = new(strCube);
             return Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(cube)));
         }
@@ -51,7 +51,7 @@ namespace MySite.Controllers
             }
             catch (Exception ex) when (ex is ArgumentException || ex is IndexOutOfRangeException)
             {
-                return Ok("Le cube n'est pas résoluble, vérifiez l'entrée");
+                return Ok("Le cube n'est pas rï¿½soluble, vï¿½rifiez l'entrï¿½e");
             }
             catch (Exception ex)
             {
@@ -74,7 +74,7 @@ namespace MySite.Controllers
             }
             catch (Exception ex) when (ex is ArgumentException || ex is IndexOutOfRangeException)
             {
-                return Ok("Le cube n'est pas résoluble, vérifiez l'entrée");
+                return Ok("Le cube n'est pas rï¿½soluble, vï¿½rifiez l'entrï¿½e");
             }
             catch (Exception ex)
             {
