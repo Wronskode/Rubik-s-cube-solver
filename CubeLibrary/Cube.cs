@@ -725,15 +725,7 @@ namespace CubeLibrary
                 {
                     c1.DoMove(j);
                     string str = c1.ToString();
-                    bool isContained = false;
-                    foreach (Dictionary<string, byte[]> item in listDico)
-                    {
-                        if (item.ContainsKey(str))
-                        {
-                            isContained = true;
-                            break;
-                        }
-                    }
+                    bool isContained = listDico.Any(item => item.ContainsKey(str));
                     if (!isContained)
                         newCubes.TryAdd(str, [.. cube.Value, j]);
                     if (f(c1))
@@ -749,22 +741,13 @@ namespace CubeLibrary
         public static void NextTreeBranchForMITM(List<Dictionary<(ulong, ulong), byte>> listDico, bool heuristique)
         {
             Dictionary<(ulong, ulong), byte> newCubes = [];
-            foreach (KeyValuePair<(ulong, ulong), byte> cube in listDico[^1])
+            foreach (var c1 in listDico[^1].Select(cube => new Cube(DecompressState(cube.Key))))
             {
-                Cube c1 = new(DecompressState(cube.Key));
                 for (byte j = 0; j < 18; j++)
                 {
                     c1.DoMove(j);
                     (ulong, ulong) intCube = CompressState(c1.ToString());
-                    bool isContained = false;
-                    foreach (Dictionary<(ulong, ulong), byte> item in listDico)
-                    {
-                        if (item.ContainsKey(intCube))
-                        {
-                            isContained = true;
-                            break;
-                        }
-                    }
+                    bool isContained = listDico.Any(item => item.ContainsKey(intCube));
                     if (!isContained)
                         newCubes.TryAdd(intCube, j);
                     if (j != 17)
@@ -785,22 +768,13 @@ namespace CubeLibrary
         public static void NextTreeBranchForMITM(List<Dictionary<string, (byte, byte)>> listDico, bool heuristique)
         {
             Dictionary<string, (byte, byte)> newCubes = [];
-            foreach (KeyValuePair<string, (byte, byte)> cube in listDico[^1])
+            foreach (var c1 in listDico[^1].Select(cube => new Cube(cube.Key)))
             {
-                Cube c1 = new(cube.Key);
                 for (byte j = 0; j < 18; j++)
                 {
                     c1.DoMove(j);
                     string c1String = c1.ToString();
-                    bool isContained = false;
-                    foreach (Dictionary<string, (byte, byte)> item in listDico)
-                    {
-                        if (item.ContainsKey(c1String))
-                        {
-                            isContained = true;
-                            break;
-                        }
-                    }
+                    bool isContained = listDico.Any(item => item.ContainsKey(c1String));
                     if (!isContained)
                         newCubes.TryAdd(c1String, (j, c1.Conflicts()));
                     if (j != 17)
@@ -834,15 +808,7 @@ namespace CubeLibrary
                     c1.DoMove(j);
                     string c1String = c1.ToString();
                     (ulong, ulong) compressedCube = CompressState(c1String);
-                    bool isContained = false;
-                    foreach (Dictionary<(ulong, ulong), byte> item in listDico)
-                    {
-                        if (item.ContainsKey(compressedCube))
-                        {
-                            isContained = true;
-                            break;
-                        }
-                    }
+                    bool isContained = listDico.Any(item => item.ContainsKey(compressedCube));
                     if (!isContained)
                         newCubes.TryAdd(compressedCube, j);
                     if (j != allowedMoves.Last())
@@ -855,22 +821,13 @@ namespace CubeLibrary
         public static void NextTreeBranchForPhase1Compressed(List<Dictionary<(ulong, ulong), (byte, byte)>> listDico, bool heuristique)
         {
             Dictionary<(ulong, ulong), (byte, byte)> newCubes = [];
-            foreach (KeyValuePair<(ulong, ulong), (byte, byte)> cube in listDico[^1])
+            foreach (var c1 in listDico[^1].Select(cube => new Cube(DecompressState(cube.Key))))
             {
-                Cube c1 = new(DecompressState(cube.Key));
                 for (byte j = 0; j < 18; j++)
                 {
                     c1.DoMove(j);
                     (ulong, ulong) c1Compressed = CompressState(c1.ToString());
-                    bool isContained = false;
-                    foreach (Dictionary<(ulong, ulong), (byte, byte)> item in listDico)
-                    {
-                        if (item.ContainsKey(c1Compressed))
-                        {
-                            isContained = true;
-                            break;
-                        }
-                    }
+                    bool isContained = listDico.Any(item => item.ContainsKey(c1Compressed));
                     if (!isContained)
                         newCubes.TryAdd(c1Compressed, (j, c1.EdgeConflicts()));
                     if (j != 17)
@@ -898,15 +855,7 @@ namespace CubeLibrary
                 {
                     c1.DoMove(j);
                     (ulong, ulong) c1Compressed = CompressState(c1.ToString());
-                    bool isContained = false;
-                    foreach (Dictionary<(ulong, ulong), (byte, byte)> item in listDico)
-                    {
-                        if (item.ContainsKey(c1Compressed))
-                        {
-                            isContained = true;
-                            break;
-                        }
-                    }
+                    bool isContained = listDico.Any(item => item.ContainsKey(c1Compressed));
                     if (!isContained)
                         newCubes.TryAdd(c1Compressed, (j, c1.Conflicts()));
                     if (j != allowedMoves.Last())
@@ -930,20 +879,23 @@ namespace CubeLibrary
             Cube secu = nc.Clone();
             byte[] sol = secu.IsInDominoGroup() ? MeetInTheMiddleForKociemba(nc) : MeetInTheMiddle(nc, emptyCube, 6);
             secu.ExecuterAlgorithme(sol);
-            if (secu.IsSolved)
+            if (!secu.IsSolved)
             {
-                foreach (Dictionary<string, (byte move, byte eval)> layer in arbre.Skip(1).Reverse())
-                {
-                    if (layer.TryGetValue(state, out (byte, byte) value))
-                    {
-                        path.Add(value.Item1);
-                        nc.DoMove(Move.GetReversalMove(value.Item1));
-                        state = nc.ToString();
-                    }
-                }
-                return (path.Reverse<byte>().Concat(sol).ToArray(), true);
+                return ([], false);
             }
-            return ([], false);
+
+            foreach (Dictionary<string, (byte move, byte eval)> layer in arbre.Skip(1).Reverse())
+            {
+                if (!layer.TryGetValue(state, out (byte, byte) value))
+                {
+                    continue;
+                }
+
+                path.Add(value.Item1);
+                nc.DoMove(Move.GetReversalMove(value.Item1));
+                state = nc.ToString();
+            }
+            return (path.Reverse<byte>().Concat(sol).ToArray(), true);
         }
 
         public static byte[] BFSWithMITM(Cube initialCube)
@@ -965,12 +917,15 @@ namespace CubeLibrary
                     {
                         minEval = eval;
                     }
-                    if (eval <= 4)
+
+                    if (eval > 4)
                     {
-                        string state = element.Key;
-                        Cube nc = new(state);
-                        tasks.Add(new Task<(byte[], bool)>(() => EvaluateTask(nc.Clone(), emptyCube, arbre, state)));
+                        continue;
                     }
+
+                    string state = element.Key;
+                    Cube nc = new(state);
+                    tasks.Add(new Task<(byte[], bool)>(() => EvaluateTask(nc.Clone(), emptyCube, arbre, state)));
                 }
                 while (tasks.Count > 0)
                 {
@@ -1008,72 +963,75 @@ namespace CubeLibrary
                 foreach (KeyValuePair<(ulong, ulong), (byte, byte)> element in arbre[^1])
                 {
                     Cube nc = new(DecompressState(element.Key));
-                    if (nc.EdgeReduction())
+                    if (!nc.EdgeReduction())
                     {
-                        string state = nc.ToString();
-                        (ulong, ulong) compressedState = CompressState(state);
-                        foreach (Dictionary<(ulong, ulong), (byte, byte)> layer in arbre.Skip(1).Reverse())
+                        continue;
+                    }
+
+                    string state = nc.ToString();
+                    (ulong, ulong) compressedState = CompressState(state);
+                    foreach (Dictionary<(ulong, ulong), (byte, byte)> layer in arbre.Skip(1).Reverse())
+                    {
+                        if (!layer.TryGetValue(compressedState, out (byte, byte) value))
                         {
-                            if (layer.TryGetValue(compressedState, out (byte, byte) value))
+                            continue;
+                        }
+
+                        path.Add(value.Item1);
+                        nc.DoMove(Move.GetReversalMove(value.Item1));
+                        state = nc.ToString();
+                        compressedState = CompressState(state);
+                    }
+                    path.Reverse();
+                    secu.ExecuterAlgorithme(path);
+                    dico = new()
+                    {
+                        { CompressState(secu.ToString()), (255, 255)}
+                    };
+                    arbre = [dico];
+
+                    while (true)
+                    {
+                        foreach (var nc2 in arbre[^1].Select(element2 => new Cube(DecompressState(element2.Key))).Where(nc2 => nc2.IsInDominoGroup()))
+                        {
+                            state = nc2.ToString();
+                            compressedState = CompressState(state);
+                            List<byte> path2 = [];
+                            foreach (Dictionary<(ulong, ulong), (byte, byte)> layer in arbre.Skip(1).Reverse())
                             {
-                                path.Add(value.Item1);
-                                nc.DoMove(Move.GetReversalMove(value.Item1));
-                                state = nc.ToString();
+                                if (!layer.TryGetValue(compressedState, out (byte, byte) value))
+                                {
+                                    continue;
+                                }
+
+                                path2.Add(value.Item1);
+                                nc2.DoMove(Move.GetReversalMove(value.Item1));
+                                state = nc2.ToString();
                                 compressedState = CompressState(state);
                             }
-                        }
-                        path.Reverse();
-                        secu.ExecuterAlgorithme(path);
-                        dico = new()
-                        {
-                            { CompressState(secu.ToString()), (255, 255)}
-                        };
-                        arbre = [dico];
-
-                        while (true)
-                        {
-                            foreach (KeyValuePair<(ulong, ulong), (byte, byte)> element2 in arbre[^1])
+                            path2.Reverse();
+                            secu.ExecuterAlgorithme(path2);
+                            byte[] phase2 = MeetInTheMiddleForKociemba(secu);
+                            List<byte> solution = path.Concat(path2).Concat(phase2).ToList();
+                            List<byte> optimisedSolution = solution;
+                            int l;
+                            int k = 0;
+                            do
                             {
-                                Cube nc2 = new(DecompressState(element2.Key));
-                                if (nc2.IsInDominoGroup())
-                                {   
-                                    state = nc2.ToString();
-                                    compressedState = CompressState(state);
-                                    List<byte> path2 = [];
-                                    foreach (Dictionary<(ulong, ulong), (byte, byte)> layer in arbre.Skip(1).Reverse())
-                                    {
-                                        if (layer.TryGetValue(compressedState, out (byte, byte) value))
-                                        {
-                                            path2.Add(value.Item1);
-                                            nc2.DoMove(Move.GetReversalMove(value.Item1));
-                                            state = nc2.ToString();
-                                            compressedState = CompressState(state);
-                                        }
-                                    }
-                                    path2.Reverse();
-                                    secu.ExecuterAlgorithme(path2);
-                                    byte[] phase2 = MeetInTheMiddleForKociemba(secu);
-                                    List<byte> solution = path.Concat(path2).Concat(phase2).ToList();
-                                    List<byte> optimisedSolution = solution;
-                                    int l;
-                                    int k = 0;
-                                    do
-                                    {
-                                        l = optimisedSolution.Count;
-                                        optimisedSolution = LightOptimization(optimisedSolution);
-                                        k++;
-                                        if (k == 1000) return optimisedSolution.ToArray();
-                                    } while (l != optimisedSolution.Count);
-                                    return optimisedSolution.ToArray();
-                                }
-                            }
-                            NextTreeBranchForPhase1Compressed(arbre, true, Move.GetAlgoFromStringEnum(
-                            [Up, Down, Right[0].ToString(), Left[0].ToString(), Front, Back,
+                                l = optimisedSolution.Count;
+                                optimisedSolution = LightOptimization(optimisedSolution);
+                                k++;
+                                if (k == 1000) return optimisedSolution.ToArray();
+                            } while (l != optimisedSolution.Count);
+                            return optimisedSolution.ToArray();
+                        }
+
+                        NextTreeBranchForPhase1Compressed(arbre, true, Move.GetAlgoFromStringEnum(
+                        [Up, Down, Right[0].ToString(), Left[0].ToString(), Front, Back,
                             Move.GetStringPath([Move.GetReversalMove(Move.GetAlgoFromStringEnum([Up]).First())]),
                             Move.GetStringPath([Move.GetReversalMove(Move.GetAlgoFromStringEnum([Down]).First())]),
                             Move.GetStringPath([Move.GetReversalMove(Move.GetAlgoFromStringEnum([Right[0].ToString()]).First())]),
                             Move.GetStringPath([Move.GetReversalMove(Move.GetAlgoFromStringEnum([Left[0].ToString()]).First())])]));
-                        }
                     }
                 }
                 NextTreeBranchForPhase1Compressed(arbre, true);
@@ -1256,36 +1214,40 @@ namespace CubeLibrary
 
             for (int i = 0; i < 27; i++)
             {
-                if (i % 9 != 4)
+                if (i % 9 == 4)
                 {
-                    fst *= 6;
-                    fst += state[i] switch
-                    {
-                        'W' => (ulong) 0,
-                        'Y' => 1,
-                        'R' => 2,
-                        'G' => 3,
-                        'B' => 4,
-                        _ => 5,
-                    };
+                    continue;
                 }
+
+                fst *= 6;
+                fst += state[i] switch
+                {
+                    'W' => (ulong) 0,
+                    'Y' => 1,
+                    'R' => 2,
+                    'G' => 3,
+                    'B' => 4,
+                    _ => 5
+                };
             }
 
             for (int i = 27; i < 54; i++)
             {
-                if (i % 9 != 4)
+                if (i % 9 == 4)
                 {
-                    snd *= 6;
-                    snd += state[i] switch
-                    {
-                        'W' => (ulong) 0,
-                        'Y' => 1,
-                        'R' => 2,
-                        'G' => 3,
-                        'B' => 4,
-                        _ => 5,
-                    };
+                    continue;
                 }
+
+                snd *= 6;
+                snd += state[i] switch
+                {
+                    'W' => (ulong) 0,
+                    'Y' => 1,
+                    'R' => 2,
+                    'G' => 3,
+                    'B' => 4,
+                    _ => 5
+                };
             }
             return (fst, snd);
         }
@@ -1347,44 +1309,52 @@ namespace CubeLibrary
                 IEnumerable<(ulong, ulong)> takedLastFinal = arbreFinal.TakeLast(2).SelectMany(x => x.Keys);
                 List<(ulong, ulong)> hasCommonElements = takedLastInitial
                     .Intersect(takedLastFinal).ToList();
-                if (hasCommonElements.Count > 0)
+                if (hasCommonElements.Count <= 0)
                 {
-                    isSolved = true;
-                    int min = int.MaxValue;
-                    foreach ((ulong, ulong) element in hasCommonElements)
+                    continue;
+                }
+
+                isSolved = true;
+                int min = int.MaxValue;
+                foreach ((ulong, ulong) element in hasCommonElements)
+                {
+                    List<byte> path = [];
+                    Cube newCube = new(DecompressState(element));
+                    for (int j = 1; j <= arbreFinal.Count; j++)
                     {
-                        List<byte> path = [];
-                        Cube newCube = new(DecompressState(element));
-                        for (int j = 1; j <= arbreFinal.Count; j++)
+                        (ulong, ulong) elementEtapeAvant = CompressState(newCube.ToString());
+                        if (!arbreFinal[^j].TryGetValue(elementEtapeAvant, out byte value))
                         {
-                            (ulong, ulong) elementEtapeAvant = CompressState(newCube.ToString());
-                            if (arbreFinal[^j].TryGetValue(elementEtapeAvant, out byte value))
-                            {
-                                if (value == 255) break;
-                                path.Add(value);
-                                newCube.ExecuterAlgorithme(Move.GetReversalPath(path.TakeLast(1)));
-                            }
+                            continue;
                         }
-                        List<byte> path2 = [];
-                        Cube newCube2 = new(DecompressState(element));
-                        for (int j = 1; j <= arbreInitial.Count; j++)
-                        {
-                            (ulong, ulong) elementEtapeAvant = CompressState(newCube2.ToString());
-                            if (arbreInitial[^j].TryGetValue(elementEtapeAvant, out byte value))
-                            {
-                                if (value == 255) break;
-                                path2.Add(value);
-                                newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
-                            }
-                        }
-                        List<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2).ToList();
-                        int count = solutionFromRandom.Count;
-                        if (count < min)
-                        {
-                            solution = solutionFromRandom.Reverse<byte>().ToArray();
-                            min = count;
-                        }
+
+                        if (value == 255) break;
+                        path.Add(value);
+                        newCube.ExecuterAlgorithme(Move.GetReversalPath(path.TakeLast(1)));
                     }
+                    List<byte> path2 = [];
+                    Cube newCube2 = new(DecompressState(element));
+                    for (int j = 1; j <= arbreInitial.Count; j++)
+                    {
+                        (ulong, ulong) elementEtapeAvant = CompressState(newCube2.ToString());
+                        if (!arbreInitial[^j].TryGetValue(elementEtapeAvant, out byte value))
+                        {
+                            continue;
+                        }
+
+                        if (value == 255) break;
+                        path2.Add(value);
+                        newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
+                    }
+                    List<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2).ToList();
+                    int count = solutionFromRandom.Count;
+                    if (count >= min)
+                    {
+                        continue;
+                    }
+
+                    solution = solutionFromRandom.Reverse<byte>().ToArray();
+                    min = count;
                 }
             }
             return solution;
@@ -1421,44 +1391,50 @@ namespace CubeLibrary
                 IEnumerable<(ulong, ulong)> takedLastFinal = arbreFinal.TakeLast(2).SelectMany(x => x.Keys);
                 List<(ulong, ulong)> hasCommonElements = takedLastInitial
                     .Intersect(takedLastFinal).ToList();
-                if (hasCommonElements.Count > 0)
+                if (hasCommonElements.Count <= 0)
                 {
-                    isSolved = true;
-                    int min = int.MaxValue;
-                    foreach ((ulong, ulong) element in hasCommonElements)
+                    continue;
+                }
+
+                isSolved = true;
+                int min = int.MaxValue;
+                foreach ((ulong, ulong) element in hasCommonElements)
+                {
+                    List<byte> path = [];
+                    Cube newCube = new(DecompressState(element));
+                    for (int j = 1; j <= arbreFinal.Count; j++)
                     {
-                        List<byte> path = [];
-                        Cube newCube = new(DecompressState(element));
-                        for (int j = 1; j <= arbreFinal.Count; j++)
+                        (ulong, ulong) elementEtapeAvant = CompressState(newCube.ToString());
+                        if (arbreFinal[^j].TryGetValue(elementEtapeAvant, out byte value))
                         {
-                            (ulong, ulong) elementEtapeAvant = CompressState(newCube.ToString());
-                            if (arbreFinal[^j].TryGetValue(elementEtapeAvant, out byte value))
-                            {
-                                if (value == 255) break;
-                                path.Add(value);
-                                newCube.ExecuterAlgorithme(Move.GetReversalPath(path.TakeLast(1)));
-                            }
-                        }
-                        List<byte> path2 = [];
-                        Cube newCube2 = new(DecompressState(element));
-                        for (int j = 1; j <= arbreInitial.Count; j++)
-                        {
-                            (ulong, ulong) elementEtapeAvant = CompressState(newCube2.ToString());
-                            if (arbreInitial[^j].TryGetValue(elementEtapeAvant, out byte value))
-                            {
-                                if (value == 255) break;
-                                path2.Add(value);
-                                newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
-                            }
-                        }
-                        List<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2).ToList();
-                        int count = solutionFromRandom.Count;
-                        if (count < min)
-                        {
-                            solution = solutionFromRandom.Reverse<byte>().ToArray();
-                            min = count;
+                            if (value == 255) break;
+                            path.Add(value);
+                            newCube.ExecuterAlgorithme(Move.GetReversalPath(path.TakeLast(1)));
                         }
                     }
+                    List<byte> path2 = [];
+                    Cube newCube2 = new(DecompressState(element));
+                    for (int j = 1; j <= arbreInitial.Count; j++)
+                    {
+                        (ulong, ulong) elementEtapeAvant = CompressState(newCube2.ToString());
+                        if (!arbreInitial[^j].TryGetValue(elementEtapeAvant, out byte value))
+                        {
+                            continue;
+                        }
+
+                        if (value == 255) break;
+                        path2.Add(value);
+                        newCube2.ExecuterAlgorithme(Move.GetReversalPath(path2.TakeLast(1)));
+                    }
+                    List<byte> solutionFromRandom = Move.GetReversalPath(path.Reverse<byte>()).Concat(path2).ToList();
+                    int count = solutionFromRandom.Count;
+                    if (count >= min)
+                    {
+                        continue;
+                    }
+
+                    solution = solutionFromRandom.Reverse<byte>().ToArray();
+                    min = count;
                 }
             }
             secu.ExecuterAlgorithme(solution);
@@ -1492,15 +1468,11 @@ namespace CubeLibrary
                 }
                 else if (path[i] == path[i + 1])
                 {
-                    if (path[i] >= 12)
-                    {
-                        i++;
-                    }
-                    else
+                    if (path[i] < 12)
                     {
                         newPath.Add(Move.GetDoubleMove(path[i]));
-                        i++;
                     }
+                    i++;
                 }
                 else
                 {
@@ -1520,29 +1492,33 @@ namespace CubeLibrary
                 }
             }
             newPath.Add(path[^1]);
-            if (newPath.Count > 1)
+            if (newPath.Count <= 1)
             {
-                if (newPath[^1] == Move.GetReversalMove(newPath[^2]))
-                {
-                    return newPath.SkipLast(2).ToList();
-                }
-                if (newPath[^1] == newPath[^2] && newPath[^1] < 12)
-                {
-                    newPath[^2] = Move.GetDoubleMove(newPath[^2]);
-                    return newPath.SkipLast(1).ToList();
-                }
-                if (newPath[^2] < 12 && newPath[^1] == Move.GetDoubleMove(newPath[^2]))
-                {
-                    newPath[^2] = Move.GetReversalMove(newPath[^2]);
-                    return newPath.SkipLast(1).ToList();
-                }
-                if (newPath[^1] < 12 && Move.GetDoubleMove(newPath[^1]) == newPath[^2])
-                {
-                    newPath[^2] = Move.GetReversalMove(newPath[^1]);
-                    return newPath.SkipLast(1).ToList();
-                }
+                return newPath;
             }
-            return newPath;
+
+            if (newPath[^1] == Move.GetReversalMove(newPath[^2]))
+            {
+                return newPath.SkipLast(2).ToList();
+            }
+            if (newPath[^1] == newPath[^2] && newPath[^1] < 12)
+            {
+                newPath[^2] = Move.GetDoubleMove(newPath[^2]);
+                return newPath.SkipLast(1).ToList();
+            }
+            if (newPath[^2] < 12 && newPath[^1] == Move.GetDoubleMove(newPath[^2]))
+            {
+                newPath[^2] = Move.GetReversalMove(newPath[^2]);
+                return newPath.SkipLast(1).ToList();
+            }
+
+            if (newPath[^1] >= 12 || Move.GetDoubleMove(newPath[^1]) != newPath[^2])
+            {
+                return newPath;
+            }
+
+            newPath[^2] = Move.GetReversalMove(newPath[^1]);
+            return newPath.SkipLast(1).ToList();
         }
 
         public static int Periodicity(IEnumerable<string> algorithm)
@@ -1589,12 +1565,14 @@ namespace CubeLibrary
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
                 (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, oneEdgeIsPlaced);
-                if (newC is not null)
+                if (newC is null)
                 {
-                    c = newC.Value.Item1;
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
+                    continue;
                 }
+
+                c = newC.Value.Item1;
+                path.AddRange(newC.Value.Item2.Skip(1));
+                isPlaced = true;
             }
             arbre = [];
             dico = new()
@@ -1611,18 +1589,20 @@ namespace CubeLibrary
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => (firstEdge(cube) && secondEdge(cube))
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, cube => (firstEdge(cube) && secondEdge(cube))
                         || (firstEdge(cube) && thirdEdge(cube))
                         || (firstEdge(cube) && fourthEdge(cube))
                         || (secondEdge(cube) && thirdEdge(cube))
                         || (thirdEdge(cube) && fourthEdge(cube))
                         || (secondEdge(cube) && fourthEdge(cube)));
-                if (newC != null)
+                if (newC == null)
                 {
-                    c = newC.Value.Item1;
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
+                    continue;
                 }
+
+                c = newC.Value.Item1;
+                path.AddRange(newC.Value.Item2.Skip(1));
+                isPlaced = true;
             }
             arbre = [];
             dico = new()
@@ -1637,16 +1617,18 @@ namespace CubeLibrary
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => (firstEdge(cube) && secondEdge(cube) && thirdEdge(cube))
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, cube => (firstEdge(cube) && secondEdge(cube) && thirdEdge(cube))
                         || (firstEdge(cube) && thirdEdge(cube) && fourthEdge(cube))
                         || (firstEdge(cube) && fourthEdge(cube) && secondEdge(cube))
                         || (secondEdge(cube) && thirdEdge(cube) && fourthEdge(cube)));
-                if (newC is not null)
+                if (newC is null)
                 {
-                    c = newC.Value.Item1;
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
+                    continue;
                 }
+
+                c = newC.Value.Item1;
+                path.AddRange(newC.Value.Item2.Skip(1));
+                isPlaced = true;
             }
 
             arbre = [];
@@ -1659,13 +1641,15 @@ namespace CubeLibrary
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => firstEdge(cube) && secondEdge(cube) && thirdEdge(cube) && fourthEdge(cube));
-                if (newC is not null)
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, cube => firstEdge(cube) && secondEdge(cube) && thirdEdge(cube) && fourthEdge(cube));
+                if (newC is null)
                 {
-                    c = newC.Value.Item1;
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
+                    continue;
                 }
+
+                c = newC.Value.Item1;
+                path.AddRange(newC.Value.Item2.Skip(1));
+                isPlaced = true;
             }
             return c;
         }
@@ -1711,7 +1695,7 @@ namespace CubeLibrary
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => crossAndEdges(cube) && oneCornerIsPlaced(cube));
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, cube => crossAndEdges(cube) && oneCornerIsPlaced(cube));
                 if (newC is not null)
                 {
                     c = newC.Value.Item1;
@@ -1735,19 +1719,21 @@ namespace CubeLibrary
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => crossAndEdges(cube)
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, cube => crossAndEdges(cube)
                         && ((firstCornerIsPlaced(cube) && secondCornerIsPlaced(cube))
                         || (firstCornerIsPlaced(cube) && thirdCornerIsPlaced(cube))
                         || (firstCornerIsPlaced(cube) && fourthCornerIsPlaced(cube))
                         || (secondCornerIsPlaced(cube) && thirdCornerIsPlaced(cube))
                         || (thirdCornerIsPlaced(cube) && fourthCornerIsPlaced(cube))
                         || (secondCornerIsPlaced(cube) && fourthCornerIsPlaced(cube))));
-                if (newC is not null)
+                if (newC is null)
                 {
-                    c = newC.Value.Item1;
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
+                    continue;
                 }
+
+                c = newC.Value.Item1;
+                path.AddRange(newC.Value.Item2.Skip(1));
+                isPlaced = true;
             }
             arbre = [];
             dico = new()
@@ -1763,17 +1749,19 @@ namespace CubeLibrary
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => crossAndEdges(cube)
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, cube => crossAndEdges(cube)
                         && ((firstCornerIsPlaced(cube) && secondCornerIsPlaced(cube) && thirdCornerIsPlaced(cube))
                         || (firstCornerIsPlaced(cube) && thirdCornerIsPlaced(cube) && fourthCornerIsPlaced(cube))
                         || (firstCornerIsPlaced(cube) && fourthCornerIsPlaced(cube) && secondCornerIsPlaced(cube))
                         || (secondCornerIsPlaced(cube) && thirdCornerIsPlaced(cube) && fourthCornerIsPlaced(cube))));
-                if (newC is not null)
+                if (newC is null)
                 {
-                    c = newC.Value.Item1;
-                    path.AddRange(newC.Value.Item2.Skip(1));
-                    isPlaced = true;
+                    continue;
                 }
+
+                c = newC.Value.Item1;
+                path.AddRange(newC.Value.Item2.Skip(1));
+                isPlaced = true;
             }
             arbre = [];
             dico = new()
@@ -1787,7 +1775,7 @@ namespace CubeLibrary
             while (!isPlaced)
             {
                 if (path.Count > 1000 || arbre.Count >= 6) throw new ArgumentException("Le cube n'est pas résoluble, vérifiez l'entrée");
-                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, (cube) => crossAndEdges(cube)
+                (Cube, IEnumerable<byte>)? newC = NextTreeBranch(arbre, cube => crossAndEdges(cube)
                         && allCornersIsPlaced(cube));
                 if (newC is not null)
                 {
@@ -1822,22 +1810,16 @@ namespace CubeLibrary
                     c.ExecuterAlgorithme(quadInverseSexyMove);
                     path.AddRange(quadInverseByteAlgo);
                     if (allCornersIsOriented()) break;
-                    c.Uprime();
-                    path.AddRange(uPrimeAlgo);
                 }
                 else if (c.GreenFace.Pieces[0, 2] == 'W')
                 {
                     c.ExecuterAlgorithme(doubleInverseSexyMove);
                     path.AddRange(doubleInverseByteAlgo);
                     if (allCornersIsOriented()) break;
-                    c.Uprime();
-                    path.AddRange(uPrimeAlgo);
                 }
-                else
-                {
-                    c.Uprime();
-                    path.AddRange(uPrimeAlgo);
-                }
+
+                c.Uprime();
+                path.AddRange(uPrimeAlgo);
             }
             return c;
         }
@@ -1865,14 +1847,13 @@ namespace CubeLibrary
                     {
                         c.ExecuterAlgorithme(secondLayerLeftRedFace);
                         path.AddRange(secondLayerLeftRedFace);
-                        i = 0;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(secondLayerRightRedFace);
                         path.AddRange(secondLayerRightRedFace);
-                        i = 0;
                     }
+                    i = 0;
                 }
 
                 else if (c.BlueFace.Pieces[2, 1] == 'B' && c.YellowFace.Pieces[1, 2] != 'Y')
@@ -1881,14 +1862,13 @@ namespace CubeLibrary
                     {
                         c.ExecuterAlgorithme(secondLayerLeftBlueFace);
                         path.AddRange(secondLayerLeftBlueFace);
-                        i = 0;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(secondLayerRightBlueFace);
                         path.AddRange(secondLayerRightBlueFace);
-                        i = 0;
                     }
+                    i = 0;
                 }
 
                 else if (c.GreenFace.Pieces[2, 1] == 'G' && c.YellowFace.Pieces[1, 0] != 'Y')
@@ -1897,14 +1877,13 @@ namespace CubeLibrary
                     {
                         c.ExecuterAlgorithme(secondLayerLeftGreenFace);
                         path.AddRange(secondLayerLeftGreenFace);
-                        i = 0;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(secondLayerRightGreenFace);
                         path.AddRange(secondLayerRightGreenFace);
-                        i = 0;
                     }
+                    i = 0;
                 }
 
                 else if (c.OrangeFace.Pieces[2, 1] == 'O' && c.YellowFace.Pieces[2, 1] != 'Y')
@@ -1913,14 +1892,13 @@ namespace CubeLibrary
                     {
                         c.ExecuterAlgorithme(secondLayerLeftOrangeFace);
                         path.AddRange(secondLayerLeftOrangeFace);
-                        i = 0;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(secondLayerRightOrangeFace);
                         path.AddRange(secondLayerRightOrangeFace);
-                        i = 0;
                     }
+                    i = 0;
                 }
                 else
                 {
@@ -1997,7 +1975,7 @@ namespace CubeLibrary
                     path.AddRange(algoCrossPattern2);
                     break;
                 }
-                else if (c.YellowFace.Pieces[0, 1] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y')
+                if (c.YellowFace.Pieces[0, 1] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y')
                 {
                     c.D();
                     path.AddRange(dAlgo);
@@ -2005,23 +1983,20 @@ namespace CubeLibrary
                     path.AddRange(algoCrossPattern2);
                     break;
                 }
-                else if (c.YellowFace.Pieces[1, 0] == 'Y' && c.YellowFace.Pieces[1, 2] == 'Y')
+                if (c.YellowFace.Pieces[1, 0] == 'Y' && c.YellowFace.Pieces[1, 2] == 'Y')
                 {
                     c.ExecuterAlgorithme(algoCrossPattern2);
                     path.AddRange(algoCrossPattern2);
                     break;
                 }
-                else if (c.YellowFace.Pieces[1, 2] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y')
+                if (c.YellowFace.Pieces[1, 2] == 'Y' && c.YellowFace.Pieces[2, 1] == 'Y')
                 {
                     c.ExecuterAlgorithme(algoCrossPattern);
                     path.AddRange(algoCrossPattern);
                     break;
                 }
-                else
-                {
-                    c.D();
-                    path.AddRange(dAlgo);
-                }
+                c.D();
+                path.AddRange(dAlgo);
             }
             return c;
         }
@@ -2038,25 +2013,26 @@ namespace CubeLibrary
                     c.ExecuterAlgorithme(redF);
                     break;
                 }
-                else if (c.BlueFace.Pieces[2, 1] == 'B' && c.OrangeFace.Pieces[2, 1] == 'O')
+
+                if (c.BlueFace.Pieces[2, 1] == 'B' && c.OrangeFace.Pieces[2, 1] == 'O')
                 {
                     c.ExecuterAlgorithme(blueF);
                     path.AddRange(blueF);
                     break;
                 }
-                else if (c.GreenFace.Pieces[2, 1] == 'G' && c.OrangeFace.Pieces[2, 1] == 'O')
+                if (c.GreenFace.Pieces[2, 1] == 'G' && c.OrangeFace.Pieces[2, 1] == 'O')
                 {
                     c.ExecuterAlgorithme(greenF);
                     path.AddRange(greenF);
                     break;
                 }
-                else if (c.GreenFace.Pieces[2, 1] == 'G' && c.RedFace.Pieces[2, 1] == 'R')
+                if (c.GreenFace.Pieces[2, 1] == 'G' && c.RedFace.Pieces[2, 1] == 'R')
                 {
                     c.ExecuterAlgorithme(greenF2);
                     path.AddRange(greenF2);
                     break;
                 }
-                else if (c.RedFace.Pieces[2, 1] == 'R' && c.OrangeFace.Pieces[2, 1] == 'O')
+                if (c.RedFace.Pieces[2, 1] == 'R' && c.OrangeFace.Pieces[2, 1] == 'O')
                 {
                     c.ExecuterAlgorithme(redF2);
                     path.AddRange(redF2);
@@ -2094,23 +2070,24 @@ namespace CubeLibrary
                     || (c.RedFace.Pieces[2, 2] == 'Y' && c.BlueFace.Pieces[2, 0] == 'R' && c.YellowFace.Pieces[0, 2] == 'B'))
                 {
                     if (c.BlueFace.Pieces[2, 2] == 'B' || c.BlueFace.Pieces[2, 2] == 'O'
-                        || c.OrangeFace.Pieces[2, 0] == 'O' || c.OrangeFace.Pieces[2, 0] == 'B' ||
-                        c.YellowFace.Pieces[2, 2] == 'B' || c.YellowFace.Pieces[2, 2] == 'O')
+                                                       || c.OrangeFace.Pieces[2, 0] == 'O' || c.OrangeFace.Pieces[2, 0] == 'B' ||
+                                                       c.YellowFace.Pieces[2, 2] == 'B' || c.YellowFace.Pieces[2, 2] == 'O')
                     {
                         c.ExecuterAlgorithme(cornerAlignementAlgo);
                         path.AddRange(cornerAlignementAlgo);
-                        break;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(cornerAlignementOptim);
                         path.AddRange(cornerAlignementOptim);
-                        break;
                     }
+
+                    break;
                 }
-                else if ((c.RedFace.Pieces[2, 0] == 'R' && c.GreenFace.Pieces[2, 2] == 'G')
-                        || (c.RedFace.Pieces[2, 0] == 'G' && c.GreenFace.Pieces[2, 2] == 'Y' && c.YellowFace.Pieces[0, 0] == 'R')
-                        || (c.RedFace.Pieces[2, 0] == 'Y' && c.GreenFace.Pieces[2, 2] == 'R' && c.YellowFace.Pieces[0, 0] == 'G'))
+
+                if ((c.RedFace.Pieces[2, 0] == 'R' && c.GreenFace.Pieces[2, 2] == 'G')
+                    || (c.RedFace.Pieces[2, 0] == 'G' && c.GreenFace.Pieces[2, 2] == 'Y' && c.YellowFace.Pieces[0, 0] == 'R')
+                    || (c.RedFace.Pieces[2, 0] == 'Y' && c.GreenFace.Pieces[2, 2] == 'R' && c.YellowFace.Pieces[0, 0] == 'G'))
                 {
                     if (c.RedFace.Pieces[2, 2] == 'R' || c.RedFace.Pieces[2, 2] == 'B' ||
                         c.BlueFace.Pieces[2, 0] == 'B' || c.BlueFace.Pieces[2, 0] == 'R' ||
@@ -2118,18 +2095,18 @@ namespace CubeLibrary
                     {
                         c.ExecuterAlgorithme(cornerAlignementAlgo2);
                         path.AddRange(cornerAlignementAlgo2);
-                        break;
                     }
                     else
                     {
                         c.ExecuterAlgorithme(cornerAlignementOptim2);
                         path.AddRange(cornerAlignementOptim2);
-                        break;
                     }
+
+                    break;
                 }
-                else if ((c.BlueFace.Pieces[2, 2] == 'B' && c.OrangeFace.Pieces[2, 0] == 'O')
-                        || (c.BlueFace.Pieces[2, 2] == 'O' && c.OrangeFace.Pieces[2, 0] == 'Y' && c.YellowFace.Pieces[2, 2] == 'B')
-                        || (c.BlueFace.Pieces[2, 2] == 'Y' && c.OrangeFace.Pieces[2, 0] == 'B' && c.YellowFace.Pieces[2, 2] == 'O'))
+                if ((c.BlueFace.Pieces[2, 2] == 'B' && c.OrangeFace.Pieces[2, 0] == 'O')
+                    || (c.BlueFace.Pieces[2, 2] == 'O' && c.OrangeFace.Pieces[2, 0] == 'Y' && c.YellowFace.Pieces[2, 2] == 'B')
+                    || (c.BlueFace.Pieces[2, 2] == 'Y' && c.OrangeFace.Pieces[2, 0] == 'B' && c.YellowFace.Pieces[2, 2] == 'O'))
                 {
                     if (c.OrangeFace.Pieces[2, 2] == 'O' || c.OrangeFace.Pieces[2, 2] == 'G' ||
                         c.GreenFace.Pieces[2, 0] == 'G' || c.GreenFace.Pieces[2, 0] == 'O' ||
@@ -2139,27 +2116,23 @@ namespace CubeLibrary
                         path.AddRange(cornerAlignementAlgo3);
                         break;
                     }
-                    else
-                    {
-                        c.ExecuterAlgorithme(cornerAlignementOptim3);
-                        path.AddRange(cornerAlignementOptim3);
-                        break;
-                    }
+
+                    c.ExecuterAlgorithme(cornerAlignementOptim3);
+                    path.AddRange(cornerAlignementOptim3);
+                    break;
+                }
+
+                if (c.GreenFace.Pieces[2, 2] == 'R' || c.GreenFace.Pieces[2, 2] == 'G' ||
+                    c.RedFace.Pieces[2, 0] == 'R' || c.RedFace.Pieces[2, 0] == 'G' ||
+                    c.YellowFace.Pieces[0, 0] == 'G' || c.YellowFace.Pieces[0, 0] == 'R')
+                {
+                    c.ExecuterAlgorithme(cornerAlignementAlgo4);
+                    path.AddRange(cornerAlignementAlgo4);
                 }
                 else
                 {
-                    if (c.GreenFace.Pieces[2, 2] == 'R' || c.GreenFace.Pieces[2, 2] == 'G' ||
-                        c.RedFace.Pieces[2, 0] == 'R' || c.RedFace.Pieces[2, 0] == 'G' ||
-                        c.YellowFace.Pieces[0, 0] == 'G' || c.YellowFace.Pieces[0, 0] == 'R')
-                    {
-                        c.ExecuterAlgorithme(cornerAlignementAlgo4);
-                        path.AddRange(cornerAlignementAlgo4);
-                    }
-                    else
-                    {
-                        c.ExecuterAlgorithme(cornerAlignementOptim4);
-                        path.AddRange(cornerAlignementOptim4);
-                    }
+                    c.ExecuterAlgorithme(cornerAlignementOptim4);
+                    path.AddRange(cornerAlignementOptim4);
                 }
             }
             return c;
@@ -2174,21 +2147,15 @@ namespace CubeLibrary
                 {
                     c.ExecuterAlgorithme(quadSM);
                     path.AddRange(quadByteAlgo);
-                    c.Dprime();
-                    path.AddRange(dPrimeAlgo);
                 }
                 else if (c.RedFace.Pieces[2, 0] == 'Y')
                 {
                     c.ExecuterAlgorithme(doubleSM);
                     path.AddRange(doubleByteAlgo);
-                    c.Dprime();
-                    path.AddRange(dPrimeAlgo);
                 }
-                else
-                {
-                    c.Dprime();
-                    path.AddRange(dPrimeAlgo);
-                }
+
+                c.Dprime();
+                path.AddRange(dPrimeAlgo);
             }
         }
         public static List<byte> FastBeginnerMethod(Cube c)
@@ -2269,50 +2236,38 @@ namespace CubeLibrary
 
         public bool SecondLayerEdgeReductionHorizontal()
         {
-            if (OrangeFace.Pieces[1, 0] != OrangeFace.ColorFace && OrangeFace.Pieces[1, 0] != GetOppositeColor(OrangeFace.ColorFace)
-                || OrangeFace.Pieces[1, 2] != OrangeFace.ColorFace && OrangeFace.Pieces[1, 2] != GetOppositeColor(OrangeFace.ColorFace)
-                || RedFace.Pieces[1, 0] != RedFace.ColorFace && RedFace.Pieces[1, 0] != GetOppositeColor(RedFace.ColorFace)
-                || RedFace.Pieces[1, 2] != RedFace.ColorFace && RedFace.Pieces[1, 2] != GetOppositeColor(RedFace.ColorFace)
-                || BlueFace.Pieces[1, 0] != BlueFace.ColorFace && BlueFace.Pieces[1, 0] != GetOppositeColor(BlueFace.ColorFace)
-                || BlueFace.Pieces[1, 2] != BlueFace.ColorFace && BlueFace.Pieces[1, 2] != GetOppositeColor(BlueFace.ColorFace)
-                || GreenFace.Pieces[1, 0] != GreenFace.ColorFace && GreenFace.Pieces[1, 0] != GetOppositeColor(GreenFace.ColorFace)
-                || GreenFace.Pieces[1, 2] != GreenFace.ColorFace && GreenFace.Pieces[1, 2] != GetOppositeColor(GreenFace.ColorFace))
-            {
-                return false;
-            }
-            return true;
+            return (OrangeFace.Pieces[1, 0] == OrangeFace.ColorFace || OrangeFace.Pieces[1, 0] == GetOppositeColor(OrangeFace.ColorFace))
+                   && (OrangeFace.Pieces[1, 2] == OrangeFace.ColorFace || OrangeFace.Pieces[1, 2] == GetOppositeColor(OrangeFace.ColorFace))
+                   && (RedFace.Pieces[1, 0] == RedFace.ColorFace || RedFace.Pieces[1, 0] == GetOppositeColor(RedFace.ColorFace))
+                   && (RedFace.Pieces[1, 2] == RedFace.ColorFace || RedFace.Pieces[1, 2] == GetOppositeColor(RedFace.ColorFace))
+                   && (BlueFace.Pieces[1, 0] == BlueFace.ColorFace || BlueFace.Pieces[1, 0] == GetOppositeColor(BlueFace.ColorFace))
+                   && (BlueFace.Pieces[1, 2] == BlueFace.ColorFace || BlueFace.Pieces[1, 2] == GetOppositeColor(BlueFace.ColorFace))
+                   && (GreenFace.Pieces[1, 0] == GreenFace.ColorFace || GreenFace.Pieces[1, 0] == GetOppositeColor(GreenFace.ColorFace))
+                   && (GreenFace.Pieces[1, 2] == GreenFace.ColorFace || GreenFace.Pieces[1, 2] == GetOppositeColor(GreenFace.ColorFace));
         }
 
         public bool SecondLayerEdgeReductionVertical1()
         {
-            if (OrangeFace.Pieces[0, 1] != OrangeFace.ColorFace && OrangeFace.Pieces[0, 1] != GetOppositeColor(OrangeFace.ColorFace)
-                || OrangeFace.Pieces[2, 1] != OrangeFace.ColorFace && OrangeFace.Pieces[2, 1] != GetOppositeColor(OrangeFace.ColorFace)
-                || RedFace.Pieces[0, 1] != RedFace.ColorFace && RedFace.Pieces[0, 1] != GetOppositeColor(RedFace.ColorFace)
-                || RedFace.Pieces[2, 1] != RedFace.ColorFace && RedFace.Pieces[2, 1] != GetOppositeColor(RedFace.ColorFace)
-                || WhiteFace.Pieces[0, 1] != WhiteFace.ColorFace && WhiteFace.Pieces[0, 1] != GetOppositeColor(WhiteFace.ColorFace)
-                || WhiteFace.Pieces[2, 1] != WhiteFace.ColorFace && WhiteFace.Pieces[2, 1] != GetOppositeColor(WhiteFace.ColorFace)
-                || YellowFace.Pieces[0, 1] != YellowFace.ColorFace && YellowFace.Pieces[0, 1] != GetOppositeColor(YellowFace.ColorFace)
-                || YellowFace.Pieces[2, 1] != YellowFace.ColorFace && YellowFace.Pieces[2, 1] != GetOppositeColor(YellowFace.ColorFace))
-            {
-                return false;
-            }
-            return true;
+            return (OrangeFace.Pieces[0, 1] == OrangeFace.ColorFace || OrangeFace.Pieces[0, 1] == GetOppositeColor(OrangeFace.ColorFace))
+                   && (OrangeFace.Pieces[2, 1] == OrangeFace.ColorFace || OrangeFace.Pieces[2, 1] == GetOppositeColor(OrangeFace.ColorFace))
+                   && (RedFace.Pieces[0, 1] == RedFace.ColorFace || RedFace.Pieces[0, 1] == GetOppositeColor(RedFace.ColorFace))
+                   && (RedFace.Pieces[2, 1] == RedFace.ColorFace || RedFace.Pieces[2, 1] == GetOppositeColor(RedFace.ColorFace))
+                   && (WhiteFace.Pieces[0, 1] == WhiteFace.ColorFace || WhiteFace.Pieces[0, 1] == GetOppositeColor(WhiteFace.ColorFace))
+                   && (WhiteFace.Pieces[2, 1] == WhiteFace.ColorFace || WhiteFace.Pieces[2, 1] == GetOppositeColor(WhiteFace.ColorFace))
+                   && (YellowFace.Pieces[0, 1] == YellowFace.ColorFace || YellowFace.Pieces[0, 1] == GetOppositeColor(YellowFace.ColorFace))
+                   && (YellowFace.Pieces[2, 1] == YellowFace.ColorFace || YellowFace.Pieces[2, 1] == GetOppositeColor(YellowFace.ColorFace));
         }
 
         public bool SecondLayerEdgeReductionVertical2()
         {
-            if (WhiteFace.Pieces[1, 0] != WhiteFace.ColorFace && WhiteFace.Pieces[1, 0] != GetOppositeColor(WhiteFace.ColorFace)
-                || WhiteFace.Pieces[1, 2] != WhiteFace.ColorFace && WhiteFace.Pieces[1, 2] != GetOppositeColor(WhiteFace.ColorFace)
-                || YellowFace.Pieces[1, 0] != YellowFace.ColorFace && YellowFace.Pieces[1, 0] != GetOppositeColor(YellowFace.ColorFace)
-                || YellowFace.Pieces[1, 2] != YellowFace.ColorFace && YellowFace.Pieces[1, 2] != GetOppositeColor(YellowFace.ColorFace)
-                || GreenFace.Pieces[0, 1] != GreenFace.ColorFace && GreenFace.Pieces[0, 1] != GetOppositeColor(GreenFace.ColorFace)
-                || GreenFace.Pieces[2, 1] != GreenFace.ColorFace && GreenFace.Pieces[2, 1] != GetOppositeColor(GreenFace.ColorFace)
-                || BlueFace.Pieces[0, 1] != BlueFace.ColorFace && WhiteFace.Pieces[0, 1] != GetOppositeColor(BlueFace.ColorFace)
-                || BlueFace.Pieces[2, 1] != BlueFace.ColorFace && BlueFace.Pieces[2, 1] != GetOppositeColor(BlueFace.ColorFace))
-            {
-                return false;
-            }
-            return true;
+            return (WhiteFace.Pieces[1, 0] == WhiteFace.ColorFace || WhiteFace.Pieces[1, 0] == GetOppositeColor(WhiteFace.ColorFace))
+                   && (WhiteFace.Pieces[1, 2] == WhiteFace.ColorFace || WhiteFace.Pieces[1, 2] == GetOppositeColor(WhiteFace.ColorFace))
+                   && (YellowFace.Pieces[1, 0] == YellowFace.ColorFace || YellowFace.Pieces[1, 0] == GetOppositeColor(YellowFace.ColorFace))
+                   && (YellowFace.Pieces[1, 2] == YellowFace.ColorFace || YellowFace.Pieces[1, 2] == GetOppositeColor(YellowFace.ColorFace))
+                   && (GreenFace.Pieces[0, 1] == GreenFace.ColorFace || GreenFace.Pieces[0, 1] == GetOppositeColor(GreenFace.ColorFace))
+                   && (GreenFace.Pieces[2, 1] == GreenFace.ColorFace || GreenFace.Pieces[2, 1] == GetOppositeColor(GreenFace.ColorFace))
+                   && (BlueFace.Pieces[0, 1] == BlueFace.ColorFace || WhiteFace.Pieces[0, 1] == GetOppositeColor(BlueFace.ColorFace))
+                   && (BlueFace.Pieces[2, 1] == BlueFace.ColorFace || BlueFace.Pieces[2, 1] == GetOppositeColor(BlueFace.ColorFace));
         }
 
         public bool EdgeReduction()
@@ -2361,15 +2316,9 @@ namespace CubeLibrary
                 return true;
             }
             breaked2:
-            foreach (Face face in new List<Face>([RedFace, OrangeFace]))
+            if ((from face in new List<Face>([RedFace, OrangeFace]) from p in GetEdges where face.Pieces[p.Item1, p.Item2] != face.ColorFace && face.Pieces[p.Item1, p.Item2] != GetOppositeColor(face.ColorFace) select face).Any())
             {
-                foreach ((int, int) p in GetEdges)
-                {
-                    if (face.Pieces[p.Item1, p.Item2] != face.ColorFace && face.Pieces[p.Item1, p.Item2] != GetOppositeColor(face.ColorFace))
-                    {
-                        return false;
-                    }
-                }
+                return false;
             }
             bool redOrange = SecondLayerEdgeReductionVertical2();
             if (redOrange)
@@ -2401,17 +2350,7 @@ namespace CubeLibrary
                 "L" => OrangeFace,
                 _ => WhiteFace
             };
-            foreach (Face face in new List<Face>([face1, face2]))
-            {
-                foreach ((int, int) p in GetCorners)
-                {
-                    if (face.Pieces[p.Item1, p.Item2] != face.ColorFace && face.Pieces[p.Item1, p.Item2] != GetOppositeColor(face.ColorFace))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            return !(from face in new List<Face>([face1, face2]) from p in GetCorners where face.Pieces[p.Item1, p.Item2] != face.ColorFace && face.Pieces[p.Item1, p.Item2] != GetOppositeColor(face.ColorFace) select face).Any();
         }
 
         public static char GetOppositeColor(char color)
@@ -2535,39 +2474,35 @@ namespace CubeLibrary
             {
                 foreach (char item in line)
                 {
-                    if (item == 'Y')
+                    switch (item)
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write('Y');
-                    }
-                    else if (item == 'R')
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write('R');
-                    }
-                    else if (item == 'B')
-                    {
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.Write('B');
-                    }
-                    else if (item == 'W')
-                    {
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.Write('W');
-                    }
-                    else if (item == 'G')
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write('G');
-                    }
-                    else if (item == 'O')
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkYellow;
-                        Console.Write('O');
-                    }
-                    else
-                    {
-                        Console.Write(item);
+                        case 'Y':
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write('Y');
+                            break;
+                        case 'R':
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write('R');
+                            break;
+                        case 'B':
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.Write('B');
+                            break;
+                        case 'W':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.Write('W');
+                            break;
+                        case 'G':
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write('G');
+                            break;
+                        case 'O':
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.Write('O');
+                            break;
+                        default:
+                            Console.Write(item);
+                            break;
                     }
                 }
                 Console.WriteLine(' ');

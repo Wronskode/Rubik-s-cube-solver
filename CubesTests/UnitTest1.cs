@@ -8,7 +8,7 @@ namespace CubesTests
         [TestMethod]
         public void FastMethodSolves()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 Cube c = new(500);
                 Cube c2 = c.Clone();

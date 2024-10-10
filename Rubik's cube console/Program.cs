@@ -30,23 +30,27 @@ while (true)
                 str = Console.ReadLine();
                 v = int.TryParse(str, out result);
             }
-            if (result == 1)
+            switch (result)
             {
-                Stopwatch sw = new();
-                sw.Start();
-                resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(randomCube)]));
-                sw.Stop();
-                duration = sw.ElapsedMilliseconds / 1000;
-            }
-            else if (result == 2)
-            {
-                Console.WriteLine("Solving...");
-                Stopwatch sw = new();
-                sw.Start();
-                resolution = Move.GetStringPath(randomCube.Kociemba());
-                sw.Stop();
-                duration = sw.ElapsedMilliseconds / 1000;
-                
+                case 1:
+                {
+                    Stopwatch sw = new();
+                    sw.Start();
+                    resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(randomCube)]));
+                    sw.Stop();
+                    duration = sw.ElapsedMilliseconds / 1000;
+                    break;
+                }
+                case 2:
+                {
+                    Console.WriteLine("Solving...");
+                    Stopwatch sw = new();
+                    sw.Start();
+                    resolution = Move.GetStringPath(randomCube.Kociemba());
+                    sw.Stop();
+                    duration = sw.ElapsedMilliseconds / 1000;
+                    break;
+                }
             }
         } while (resolution is null);
         Console.WriteLine("Resolution : " + resolution + "\n");
@@ -58,8 +62,8 @@ while (true)
         Cube c = new();
         IEnumerable<string> fullAlgo;
         str = Console.ReadLine();
-        if (str != null) str = str.ToUpper();
-        if (str == "0" || str == string.Empty || str == null) break;
+        str = str?.ToUpper();
+        if (str is "0" or "" or null) break;
         try
         {
             fullAlgo = Move.StringPathToEnum(str);
@@ -85,22 +89,27 @@ while (true)
                 str = Console.ReadLine();
                 v = int.TryParse(str, out result);
             }
-            if (result == 1)
+            switch (result)
             {
-                Stopwatch sw = new();
-                sw.Start();
-                resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(c)]));
-                sw.Stop();
-                duration = sw.ElapsedMilliseconds / 1000;
-            }
-            else if (result == 2)
-            {
-                Console.WriteLine("Solving...");
-                Stopwatch sw = new();
-                sw.Start();
-                resolution = Move.GetStringPath(c.Kociemba());
-                sw.Stop();
-                duration = sw.ElapsedMilliseconds / 1000;
+                case 1:
+                {
+                    Stopwatch sw = new();
+                    sw.Start();
+                    resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(c)]));
+                    sw.Stop();
+                    duration = sw.ElapsedMilliseconds / 1000;
+                    break;
+                }
+                case 2:
+                {
+                    Console.WriteLine("Solving...");
+                    Stopwatch sw = new();
+                    sw.Start();
+                    resolution = Move.GetStringPath(c.Kociemba());
+                    sw.Stop();
+                    duration = sw.ElapsedMilliseconds / 1000;
+                    break;
+                }
             }
         } while (resolution is null);
         Console.WriteLine("Resolution : " + resolution + "\n");
@@ -112,10 +121,9 @@ while (true)
         str = Console.ReadLine();
         if (str != null) str = str.ToUpper();
         else continue;
-        Cube c;
         try
         {
-            c = new(str);
+            Cube c = new(str);
             string? resolution = null;
             long duration = 0;
             do
@@ -129,22 +137,27 @@ while (true)
                     v = int.TryParse(str, out result);
                 }
                 
-                if (result == 1)
+                switch (result)
                 {
-                    Stopwatch sw = new();
-                    sw.Start();
-                    resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(c)]));
-                    sw.Stop();
-                    duration = sw.ElapsedMilliseconds / 1000;
-                }
-                else if (result == 2)
-                {
-                    Console.WriteLine("Solving...");
-                    Stopwatch sw = new();
-                    sw.Start();
-                    resolution = Move.GetStringPath(c.Kociemba());
-                    sw.Stop();
-                    duration = sw.ElapsedMilliseconds / 1000;
+                    case 1:
+                    {
+                        Stopwatch sw = new();
+                        sw.Start();
+                        resolution = Move.GetStringPath(Cube.LightOptimization([.. Cube.FastBeginnerMethod(c)]));
+                        sw.Stop();
+                        duration = sw.ElapsedMilliseconds / 1000;
+                        break;
+                    }
+                    case 2:
+                    {
+                        Console.WriteLine("Solving...");
+                        Stopwatch sw = new();
+                        sw.Start();
+                        resolution = Move.GetStringPath(c.Kociemba());
+                        sw.Stop();
+                        duration = sw.ElapsedMilliseconds / 1000;
+                        break;
+                    }
                 }
             } while (resolution == null);
             Console.WriteLine("Resolution : " + resolution + "\n");

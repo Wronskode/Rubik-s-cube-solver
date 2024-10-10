@@ -2,7 +2,7 @@
 
 namespace CubeLibrary
 {
-    public class Move
+    public static class Move
     {
         public static List<byte> GetAlgoFromStringEnum(IEnumerable<string> algorithme)
         {
@@ -249,9 +249,9 @@ namespace CubeLibrary
 
         public static byte[] GetReversalPath(IEnumerable<byte> path)
         {
-            byte[] newPath = new byte[path.Count()];
+            byte[] newPath = path.ToArray();
             int i = 0;
-            foreach (byte item in path)
+            foreach (byte item in newPath)
             {
                 newPath[i] = item switch
                 {

@@ -5,6 +5,7 @@ namespace CubeLibrary
     public class Face : IEquatable<Face?>
     {
         public char[,] Pieces { get; set; }
+        private char[,] nouvelleFace;
         public char ColorFace
         {
             get
@@ -17,11 +18,7 @@ namespace CubeLibrary
         {
             get
             {
-                foreach (char piece in Pieces)
-                {
-                    if (piece != ColorFace) return false;
-                }
-                return true;
+                return Pieces.Cast<char>().All(piece => piece == ColorFace);
             }
         }
         public Face(char[] pieces)
@@ -66,7 +63,7 @@ namespace CubeLibrary
 
         public void Rotate90Left()
         {
-            char[,] nouvelleFace = new char[3,3];
+            nouvelleFace = new char[3, 3];
             nouvelleFace[0, 0] = Pieces[0, 2];
             nouvelleFace[0, 1] = Pieces[1, 2];
             nouvelleFace[0, 2] = Pieces[2, 2];
@@ -81,7 +78,7 @@ namespace CubeLibrary
 
         public void Rotate90Right()
         {
-            char[,] nouvelleFace = new char[3, 3];
+            nouvelleFace = new char[3, 3];
             nouvelleFace[0, 0] = Pieces[2, 0];
             nouvelleFace[0, 1] = Pieces[1, 0];
             nouvelleFace[0, 2] = Pieces[0, 0];
@@ -96,7 +93,7 @@ namespace CubeLibrary
 
         public void Rotate180()
         {
-            char[,] nouvelleFace = new char[3, 3];
+            nouvelleFace = new char[3, 3];
             nouvelleFace[0, 0] = Pieces[2, 2];
             nouvelleFace[0, 1] = Pieces[2, 1];
             nouvelleFace[0, 2] = Pieces[2, 0];

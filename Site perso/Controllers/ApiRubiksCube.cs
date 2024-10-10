@@ -27,11 +27,12 @@ namespace MySite.Controllers
             }
 
             if (cptW != 9) throw new Exception("Il y a " + cptW + " blancs � la place de 9 blancs");
-            else if (cptY != 9) throw new Exception("Il y a " + cptY + " jaunes � la place de 9 jaunes");
-            else if (cptR != 9) throw new Exception("Il y a " + cptR + " rouges � la place de 9 rouges");
-            else if (cptG != 9) throw new Exception("Il y a " + cptG + " verts � la place de 9 verts");
-            else if (cptB != 9) throw new Exception("Il y a " + cptB + " bleus � la place de 9 bleus");
-            else if (cptO != 9) throw new Exception("Il y a " + cptO + " oranges � la place de 9 oranges");
+            if (cptY != 9) throw new Exception("Il y a " + cptY + " jaunes � la place de 9 jaunes");
+            if (cptR != 9) throw new Exception("Il y a " + cptR + " rouges � la place de 9 rouges");
+            if (cptG != 9) throw new Exception("Il y a " + cptG + " verts � la place de 9 verts");
+            if (cptB != 9) throw new Exception("Il y a " + cptB + " bleus � la place de 9 bleus");
+            if (cptO != 9) throw new Exception("Il y a " + cptO + " oranges � la place de 9 oranges");
+
             Cube cube = new(strCube);
             return Move.GetStringPath(Cube.LightOptimization(Cube.FastBeginnerMethod(cube)));
         }
@@ -89,7 +90,7 @@ namespace MySite.Controllers
             try
             {
                 return Ok(Move.GetStringPath(Move.GetReversalPath(Move.GetAlgoFromStringEnum(
-                            Move.StringPathToEnum(path.Replace(" ", string.Empty).ToUpper()).Reverse<string>()))));
+                            Move.StringPathToEnum(path.Replace(" ", string.Empty).ToUpper()).Reverse()))));
             }
             catch
             {
